@@ -14,6 +14,13 @@ public class GrilleLettres implements Grille {
 	private int dimension;
 	private De[][] grille;
 	
+	/* 
+	 * Représentation la grille sous la forme d'une seule dimension
+	 * Ce tableau est initialisé par le constructeur
+	 * et est utilisé notammenent par la méthode secouer()
+	 */
+	private De[] des;
+	
 	/**
 	 * Constructeur pour instancier une grille de lettres
 	 * 
@@ -37,15 +44,10 @@ public class GrilleLettres implements Grille {
 			throw new BoggleException("Il n'y a pas suffisamment de dé pour cette grille.");
 		}
 		
-		De.melange(des);
+		this.des = des;
 		this.dimension = dimension;
-		this.grille = new De[dimension][dimension];	
-		int n = 0;
-		for (int y=0; y < dimension; y++) {
-			for (int x=0; x < dimension; x++) {
-				placer(des[n++], x, y);
-			}
-		}
+		this.grille = new De[dimension][dimension];
+		this.secouer();
 	}
 	
 	public int dimension() {
@@ -101,9 +103,13 @@ public class GrilleLettres implements Grille {
 	}
 
 	public void secouer() {
-		for(int y=0 ; y<dimension ; y++) {
-			for(int x=0 ; x<dimension ; x++) {
-				getDe(x, y).lancer();
+		De.melange(des);
+		int n = 0;
+		for (int y=0; y < dimension; y++) {
+			for (int x=0; x < dimension; x++) {
+				placer(des[n], x, y);
+				des[n].lancer();
+				n++;
 			}
 		}
 	}
