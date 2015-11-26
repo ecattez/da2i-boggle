@@ -1,8 +1,6 @@
 package boggle.mots;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -17,41 +15,6 @@ import boggle.BoggleException;
  * Représente un dé à NB_FACES faces.
  */
 public class De {
-	
-	/**
-	 * Crée des dés à partir d'un fichier de configuration
-	 *  
-	 * @param	fichier
-	 *			le fichier qui contient les différentes faces de chaque dé
-	 *
-	 * @return	un tableau de dés
-	 */
-	public static De[] creerDes(String fichier) {
-		List<De> des = new ArrayList<De>();
-		Path path = Paths.get("config", fichier);
-		
-		try (Scanner sc = new Scanner(path)) {
-			while(sc.hasNextLine()) {
-				des.add(new De(sc.nextLine().split(";")));
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return des.toArray(new De[des.size()]);		
-	}
-	
-	/**
-	 * Mélange un tableau de dés
-	 * 
-	 * @param	des
-	 * 			les dés à mélanger
-	 * 
-	 * @return	le tableau de dés mélangé
-	 */
-	public static De[] melange(De[] des) {
-		Collections.shuffle(Arrays.asList(des));
-		return des;
-	}
 	
 	public static final int NB_FACES = 6;
 	
@@ -78,7 +41,6 @@ public class De {
 	public void rendre() {
 		utilise = false;
 	}
-	
 	
 	/**
 	 * Vérifie si le dé est déjà utilisé
@@ -119,7 +81,60 @@ public class De {
 	}
 	
 	public String toString() {
-		return "Face visible: " + faceVisible + "\tFaces: " + Arrays.asList(faces);
+		String str = "";
+		String face;
+		for (int i=0; i < faces.length; i++) {
+			face = faces[i];
+			if (face.equals(faceVisible)) {
+				str += "(" + face + ")";
+			}
+			else {
+				str += face;
+			}
+			if (i < faces.length - 1) {
+				str += ", ";
+			}
+		}
+		return "Faces: " + str;
+	}
+	
+	/**
+	 * Crée des dés à partir d'un fichier de configuration
+	 *  
+	 * @param	fichier
+	 *			le fichier qui contient les différentes faces de chaque dé
+	 *
+	 * @return	un tableau de dés
+	 */
+	public static De[] creerDes(String fichier) {
+		List<De> des = new ArrayList<De>();
+		Path path = Paths.get("config", fichier);
+		String[] faces;
+		
+		try (Scanner sc = new Scanner(path)) {
+			while(sc.hasNextLine()) {
+				faces = sc.nextLine().split(";");
+				if (faces.length == NB_FACES) {
+					des.add(new De(faces));
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return des.toArray(new De[des.size()]);		
+	}
+	
+	/**
+	 * Mélange un tableau de dés
+	 * 
+	 * @param	des
+	 * 			les dés à mélanger
+	 * 
+	 * @return	le tableau de dés mélangé
+	 */
+	public static De[] melange(De[] des) {
+		Collections.shuffle(Arrays.asList(des));
+		return des;
 	}
 	
 	public static void main(String[] args) {

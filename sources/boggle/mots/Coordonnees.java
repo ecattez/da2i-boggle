@@ -1,4 +1,4 @@
-package boggle.gui;
+package boggle.mots;
 
 public class Coordonnees {
 	

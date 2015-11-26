@@ -89,7 +89,21 @@ public class ArbreLexical {
 		}
 		char c = Character.toUpperCase(word.charAt(0));
 		ArbreLexical noeud = fils[indexOf(c)];
-		return noeud == null ? false : noeud.contient(word.substring(1));
+		return noeud != null && noeud.contient(word.substring(1));
+	}
+	
+	/**
+	 * Ajoute à la liste <code>resultat<code> tous les mots de l'arbre commençant par le préfixe spécifié.
+	 * 
+	 * @param	prefixe
+	 * 			le préfixe du mot
+	 * @param	resultat
+	 * 			la liste des mots qui commence par le préfixe
+	 *  
+	 * @return	<code>true</code> si <code>resultat</code> a été modifié, <code>false</code> sinon.
+	 */
+	public boolean motsCommencantPar(String prefixe, List<String> resultat) {
+		return motsCommencantPar(prefixe, 0, resultat);
 	}
 
 	/**
@@ -129,10 +143,6 @@ public class ArbreLexical {
 		return resultat.size() > 0;
 	}
 	
-	public boolean motsCommencantPar(String prefixe, List<String> resultat) {
-		return motsCommencantPar(prefixe, 0, resultat);
-	}
-
 	/**
 	 * Crée un arbre lexical qui contient tous les mots du fichier spécifié.
 	 * 
