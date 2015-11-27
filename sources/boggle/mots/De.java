@@ -19,12 +19,12 @@ public class De {
 	public static final int NB_FACES = 6;
 	
 	private String[] faces;
-	private String faceVisible;
+	private int faceVisible;
 	private boolean utilise;
 	
 	public De(String[] faces) {
 		this.faces = faces;
-		this.faceVisible = faces[0];
+		this.faceVisible = 0;
 		this.utilise = false;
 	}
 	
@@ -61,7 +61,7 @@ public class De {
 		if (i < 0 || i >= NB_FACES) {
 			throw new BoggleException("Il n'y a pas de face n°" + i + " à ce dé."); 
 		}
-		faceVisible = faces[i];
+		faceVisible = i;
 	}
 	
 	/**
@@ -70,7 +70,7 @@ public class De {
 	 * @return	la face visible du dé
 	 */
 	public String getFaceVisible() {
-		return faceVisible;
+		return faces[faceVisible];
 	}
 
 	/**
@@ -85,7 +85,7 @@ public class De {
 		String face;
 		for (int i=0; i < faces.length; i++) {
 			face = faces[i];
-			if (face.equals(faceVisible)) {
+			if (i == faceVisible) {
 				str += "(" + face + ")";
 			}
 			else {

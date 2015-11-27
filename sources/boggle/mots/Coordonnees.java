@@ -1,27 +1,33 @@
 package boggle.mots;
 
-public class Coordonnees {
+/**
+ * Représente des coordonnées dans un repère à 2 dimensions.
+ */
+public interface Coordonnees {
 	
-	private int x;
-	private int y;
+	/**
+	 * Retourne l'abscisse du couple de coordonnées (x,y)
+	 * 
+	 * @return l'abscisse de l'instance de Coordonnees courante
+	 */
+	int getX();
 	
-	public Coordonnees(int x, int y) {
-		this.x = x;
-		this.y = y;
-	}
+	/**
+	 * Retourne l'ordonnée du couple de coordonnées (x,y)
+	 * 
+	 * @return l'ordonnée de l'instance de Coordonnees courante
+	 */
+	int getY();
 	
-	public int getX() {
-		return x;
-	}
-	
-	public int getY() {
-		return y;
-	}
-	
-	public boolean equals(Object o) {
-		Coordonnees c = (Coordonnees) o;
-		return x == c.x && y == c.y;
-	}
+	/**
+	 * Additionne un couple de coordonnées et l'instance courante
+	 * 
+	 * @param	c
+	 * 			le couple a additionner avec l'instance courante
+	 * 
+	 * @return	une nouvelle instance de Coordonnees représentant l'ajout des coordonnées entres-elles
+	 */
+	Coordonnees ajoute(Coordonnees c);
 	
 	/**
 	 * Vérifie si deux coordonnées sont voisines
@@ -31,10 +37,6 @@ public class Coordonnees {
 	 * 
 	 * @return	<code>true</code> si les coordonnées sont voisines, <code>false</code> sinon
 	 */
-	public boolean estVoisinDe(Coordonnees c) {
-		int rx = Math.abs(x - c.x);
-		int ry = Math.abs(y - c.y);
-		return (rx == 0 || rx == 1 && ry == 0 && ry == 1);
-	}
-	
+	boolean estVoisinDe(Coordonnees c);
+
 }
