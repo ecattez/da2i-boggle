@@ -18,10 +18,6 @@
  */
 package boggle.jeu;
 
-import java.util.Stack;
-
-import boggle.mots.Coordonnees;
-import boggle.mots.Grille;
 
 /**
  * Implémentation d'un joueur humain
@@ -30,11 +26,6 @@ public class Humain extends Joueur {
 
 	public Humain(String name) {
 		super(name);
-	}
-
-	public void joue(Grille g, Coordonnees c, Stack<Coordonnees> coordUtilisees) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

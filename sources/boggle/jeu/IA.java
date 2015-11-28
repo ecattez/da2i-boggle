@@ -18,10 +18,6 @@
  */
 package boggle.jeu;
 
-import java.util.Stack;
-
-import boggle.mots.Coordonnees;
-import boggle.mots.Grille;
 
 /**
  * Implémentation d'un joueur machine
@@ -30,11 +26,6 @@ public class IA extends Joueur {
 
 	public IA(String name) {
 		super(name);
-	}
-	
-	public void joue(Grille g, Coordonnees c, Stack<Coordonnees> coordUtilisees) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }
