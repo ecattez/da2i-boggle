@@ -1,3 +1,21 @@
+/**
+ * This file is part of da2i-boggle.
+ *
+ * da2i-boggle is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * da2i-boggle is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.				 
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with da2i-boggle.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * @author Edouard CATTEZ <edouard.cattez@sfr.fr> (La 7 Production)
+ */
 package boggle.mots;
 
 import java.util.ArrayList;
@@ -83,12 +101,43 @@ public abstract class Grille {
 	 * Vérifie si le dé de coordonnées (x,y) est déjà utilisé
 	 * 
 	 * @param	c
-	 * 			les coordonnées du dé dans la ginterfacerille
+	 * 			les coordonnées du dé dans la grille
 	 * 
 	 * @return	<code>true</code> si le dé est déjà utilisé, <false> sinon
 	 */
 	public boolean estUtilise(Coordonnees c) {
 		return getDe(c).estUtilise();
+	}
+	
+	/**
+	 * Utilise le dé de coordonnées (x,y)
+	 * 
+	 * @param	c
+	 * 			les coordonnées du dé dans la grille
+	 */
+	public void utiliserDe(Coordonnees c) {
+		getDe(c).utiliser();
+	}
+	
+	/**
+	 * Rend disponible le dé de coordonnées (x,y)
+	 * 
+	 * @param	c
+	 * 			les coordonnées du dé dans la grille
+	 */
+	public void rendreDe(Coordonnees c) {
+		getDe(c).rendre();
+	}
+	
+	/**
+	 * Rend disponible tous les dés de la grille
+	 */
+	public void rendreTout() {
+		for (int y=0; y < dimension; y++) {
+			for (int x=0; x < dimension; x++) {
+				getDe(new CoordonneesCartesiennes(x, y)).rendre();
+			}
+		}
 	}
 	
 	/**
@@ -121,6 +170,8 @@ public abstract class Grille {
 		int r = (int) (Math.random() + 1000);
 		De d1, d2;
 		Coordonnees c1, c2;
+		// On prend des dé aléatoirement et on échange leur position
+		// puis on les lance pour mélanger les faces visibles
 		for (int i=0; i < r; i++) {
 			c1 = getCoordonneesAleatoirement();
 			c2 = getCoordonneesAleatoirement();
@@ -131,6 +182,7 @@ public abstract class Grille {
 			placer(d2, c1);
 			placer(d1, c2);
 		}
+		rendreTout();
 	}
 	
 	/**
