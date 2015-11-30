@@ -18,7 +18,9 @@
  */
 package boggle.mots;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 
 /**
@@ -30,6 +32,13 @@ public abstract class Grille {
 	
 	private int dimension;
 	
+	// On utilise une liste pour stocker les mots fabriqués avec cette grille
+	private List<String> mots;
+	
+	// On utilise une double file pour conserver les positions utilisée par le joueur
+	// lors de la création d'un mot. Elle est vidée à chaque nouveau mot.
+	private Deque<Coordonnees> deck;
+	
 	/**
 	 * Constructeur d'une grille
 	 * 
@@ -38,6 +47,8 @@ public abstract class Grille {
 	 */
 	public Grille(int dimension) {
 		this.dimension = dimension;
+		this.mots = new ArrayList<>();
+		this.deck = new ArrayDeque<>();
 	}
 	
 	/**
@@ -47,6 +58,15 @@ public abstract class Grille {
 	 */
 	public int dimension() {
 		return dimension;
+	}
+	
+	/**
+	 * Retourne la taille minimale d'un mot dans la grille
+	 * 
+	 * @return	la taille minimale d'un mot dans la grille
+	 */
+	public int tailleMinimale() {
+		return dimension - 1;
 	}
 	
 	/**
@@ -117,6 +137,16 @@ public abstract class Grille {
 	 */
 	public void utiliserDe(Coordonnees c) {
 		getDe(c).utiliser();
+		deck.push(c);
+	}
+	
+	/**
+	 * Retourne la position du dernier dé utilisé par le joueur
+	 * 
+	 * @return	les coordonnées du dernier dé utilisé par le joueur
+	 */
+	public Coordonnees getDernierePosition() {
+		return deck.peek();
 	}
 	
 	/**
@@ -127,6 +157,16 @@ public abstract class Grille {
 	 */
 	public void rendreDe(Coordonnees c) {
 		getDe(c).rendre();
+		deck.remove(c);
+	}
+	
+	/**
+	 * Rend disponible le dernier dé utilisé par le joueur
+	 */
+	public void rendreDernierDeUtilise() {
+		if (deck.size() > 0) {
+			getDe(deck.pop()).rendre();
+		}
 	}
 	
 	/**
@@ -135,9 +175,47 @@ public abstract class Grille {
 	public void rendreTout() {
 		for (int y=0; y < dimension; y++) {
 			for (int x=0; x < dimension; x++) {
-				getDe(new CoordonneesCartesiennes(x, y)).rendre();
+				rendreDe(new CoordonneesCartesiennes(x, y));
 			}
 		}
+	}
+	
+	/**
+	 * Retourne les lettres actuellement utilisée par l'utilisateur dans leur ordre d'utilisation
+	 * 
+	 * @return	les lettres utilisée par l'utilisateur dans l'ordre d'utilisation
+	 */
+	public String getLettresUtilisees() {
+		StringBuilder builder = new StringBuilder();
+		for (Coordonnees c : deck) {
+			builder.append(getFaceVisible(c));
+		}
+		return builder.toString();
+	}
+	
+	/**
+	 * Enregistre un mot obtenu avec cette grille
+	 * 
+	 * @return	<code>true</code> si le mot a bien été enregistré, <code>false</code> sinon
+	 */
+	public boolean stockerMot() {
+		return mots.add(getLettresUtilisees());
+	}
+	
+	/**
+	 * Vide la liste de tous les mots obtenus avec cette grille
+	 */
+	public void viderMotsStockes() {
+		mots.clear();
+	}
+	
+	/**
+	 * Retourne la liste des mots obtenus avec cette grille
+	 * 
+	 * @return	la liste de tous les mots obtenus par le joueur avec cette grille
+	 */
+	public List<String> getMots() {
+		return mots;
 	}
 	
 	/**
@@ -182,6 +260,7 @@ public abstract class Grille {
 			placer(d2, c1);
 			placer(d1, c2);
 		}
+		// On rend disponible tous les dés de la grille
 		rendreTout();
 	}
 	

@@ -18,6 +18,8 @@
  */
 package boggle.jeu;
 
+import boggle.mots.Grille;
+
 
 /**
  * Implémentation d'un joueur machine
@@ -26,6 +28,10 @@ public class IA extends Joueur {
 
 	public IA(String name) {
 		super(name);
+	}
+
+	public void joue(Grille g) {
+		// TODO Auto-generated method stub
 	}
 
 }

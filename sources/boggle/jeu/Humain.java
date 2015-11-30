@@ -18,6 +18,7 @@
  */
 package boggle.jeu;
 
+import boggle.mots.Grille;
 
 /**
  * Implémentation d'un joueur humain
@@ -26,6 +27,10 @@ public class Humain extends Joueur {
 
 	public Humain(String name) {
 		super(name);
+	}
+
+	public void joue(Grille g) {
+		// Rien à faire
 	}
 
 }

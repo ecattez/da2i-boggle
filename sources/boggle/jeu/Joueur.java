@@ -18,9 +18,6 @@
  */
 package boggle.jeu;
 
-import java.util.Stack;
-
-import boggle.mots.Coordonnees;
 import boggle.mots.Grille;
 
 /**
@@ -48,7 +45,7 @@ public abstract class Joueur {
 		this.score = 0;
 	}
 	
-	public void inc(int n) {
+	public void incScore(int n) {
 		this.score += n;
 	}
 	
@@ -56,31 +53,24 @@ public abstract class Joueur {
 	 * Le joueur effectue une action dans le Boggle
 	 * 
 	 * @param	g
-	 * 			la grille utilisée par le joueur
-	 * @param	c
-	 * 			le couple de coordonnées (x,y) choisit par le joueur
-	 * @param	coordUtilisees
-	 * 			la liste des coordonnées déjà utilisées par le joueur
-	 * 
-	 * @return <code>true</code> si la grille est modifiée suite à l'action du joueur, <code>false</code> sinon
+	 * 			la grille utilisée pour la partie du joueur
 	 */
-	public boolean joue(Grille g, Coordonnees c, Stack<Coordonnees> coordUtilisees) {
-		Coordonnees tete = coordUtilisees.peek();
-		if (c.estVoisinDe(tete)) {
-			// Le dé n'est pas utilisé et est voisin du dernier dé choisit, on l'ajoute à la pile
-			if (!g.estUtilise(c)) {
-				g.utiliserDe(c);
-				coordUtilisees.push(c);
-				return true;
-			}
-		}
-		// Le dé est le dernier choisit, on considère que le joueur annule sa dernière action, on dépile
-		else if (c.equals(tete)) {
-			g.rendreDe(c);
-			coordUtilisees.pop();
-			return true;
-		}
-		return false;
-	}
+	public abstract void joue(Grille g);
+//		Coordonnees tete = g.getDernierePosition();
+//		if (c.estVoisinDe(tete)) {
+//			// Le dé n'est pas utilisé et est voisin du dernier dé choisit, on l'ajoute à la pile
+//			if (!g.estUtilise(c)) {
+//				g.utiliserDe(c);
+//				coordUtilisees.push(c);
+//				return true;
+//			}
+//		}
+//		// Le dé est le dernier choisit, on considère que le joueur annule sa dernière action, on dépile
+//		else if (c.equals(tete)) {
+//			g.rendreDe(c);
+//			coordUtilisees.pop();
+//			return true;
+//		}
+//		return false;
 	
 }

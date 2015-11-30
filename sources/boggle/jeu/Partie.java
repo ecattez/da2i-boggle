@@ -18,35 +18,35 @@
  */
 package boggle.jeu;
 
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
-import boggle.mots.Grille;
+import boggle.mots.ArbreLexical;
+import boggle.mots.GrilleLettres;
 
 /**
  * Représentation d'une partie générique de Boggle entre plusieurs joueurs.
  */
-public abstract class Partie {
+public class Partie implements Iterable<Joueur>, Runnable {
 	
-	private Map<Joueur, Grille> joueurGrille;
-	private Iterator<Joueur> itJoueurs;
+	private GrilleLettres grille;
+	private ArbreLexical arbre;
+	private Joueur[] joueurs;
+	private Joueur vainqueur;
 	private int tour;
 	private int tourMax;
+	private int scoreCible;
 	
-	public Partie(Joueur[] joueurs, int tourMax) {
-		this.joueurGrille = new HashMap<>();
-		this.itJoueurs = new JoueurIterator(joueurs);
+	public Partie(GrilleLettres grille, ArbreLexical arbre, Joueur[] joueurs, int scoreCible, int tourMax) {
+		this.grille = grille;
+		this.arbre = arbre;
+		this.joueurs = joueurs;
+		this.scoreCible = scoreCible;
 		this.tour = 0;
 		this.tourMax = tourMax;
 	}
 	
-	public Joueur suivant() {
-		return itJoueurs.next();
-	}
-	
-	public Grille getGrille(Joueur j) {
-		return joueurGrille.get(j);
+	public int scoreCible() {
+		return scoreCible;
 	}
 	
 	public int tour() {
@@ -65,24 +65,87 @@ public abstract class Partie {
 		tour++;
 	}
 	
-	public abstract void jouer();
+	public Joueur getVainqueur() {
+		return vainqueur;
+	}
 	
-	public abstract void finTour();
+	public boolean estTerminee() {
+		return tour == tourMax || vainqueur != null;
+	}
 	
-	public abstract void finPartie();
+	public Iterator<Joueur> iterator() {
+		return new JoueurIterator();
+	}
 	
+	public boolean verifierMot(String mot) {
+		return arbre.contient(mot);
+	}
+	
+	/**
+	 * On termine le tour d'un joueur et on calcule son score.
+	 * 
+	 * @param	joueur
+	 * 			le joueur pour lequel on termine le tour
+	 */
+	public void terminerTour(Joueur joueur) {
+		int taille;
+		int points;
+		for (String s : grille.getMots()) {
+			taille = s.length();
+			points = 0;
+			if (taille >= 3 && verifierMot(s)) {
+				if (taille == 3 || taille == 4) {
+					points = 1;
+				}
+				else if (taille == 5) {
+					points = 2;
+				}
+				else if (taille == 6) {
+					points = 3;
+				}
+				else if (taille == 7) {
+					points = 5;
+				}
+				else if (taille < 7) {
+					points = 11;
+				}
+				joueur.incScore(points);
+			}
+		}
+		if (joueur.getScore() >= scoreCible) {
+			vainqueur = joueur;
+		}
+	}
+	
+	/**
+	 * Démarre la partie
+	 */
+	public void run() {
+		Iterator<Joueur> it = iterator();
+		Joueur joueur;
+		while (!estTerminee()) {
+			grille.secouer();
+			joueur = it.next();
+			joueur.joue(grille);
+			chronometrer();
+			terminerTour(joueur);
+		}
+	}
+	
+	public void chronometrer() {
+		
+	}
+	
+	public void stopperChronometre() {
+		
+	}
 	
 	/**
 	 * Implémentation d'un iterateur sur les joueurs.
 	 */
 	private class JoueurIterator implements Iterator<Joueur> {
 		
-		private Joueur[] joueurs;
 		private int i = -1;
-		
-		public JoueurIterator(Joueur[] joueurs) {
-			this.joueurs = joueurs;
-		}
 		
 		/**
 		 * Retourne toujours vrai tant qu'il y a des joueurs dans la partie
@@ -97,6 +160,10 @@ public abstract class Partie {
 		 */
 		public Joueur next() {
 			return joueurs[++i % joueurs.length];
+		}
+
+		public void remove() {
+			// Rien à faire ici
 		}
 		
 	}
