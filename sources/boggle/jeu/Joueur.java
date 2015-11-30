@@ -18,7 +18,8 @@
  */
 package boggle.jeu;
 
-import boggle.mots.Grille;
+import boggle.mots.ArbreLexical;
+import boggle.mots.GrilleLettres;
 
 /**
  * Représentation générique d'un joueur de Boggle
@@ -55,7 +56,7 @@ public abstract class Joueur {
 	 * @param	g
 	 * 			la grille utilisée pour la partie du joueur
 	 */
-	public abstract void joue(Grille g);
+	public abstract void joue(GrilleLettres g, ArbreLexical arbre);
 //		Coordonnees tete = g.getDernierePosition();
 //		if (c.estVoisinDe(tete)) {
 //			// Le dé n'est pas utilisé et est voisin du dernier dé choisit, on l'ajoute à la pile

@@ -28,6 +28,10 @@ import boggle.mots.GrilleLettres;
  */
 public class Partie implements Iterable<Joueur>, Runnable {
 	
+	public static final int DEFAULT_CHRONO = 60;
+	public static final int DEFAULT_SCORECIBLE = 30;
+	public static final int DEFAULT_TOURMAX = 5;
+	
 	private GrilleLettres grille;
 	private ArbreLexical arbre;
 	private Joueur[] joueurs;
@@ -35,14 +39,21 @@ public class Partie implements Iterable<Joueur>, Runnable {
 	private int tour;
 	private int tourMax;
 	private int scoreCible;
+	private int chrono;
+	private CompteARebours compteARebours;
 	
-	public Partie(GrilleLettres grille, ArbreLexical arbre, Joueur[] joueurs, int scoreCible, int tourMax) {
+	public Partie(GrilleLettres grille, ArbreLexical arbre, Joueur[] joueurs, int scoreCible, int tourMax, int chrono) {
 		this.grille = grille;
 		this.arbre = arbre;
 		this.joueurs = joueurs;
 		this.scoreCible = scoreCible;
 		this.tour = 0;
 		this.tourMax = tourMax;
+		this.chrono = chrono;
+	}
+	
+	public Partie(GrilleLettres grille, ArbreLexical arbre, Joueur[] joueur) {
+		this(grille, arbre, joueur, DEFAULT_SCORECIBLE, DEFAULT_TOURMAX, DEFAULT_CHRONO);
 	}
 	
 	public int scoreCible() {
@@ -126,18 +137,22 @@ public class Partie implements Iterable<Joueur>, Runnable {
 		while (!estTerminee()) {
 			grille.secouer();
 			joueur = it.next();
-			joueur.joue(grille);
-			chronometrer();
+			joueur.joue(grille, arbre);
+			// On démarre le compte à rebours
+			demarrerCompteARebours();
+			// La fin du tour se produit à la fin du compte à rebours
+			// ou lorsque celui-ci est stoppé (appuyer sur Terminer)
 			terminerTour(joueur);
 		}
 	}
 	
-	public void chronometrer() {
-		
+	public void demarrerCompteARebours() {
+		compteARebours = new CompteARebours(chrono);
+		compteARebours.start();
 	}
 	
-	public void stopperChronometre() {
-		
+	public void stopperCompteARebours() {
+		compteARebours.shutdown();
 	}
 	
 	/**

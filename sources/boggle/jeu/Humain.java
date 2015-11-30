@@ -18,7 +18,8 @@
  */
 package boggle.jeu;
 
-import boggle.mots.Grille;
+import boggle.mots.ArbreLexical;
+import boggle.mots.GrilleLettres;
 
 /**
  * Implémentation d'un joueur humain
@@ -29,8 +30,8 @@ public class Humain extends Joueur {
 		super(name);
 	}
 
-	public void joue(Grille g) {
-		// Rien à faire
+	public void joue(GrilleLettres g, ArbreLexical arbre) {
+		// Rien à faire ici
 	}
 
 }

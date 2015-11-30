@@ -173,10 +173,8 @@ public abstract class Grille {
 	 * Rend disponible tous les dés de la grille
 	 */
 	public void rendreTout() {
-		for (int y=0; y < dimension; y++) {
-			for (int x=0; x < dimension; x++) {
-				rendreDe(new CoordonneesCartesiennes(x, y));
-			}
+		while (!deck.isEmpty()) {
+			getDe(deck.pop()).rendre();
 		}
 	}
 	
@@ -248,6 +246,8 @@ public abstract class Grille {
 		int r = (int) (Math.random() + 1000);
 		De d1, d2;
 		Coordonnees c1, c2;
+		// On rend disponible tous les dés de la grille qui ne l'étaient pas
+		rendreTout();
 		// On prend des dé aléatoirement et on échange leur position
 		// puis on les lance pour mélanger les faces visibles
 		for (int i=0; i < r; i++) {
@@ -260,8 +260,6 @@ public abstract class Grille {
 			placer(d2, c1);
 			placer(d1, c2);
 		}
-		// On rend disponible tous les dés de la grille
-		rendreTout();
 	}
 	
 	/**

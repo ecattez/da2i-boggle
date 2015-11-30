@@ -18,7 +18,8 @@
  */
 package boggle.jeu;
 
-import boggle.mots.Grille;
+import boggle.mots.ArbreLexical;
+import boggle.mots.GrilleLettres;
 
 
 /**
@@ -29,9 +30,10 @@ public class IA extends Joueur {
 	public IA(String name) {
 		super(name);
 	}
-
-	public void joue(Grille g) {
+	
+	public void joue(GrilleLettres g, ArbreLexical arbre) {
 		// TODO Auto-generated method stub
+		
 	}
 
 }
