@@ -18,20 +18,61 @@
  */
 package boggle.jeu;
 
+import java.util.Scanner;
+
 import boggle.mots.ArbreLexical;
+import boggle.mots.Coordonnees;
+import boggle.mots.CoordonneesCartesiennes;
 import boggle.mots.GrilleLettres;
 
 /**
  * Implémentation d'un joueur humain
  */
 public class Humain extends Joueur {
+	
+	public static Scanner sc = new Scanner(System.in);
 
 	public Humain(String name) {
 		super(name);
 	}
 
 	public void joue(GrilleLettres g, ArbreLexical arbre) {
-		// Rien à faire ici
+		String s;
+		int x, y;
+		do {
+			System.out.println(g);
+			System.out.println(g.getLettresUtilisees());
+			System.out.print("Choisissez un (x,y): ");
+			x = sc.nextInt();
+			y = sc.nextInt();
+			
+			Coordonnees c = new CoordonneesCartesiennes(x, y);
+			Coordonnees tete = g.getDernierePosition();
+			
+			if (tete == null) {
+				g.utiliserDe(c);
+			}
+			// Le dé est le dernier choisit, on considère que le joueur annule sa dernière action, on dépile
+			else if (c.equals(tete)) {
+				g.rendreDe(c);
+			}
+			else if (c.estVoisinDe(tete)) {
+				// Le dé n'est pas utilisé et est voisin du dernier dé choisit, on l'ajoute à la pile
+				if (!g.estUtilise(c)) {
+					g.utiliserDe(c);
+				}
+			}
+			
+			System.out.println(g.getLettresUtilisees());
+			System.out.println(g.getMots());
+			
+			System.out.println("+: ajouter, fin: terminer, c:continuer");
+			s = sc.next();
+			if (s.equals("+")) {
+				g.stockerMot();
+				g.rendreTout();
+			}
+		} while (!s.equals("fin"));
 	}
 
 }

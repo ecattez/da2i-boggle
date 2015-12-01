@@ -59,8 +59,10 @@ public class CompteARebours extends Thread {
 	
 	/**
 	 * Arrête le compte à rebours
+	 * 
+	 * Note: Pour pouvoir l'arrêter à tout moment, il est essentil qu'il n'y est pas le mot clé "synchronized"
 	 */
-	public synchronized void shutdown() {
+	public void shutdown() {
 		this.stop = true;
 	}
 	
@@ -69,17 +71,18 @@ public class CompteARebours extends Thread {
 	 * 
 	 * @return <code>true</code> si le compte à rebours est à 0, <code>false</code> sinon
 	 */
-	public synchronized boolean isOver() {
+	public boolean isOver() {
 		return stop;
 	}
 	
 	/**
 	 * Effectue un décompte d'une seconde
 	 */
-	private synchronized void countDown() {
+	private void countDown() {
 		try {
-			if (!stop) {
-				stop = (--delay == 0);
+			if (!isOver()) {
+				System.out.println(delay--);
+				stop = (delay <= 0);
 			}
 			Thread.sleep(ONE_SECOND);
 		} catch (InterruptedException e) {

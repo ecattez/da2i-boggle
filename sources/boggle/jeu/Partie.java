@@ -49,7 +49,7 @@ public class Partie implements Iterable<Joueur>, Runnable {
 		this.scoreCible = scoreCible;
 		this.tour = 0;
 		this.tourMax = tourMax;
-		this.chrono = chrono;
+		this.chrono = 60;
 	}
 	
 	public Partie(GrilleLettres grille, ArbreLexical arbre, Joueur[] joueur) {
@@ -178,21 +178,30 @@ public class Partie implements Iterable<Joueur>, Runnable {
 		Joueur joueur;
 		while (!estTerminee()) {
 			grille.secouer();
+			System.out.println("Grille secouée.\n");
 			joueur = it.next();
+			System.out.println("Au tour de " + joueur.getName() + " (score: " + joueur.getScore() + ").\n");
 			joueur.joue(grille, arbre);
 			// On démarre le compte à rebours
 			demarrerCompteARebours();
 			// La fin du tour se produit à la fin du compte à rebours
 			// ou lorsque celui-ci est stoppé (appuyer sur Terminer)
+			System.out.println("Fin du tour de " + joueur.getName() + ".\nCalcul des points en cours.\n");
 			terminerTour(joueur);
 		}
 	}
 	
+	/**
+	 * Démarre le compte à rebours du tour du joueur courant
+	 */
 	public void demarrerCompteARebours() {
 		compteARebours = new CompteARebours(chrono);
 		compteARebours.start();
 	}
 	
+	/**
+	 * Arrête le compte à rebours du tour du joueur courant
+	 */
 	public void stopperCompteARebours() {
 		compteARebours.shutdown();
 	}

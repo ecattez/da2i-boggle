@@ -57,21 +57,5 @@ public abstract class Joueur {
 	 * 			la grille utilisée pour la partie du joueur
 	 */
 	public abstract void joue(GrilleLettres g, ArbreLexical arbre);
-//		Coordonnees tete = g.getDernierePosition();
-//		if (c.estVoisinDe(tete)) {
-//			// Le dé n'est pas utilisé et est voisin du dernier dé choisit, on l'ajoute à la pile
-//			if (!g.estUtilise(c)) {
-//				g.utiliserDe(c);
-//				coordUtilisees.push(c);
-//				return true;
-//			}
-//		}
-//		// Le dé est le dernier choisit, on considère que le joueur annule sa dernière action, on dépile
-//		else if (c.equals(tete)) {
-//			g.rendreDe(c);
-//			coordUtilisees.pop();
-//			return true;
-//		}
-//		return false;
 	
 }

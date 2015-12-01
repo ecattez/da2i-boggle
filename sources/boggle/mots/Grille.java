@@ -198,6 +198,15 @@ public abstract class Grille extends Observable implements Observer {
 	}
 	
 	/**
+	 * Retourne une représentation des positions des lettres utilisées par le joueur dans leur ordre d'utilisation
+	 * 
+	 * @return	les positions (en String) des lettres utilisées par le joueur dans leur ordre d'utilisation
+	 */
+	public String getPositionsUtilisees() {
+		return deck.toString();
+	}
+	
+	/**
 	 * Retourne les lettres actuellement utilisée par l'utilisateur dans leur ordre d'utilisation
 	 * 
 	 * @return	les lettres utilisée par l'utilisateur dans l'ordre d'utilisation
@@ -207,7 +216,7 @@ public abstract class Grille extends Observable implements Observer {
 		for (Coordonnees c : deck) {
 			builder.append(getFaceVisible(c));
 		}
-		return builder.toString();
+		return builder.reverse().toString();
 	}
 	
 	/**
@@ -262,7 +271,7 @@ public abstract class Grille extends Observable implements Observer {
 	 * Secoue la grille pour mélanger les dés
 	 */
 	public void secouer() {
-		int r = (int) (Math.random() + 1000);
+		int r = (int) (Math.random() + 500);
 		De d1, d2;
 		Coordonnees c1, c2;
 		// On efface tous les mots qui ont été produits avec cette grille
