@@ -196,14 +196,16 @@ public class Partie implements Iterable<Joueur>, Runnable {
 	 */
 	public void demarrerCompteARebours() {
 		compteARebours = new CompteARebours(chrono);
-		compteARebours.start();
+		compteARebours.run();
 	}
 	
 	/**
 	 * Arrête le compte à rebours du tour du joueur courant
 	 */
 	public void stopperCompteARebours() {
-		compteARebours.shutdown();
+		if (!compteARebours.isOver()) {
+			compteARebours.shutdown();
+		}
 	}
 	
 	/**

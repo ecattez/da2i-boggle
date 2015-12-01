@@ -18,22 +18,14 @@
  */
 package boggle.jeu;
 
-import boggle.mots.ArbreLexical;
-import boggle.mots.GrilleLettres;
-
 
 /**
  * Implémentation d'un joueur machine
  */
-public class IA extends Joueur {
+public abstract class IA extends Joueur implements Runnable {
 
 	public IA(String name) {
 		super(name);
-	}
-	
-	public void joue(GrilleLettres g, ArbreLexical arbre) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }
