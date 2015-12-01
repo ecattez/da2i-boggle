@@ -41,9 +41,6 @@ public class GrilleLettres extends Grille {
 	 */
 	public GrilleLettres(int dimension, De[] des) {
 		super(dimension);
-		if (dimension < DIMENSION_MIN) {
-			throw new BoggleException("La dimension minimale d'une grille est " + DIMENSION_MIN);
-		}
 		if (des == null) {
 			throw new BoggleException("Il n'y a pas aucun dé à placer dans la grille.");
 		}
@@ -67,6 +64,7 @@ public class GrilleLettres extends Grille {
 		int n = 0;
 		for (int y=0; y < dimension(); y++) {
 			for (int x=0; x < dimension(); x++) {
+				des[n].addObserver(this);
 				placer(des[n++], new CoordonneesCartesiennes(x, y));
 			}
 		}
@@ -78,15 +76,6 @@ public class GrilleLettres extends Grille {
 	
 	public De getDe(Coordonnees c) {
 		return grille[c.getY()][c.getX()];
-	}
-	
-	public static void main(String[] args) {
-		GrilleLettres g = new GrilleLettres(4, De.creerDes("des-4x4.csv"));
-		System.out.println(g);
-		System.out.println("On secoue...");
-		g.secouer();
-		System.out.println();
-		System.out.println(g);
 	}
 	
 }

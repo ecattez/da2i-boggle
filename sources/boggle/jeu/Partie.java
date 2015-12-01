@@ -56,38 +56,80 @@ public class Partie implements Iterable<Joueur>, Runnable {
 		this(grille, arbre, joueur, DEFAULT_SCORECIBLE, DEFAULT_TOURMAX, DEFAULT_CHRONO);
 	}
 	
+	/**
+	 * Retourne le score à atteindre pour gagner
+	 * 
+	 * @return	le score qu'un joueur doit atteindre pour gagner
+	 */
 	public int scoreCible() {
 		return scoreCible;
 	}
 	
+	/**
+	 * Retourne le numéro du tour courant
+	 * 
+	 * @return	le tour courant
+	 */
 	public int tour() {
 		return tour;
 	}
 	
+	/**
+	 * Retourne le numéro du tour maximum
+	 * 
+	 * @return	le tour maximum
+	 */
 	public int tourMax() {
 		return tourMax;
 	}
 
+	/**
+	 * Remet le tour courant à 0
+	 */
 	public void resetTour() {
 		tour = 0;
 	}
 	
+	/**
+	 * Incrémente le tour courant de 1
+	 */
 	public void incTour() {
 		tour++;
 	}
 	
+	/**
+	 * Retourne le vainqueur de la partie
+	 * 
+	 * @return	le joueur vainqueur
+	 */
 	public Joueur getVainqueur() {
 		return vainqueur;
 	}
 	
+	/**
+	 * Vérifie si la partie est terminée
+	 * 
+	 * @return <code>true</code> si la partie est terminée, <code>false</code> sinon
+	 */
 	public boolean estTerminee() {
 		return tour == tourMax || vainqueur != null;
 	}
 	
+	/**
+	 * Retourne un itérateur sur les joueurs de la partie
+	 */
 	public Iterator<Joueur> iterator() {
 		return new JoueurIterator();
 	}
 	
+	/**
+	 * Vérifie si l'arbre lexical contient le mot en paramètre
+	 * 
+	 * @param	mot
+	 * 			le mot à vérifier
+	 * 
+	 * @return	<code>true</code> si le mot est dans l'arbre, <code>false</code> sinon
+	 */
 	public boolean verifierMot(String mot) {
 		return arbre.contient(mot);
 	}

@@ -106,10 +106,10 @@ public class CompteARebours extends Thread {
 	}
 	
 	public static void main(String[] args) {
-		CompteARebours c = new CompteARebours(5);
+		final CompteARebours c = new CompteARebours(15);
 		JFrame f = new JFrame();
 		JButton stop = new JButton("Stop");
-		JLabel label = new JLabel();
+		final JLabel label = new JLabel();
 		
 		new Thread() {
 			public void run() {

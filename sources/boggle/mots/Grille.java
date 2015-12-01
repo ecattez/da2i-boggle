@@ -22,14 +22,19 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
+
+import boggle.BoggleException;
 
 /**
  * Représente une grille de dés.
  */
-public abstract class Grille {
+public abstract class Grille extends Observable implements Observer {
 	
 	public static final int DIMENSION_MIN = 3;
 	
+	// La taille de la grille (dimension x dimension)
 	private int dimension;
 	
 	// On utilise une liste pour stocker les mots fabriqués avec cette grille
@@ -46,6 +51,9 @@ public abstract class Grille {
 	 * 			la taille de la grille (dimension * dimension)
 	 */
 	public Grille(int dimension) {
+		if (dimension < DIMENSION_MIN) {
+			throw new BoggleException("La dimension minimale d'une grille est " + DIMENSION_MIN);
+		}
 		this.dimension = dimension;
 		this.mots = new ArrayList<>();
 		this.deck = new ArrayDeque<>();
@@ -136,8 +144,9 @@ public abstract class Grille {
 	 * 			les coordonnées du dé dans la grille
 	 */
 	public void utiliserDe(Coordonnees c) {
-		getDe(c).utiliser();
-		deck.push(c);
+		if (getDe(c).utiliser()) {
+			deck.push(c);
+		}
 	}
 	
 	/**
@@ -150,14 +159,24 @@ public abstract class Grille {
 	}
 	
 	/**
+	 * Retourne le dernier dé utilisé par le joueur
+	 * 
+	 * @return	le dernier dé utilisé par le joueur
+	 */
+	public De getDernierDe() {
+		return getDe(getDernierePosition());
+	}
+	
+	/**
 	 * Rend disponible le dé de coordonnées (x,y)
 	 * 
 	 * @param	c
 	 * 			les coordonnées du dé dans la grille
 	 */
 	public void rendreDe(Coordonnees c) {
-		getDe(c).rendre();
-		deck.remove(c);
+		if (getDe(c).rendre()) {
+			deck.remove(c);
+		}
 	}
 	
 	/**
@@ -246,6 +265,8 @@ public abstract class Grille {
 		int r = (int) (Math.random() + 1000);
 		De d1, d2;
 		Coordonnees c1, c2;
+		// On efface tous les mots qui ont été produits avec cette grille
+		viderMotsStockes();
 		// On rend disponible tous les dés de la grille qui ne l'étaient pas
 		rendreTout();
 		// On prend des dé aléatoirement et on échange leur position
@@ -303,7 +324,7 @@ public abstract class Grille {
 		String str = "";
 		for (int y=0; y < dimension; y++) {
 			for (int x=0; x < dimension; x++) {
-				str += getDe(new CoordonneesCartesiennes(x, y));
+				str += getDe(new CoordonneesCartesiennes(x, y)).getFaceVisible();
 				if (x < dimension - 1) {
 					str += "\t";
 				}
@@ -311,6 +332,17 @@ public abstract class Grille {
 			str += "\n";
 		}
 		return str;
+	}
+	
+	/**
+	 * La grille observe les dés, c'est à dire que cette méthode est appelée
+	 * lorsqu'un dé appartenant à la grille change d'état.
+	 */
+	public void update(Observable obs, Object o) {
+		// On indique également aux observeurs de la grille qu'elle a changé
+		// En plus de la grille, on envoie le dé qui a bougé (obs) aux observeurs
+		setChanged();
+		notifyObservers(obs);
 	}
 
 }

@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Observable;
 import java.util.Scanner;
 
 import boggle.BoggleException;
@@ -32,7 +33,7 @@ import boggle.BoggleException;
 /**
  * Représente un dé à NB_FACES faces.
  */
-public class De {
+public class De extends Observable {
 	
 	public static final int NB_FACES = 6;
 	
@@ -46,18 +47,33 @@ public class De {
 		this.utilise = false;
 	}
 	
+	private void update() {
+		setChanged();
+		notifyObservers();
+	}
+	
 	/**
 	 * Informe que l'on utilise le dé
 	 */
-	public void utiliser() {
-		utilise = true;
+	public boolean utiliser() {
+		if (!utilise) {
+			utilise = true;
+			update();
+			return true;
+		}
+		return false;
 	}
 	
 	/**
 	 * Informe que l'on a fini d'utiliser le dé
 	 */
-	public void rendre() {
-		utilise = false;
+	public boolean rendre() {
+		if (utilise) {
+			utilise = false;
+			update();
+			return true;
+		}
+		return false;
 	}
 	
 	/**
@@ -96,6 +112,7 @@ public class De {
 	 */
 	public void lancer() {
 		setFaceVisible((int) (Math.random()*NB_FACES));
+		update();
 	}
 	
 	public String toString() {
