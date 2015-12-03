@@ -50,7 +50,7 @@ public class GrilleLettres extends Grille {
 		
 		this.grille = new De[dimension][dimension];
 		this.initialiser(des);
-		this.secouer();
+		//this.secouer();
 	}
 	
 	/**
@@ -60,7 +60,7 @@ public class GrilleLettres extends Grille {
 	 * 			le tableau de dé permettant d'initialiser la grille
 	 */
 	private void initialiser(De[] des) {
-		De.melange(des);
+		//De.melange(des);
 		int n = 0;
 		for (int y=0; y < dimension(); y++) {
 			for (int x=0; x < dimension(); x++) {

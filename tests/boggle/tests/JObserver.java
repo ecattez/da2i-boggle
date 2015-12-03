@@ -30,7 +30,11 @@ public class JObserver extends JPanel implements Observer {
 		}
 		
 		protected void paintComponent(Graphics gph) {
+			this.setBackground(Color.WHITE);
 			this.setText(g.getFaceVisible(c));
+			if (g.estUtilise(c)) {
+				this.setBackground(Color.RED);
+			}
 			super.paintComponent(gph);
 		}
 		
@@ -42,6 +46,7 @@ public class JObserver extends JPanel implements Observer {
 	public JObserver(GrilleLettres g) {
 		super();
 		this.g = g;
+		this.g.addObserver(this);
 		this.d = g.dimension();
 		this.setLayout(new GridLayout(d,d));
 		for (int y = 0; y < d; y++) {

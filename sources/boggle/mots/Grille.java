@@ -388,13 +388,14 @@ public abstract class Grille extends Observable implements Observer {
 	
 	/**
 	 * Vérifie si le mot passé en paramètre existe dans la grille en respectant les règles du jeu
+	 * et l'écrit comme si l'utilisateur avait directement utiliser les dés de la grille
 	 * 
 	 * @param	mot
 	 * 			le mot à chercher dans la grille
 	 * 
-	 * @return	<code>true</code> si le mot existe dans la grille, <code>false</code> sinon
+	 * @return	<code>true</code> si le mot est écrit à partir de la grille, <code>false</code> sinon
 	 */
-	public boolean existe(String mot) {
+	public boolean ecrire(String mot) {
 		if (mot.length() == 0) {
 			return true;
 		}
@@ -403,11 +404,13 @@ public abstract class Grille extends Observable implements Observer {
 		for (int y=0; y < dimension; y++) {
 			for (int x=0; x < dimension; x++) {
 				parent = new CoordonneesCartesiennes(x, y);
+				// On marque le dé comme étant utilisé
+				utiliserDe(parent);
 				// Récursivement, on cherche les voisins qui répondent à la recherche
-				if (getFaceVisible(parent).equals(String.valueOf(mot.charAt(0))) && (mot.length() == 1 || existe(mot.substring(1), parent))) {
-					rendreDe(parent);
+				if (getFaceVisible(parent).equals(String.valueOf(mot.charAt(0))) && (mot.length() == 1 || ecrire(mot.substring(1), parent))) {
 					return true;
 				}
+				// On rend le dé s'il ne permet pas d'écrire le mot
 				rendreDe(parent);
 			}
 		}
@@ -416,27 +419,28 @@ public abstract class Grille extends Observable implements Observer {
 	
 	/**
 	 * Vérifie de manière récursive si le mot passé en paramètre existe dans la grille en respectant les règles du jeu
+	 * et l'écrit comme si l'utilisateur avait directement utiliser les dés de la grille
 	 * 
 	 * @param	mot
 	 * 			le mot à chercher dans la grille
 	 * @param	parent
 	 * 			le couple de coordonnées du dé parent du prochain dé à trouver
 	 * 
-	 * @return	<code>true</code> si le mot existe dans la grille, <code>false</code> sinon
+	 * @return	<code>true</code> si le mot est écrit à partir de la grille, <code>false</code> sinon
 	 */
-	private boolean existe(String mot, Coordonnees parent) {
+	private boolean ecrire(String mot, Coordonnees parent) {
 		if (mot.length() == 0) {
 			return true;
 		}
-		// On marque le dé comme étant utilisé
-		utiliserDe(parent);
 		// Comme cela, il n'apparaîtra pas dans les prochains voisins disponibles
 		for (Coordonnees c : positionsVoisinsDisponibles(parent)) {
+			// On marque le dé comme étant utilisé
 			// Récursivement, on cherche les voisins qui répondent à la recherche
-			if (getFaceVisible(c).equals(String.valueOf(mot.charAt(0))) && existe(mot.substring(1), c)) {
-				rendreDe(c);
+			utiliserDe(c);
+			if (getFaceVisible(c).equals(String.valueOf(mot.charAt(0))) && ecrire(mot.substring(1), c)) {
 				return true;
 			}
+			// On rend le dé s'il ne permet pas d'écrire le mot
 			rendreDe(c);
 		}
 		return false;
