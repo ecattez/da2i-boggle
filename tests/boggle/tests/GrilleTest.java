@@ -1,8 +1,13 @@
 package boggle.tests;
 
-import javax.swing.JFrame;
+import java.awt.BorderLayout;
 
-import boggle.mots.CoordonneesCartesiennes;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
+
 import boggle.mots.De;
 import boggle.mots.GrilleLettres;
 
@@ -12,27 +17,29 @@ public class GrilleTest {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		GrilleLettres grille = new GrilleLettres(4, De.creerDes("des-4x4.csv"));
-		JObserver obs = new JObserver(grille);
+		final GrilleLettres grille = new GrilleLettres(4, De.creerDes("des-4x4.csv"));
+		final JPanel container = new JPanel(new BorderLayout());
+		final JObserver obs = new JObserver(grille);
+		final JTextField text = new JTextField();
+		
+		text.addCaretListener(new CaretListener() {
+
+			public void caretUpdate(CaretEvent e) {
+				grille.rendreTout();
+				grille.ecrire(text.getText());
+			}
+			
+		});
+		
+		container.add(obs, BorderLayout.CENTER);
+		container.add(text, BorderLayout.SOUTH);
+		
 		JFrame f = new JFrame();
-		f.setContentPane(obs);
+		f.setContentPane(container);
 		f.pack();
 		f.setLocationRelativeTo(null);
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		f.setVisible(true);
-		System.out.println(grille);
-		
-		char[] lettres = "BOGERENT".toCharArray();
-		String mot = "";
-		for (char c : lettres) {
-			mot += c;
-			grille.ecrire(mot);
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
 	}
 
 }
