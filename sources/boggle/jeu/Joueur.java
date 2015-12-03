@@ -18,13 +18,15 @@
  */
 package boggle.jeu;
 
+import java.util.Observable;
+
 import boggle.mots.ArbreLexical;
 import boggle.mots.GrilleLettres;
 
 /**
  * Représentation générique d'un joueur de Boggle
  */
-public abstract class Joueur {
+public abstract class Joueur extends Observable {
 	
 	private String name;
 	private int score;

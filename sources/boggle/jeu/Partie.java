@@ -35,7 +35,7 @@ public class Partie implements Iterable<Joueur>, Runnable {
 	private GrilleLettres grille;
 	private ArbreLexical arbre;
 	private Joueur[] joueurs;
-	private Joueur vainqueur;
+	private boolean gagnant;
 	private int tour;
 	private int tourMax;
 	private int scoreCible;
@@ -46,6 +46,7 @@ public class Partie implements Iterable<Joueur>, Runnable {
 		this.grille = grille;
 		this.arbre = arbre;
 		this.joueurs = joueurs;
+		this.gagnant = false;
 		this.scoreCible = scoreCible;
 		this.tour = 0;
 		this.tourMax = tourMax;
@@ -98,21 +99,12 @@ public class Partie implements Iterable<Joueur>, Runnable {
 	}
 	
 	/**
-	 * Retourne le vainqueur de la partie
-	 * 
-	 * @return	le joueur vainqueur
-	 */
-	public Joueur getVainqueur() {
-		return vainqueur;
-	}
-	
-	/**
 	 * Vérifie si la partie est terminée
 	 * 
 	 * @return <code>true</code> si la partie est terminée, <code>false</code> sinon
 	 */
 	public boolean estTerminee() {
-		return tour == tourMax || vainqueur != null;
+		return tour == tourMax || gagnant;
 	}
 	
 	/**
@@ -165,9 +157,7 @@ public class Partie implements Iterable<Joueur>, Runnable {
 				joueur.incScore(points);
 			}
 		}
-		if (joueur.getScore() >= scoreCible) {
-			vainqueur = joueur;
-		}
+		gagnant = (joueur.getScore() >= scoreCible);
 	}
 	
 	/**
@@ -189,6 +179,7 @@ public class Partie implements Iterable<Joueur>, Runnable {
 			System.out.println("Fin du tour de " + joueur.getName() + ".\nCalcul des points en cours.\n");
 			terminerTour(joueur);
 		}
+		// A la sortie de la boucle, si gagnant vaut true, le dernier joueur ayant joué est le vainqueur
 	}
 	
 	/**

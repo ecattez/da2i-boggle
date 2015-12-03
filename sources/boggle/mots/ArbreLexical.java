@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.Normalizer;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -185,20 +184,4 @@ public class ArbreLexical {
 		return root;
 	}
 	
-	public static void main(String[] args) {
-		ArbreLexical root = new ArbreLexical();
-		List<String> mots = new ArrayList<String>();
-		root.ajouter("CHAT");
-		root.ajouter("CHATON");
-		root.ajouter("CHATEAU");
-		root.ajouter("CHATOYANT");
-		root.motsCommencantPar("CHAT", mots);
-		
-		System.out.println(mots);
-		
-//		for (char c = 'A' ; c <= 'Z'; c++) {
-//			root.motsCommencantPar("", 0, mots);
-//		}
-//		System.out.println(mots.toString().replaceAll(",", "\n"));
-	}
 }

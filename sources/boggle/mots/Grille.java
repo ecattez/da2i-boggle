@@ -310,7 +310,7 @@ public abstract class Grille extends Observable implements Observer {
 	 * Récupère la liste des voisins d'un dé dans la grille à partir de ses coordonnées passé en paramètre
 	 * 
 	 * @param	c
-	 * 			le couple de coordonnées pour lequel il faut trouver les voisins
+	 * 			le couple de coordonnées du dé pour lequel il faut trouver les voisins
 	 * 
 	 * @return	la liste des voisins d'un dé de la grille
 	 */
@@ -324,6 +324,122 @@ public abstract class Grille extends Observable implements Observer {
 			}
 		}
 		return des;
+	}
+	
+	/**
+	 * Récupère la liste des voisins non utilisés d'un dé dans la grille à partir de ses coordonnées passé en paramètre
+	 * 
+	 * @param	c
+	 * 			le couple de coordonnées du dé pour lequel il faut trouver les voisins
+	 * 
+	 * @return	la liste des voisins d'un dé de la grille
+	 */
+	public List<De> voisinsDisponibles(Coordonnees c) {
+		List<De> des = new ArrayList<>();
+		Coordonnees tmp;
+		for (Coordonnees points : PointCardinal.values()) {
+			tmp = c.ajoute(points);
+			if (contient(tmp) && !estUtilise(tmp)) {
+				des.add(getDe(tmp));
+			}
+		}
+		return des;
+	}
+	
+	/**
+	 * Récupère la liste des positions des voisins d'un dé dans la grille
+	 * 
+	 * @param	c
+	 * 			le couple de coordonnées pour lequel il faut trouver les voisins
+	 * 
+	 * @return	la liste des positions voisines d'un dé de la grille
+	 */
+	public List<Coordonnees> positionsVoisins(Coordonnees c) {
+		List<Coordonnees> coords = new ArrayList<>();
+		Coordonnees tmp;
+		for (Coordonnees points : PointCardinal.values()) {
+			tmp = c.ajoute(points);
+			if (contient(tmp)) {
+				coords.add(tmp);
+			}
+		}
+		return coords;
+	}
+	
+	/**
+	 * Récupère la liste des positions des voisins non utilisés d'un dé dans la grille
+	 * 
+	 * @param	c
+	 * 			le couple de coordonnées pour lequel il faut trouver les voisins
+	 * 
+	 * @return	la liste des positions voisines d'un dé de la grille
+	 */
+	public List<Coordonnees> positionsVoisinsDisponibles(Coordonnees c) {
+		List<Coordonnees> coords = new ArrayList<>();
+		Coordonnees tmp;
+		for (Coordonnees points : PointCardinal.values()) {
+			tmp = c.ajoute(points);
+			if (contient(tmp) && !estUtilise(tmp)) {
+				coords.add(tmp);
+			}
+		}
+		return coords;
+	}
+	
+	/**
+	 * Vérifie si le mot passé en paramètre existe dans la grille en respectant les règles du jeu
+	 * 
+	 * @param	mot
+	 * 			le mot à chercher dans la grille
+	 * 
+	 * @return	<code>true</code> si le mot existe dans la grille, <code>false</code> sinon
+	 */
+	public boolean existe(String mot) {
+		if (mot.length() == 0) {
+			return true;
+		}
+		Coordonnees parent;
+		// On parcourt la grille pour trouver la première lettre du mot
+		for (int y=0; y < dimension; y++) {
+			for (int x=0; x < dimension; x++) {
+				parent = new CoordonneesCartesiennes(x, y);
+				// Récursivement, on cherche les voisins qui répondent à la recherche
+				if (getFaceVisible(parent).equals(String.valueOf(mot.charAt(0))) && (mot.length() == 1 || existe(mot.substring(1), parent))) {
+					rendreDe(parent);
+					return true;
+				}
+				rendreDe(parent);
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Vérifie de manière récursive si le mot passé en paramètre existe dans la grille en respectant les règles du jeu
+	 * 
+	 * @param	mot
+	 * 			le mot à chercher dans la grille
+	 * @param	parent
+	 * 			le couple de coordonnées du dé parent du prochain dé à trouver
+	 * 
+	 * @return	<code>true</code> si le mot existe dans la grille, <code>false</code> sinon
+	 */
+	private boolean existe(String mot, Coordonnees parent) {
+		if (mot.length() == 0) {
+			return true;
+		}
+		// On marque le dé comme étant utilisé
+		utiliserDe(parent);
+		// Comme cela, il n'apparaîtra pas dans les prochains voisins disponibles
+		for (Coordonnees c : positionsVoisinsDisponibles(parent)) {
+			// Récursivement, on cherche les voisins qui répondent à la recherche
+			if (getFaceVisible(c).equals(String.valueOf(mot.charAt(0))) && existe(mot.substring(1), c)) {
+				rendreDe(c);
+				return true;
+			}
+			rendreDe(c);
+		}
+		return false;
 	}
 	
 	/**
