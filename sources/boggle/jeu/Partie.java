@@ -35,7 +35,7 @@ public class Partie implements Iterable<Joueur>, Runnable {
 	private GrilleLettres grille;
 	private ArbreLexical arbre;
 	private Joueur[] joueurs;
-	private Joueur vainqueur;
+	private boolean gagnant;
 	private int tour;
 	private int tourMax;
 	private int scoreCible;
@@ -46,10 +46,11 @@ public class Partie implements Iterable<Joueur>, Runnable {
 		this.grille = grille;
 		this.arbre = arbre;
 		this.joueurs = joueurs;
+		this.gagnant = false;
 		this.scoreCible = scoreCible;
 		this.tour = 0;
 		this.tourMax = tourMax;
-		this.chrono = chrono;
+		this.chrono = 60;
 	}
 	
 	public Partie(GrilleLettres grille, ArbreLexical arbre, Joueur[] joueur) {
@@ -98,21 +99,12 @@ public class Partie implements Iterable<Joueur>, Runnable {
 	}
 	
 	/**
-	 * Retourne le vainqueur de la partie
-	 * 
-	 * @return	le joueur vainqueur
-	 */
-	public Joueur getVainqueur() {
-		return vainqueur;
-	}
-	
-	/**
 	 * Vérifie si la partie est terminée
 	 * 
 	 * @return <code>true</code> si la partie est terminée, <code>false</code> sinon
 	 */
 	public boolean estTerminee() {
-		return tour == tourMax || vainqueur != null;
+		return tour == tourMax || gagnant;
 	}
 	
 	/**
@@ -165,9 +157,7 @@ public class Partie implements Iterable<Joueur>, Runnable {
 				joueur.incScore(points);
 			}
 		}
-		if (joueur.getScore() >= scoreCible) {
-			vainqueur = joueur;
-		}
+		gagnant = (joueur.getScore() >= scoreCible);
 	}
 	
 	/**
@@ -178,23 +168,35 @@ public class Partie implements Iterable<Joueur>, Runnable {
 		Joueur joueur;
 		while (!estTerminee()) {
 			grille.secouer();
+			System.out.println("Grille secouée.\n");
 			joueur = it.next();
+			System.out.println("Au tour de " + joueur.getName() + " (score: " + joueur.getScore() + ").\n");
 			joueur.joue(grille, arbre);
 			// On démarre le compte à rebours
 			demarrerCompteARebours();
 			// La fin du tour se produit à la fin du compte à rebours
 			// ou lorsque celui-ci est stoppé (appuyer sur Terminer)
+			System.out.println("Fin du tour de " + joueur.getName() + ".\nCalcul des points en cours.\n");
 			terminerTour(joueur);
 		}
+		// A la sortie de la boucle, si gagnant vaut true, le dernier joueur ayant joué est le vainqueur
 	}
 	
+	/**
+	 * Démarre le compte à rebours du tour du joueur courant
+	 */
 	public void demarrerCompteARebours() {
 		compteARebours = new CompteARebours(chrono);
-		compteARebours.start();
+		compteARebours.run();
 	}
 	
+	/**
+	 * Arrête le compte à rebours du tour du joueur courant
+	 */
 	public void stopperCompteARebours() {
-		compteARebours.shutdown();
+		if (!compteARebours.isOver()) {
+			compteARebours.shutdown();
+		}
 	}
 	
 	/**

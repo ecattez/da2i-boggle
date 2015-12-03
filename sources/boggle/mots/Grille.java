@@ -198,6 +198,15 @@ public abstract class Grille extends Observable implements Observer {
 	}
 	
 	/**
+	 * Retourne une représentation des positions des lettres utilisées par le joueur dans leur ordre d'utilisation
+	 * 
+	 * @return	les positions (en String) des lettres utilisées par le joueur dans leur ordre d'utilisation
+	 */
+	public String getPositionsUtilisees() {
+		return deck.toString();
+	}
+	
+	/**
 	 * Retourne les lettres actuellement utilisée par l'utilisateur dans leur ordre d'utilisation
 	 * 
 	 * @return	les lettres utilisée par l'utilisateur dans l'ordre d'utilisation
@@ -207,7 +216,7 @@ public abstract class Grille extends Observable implements Observer {
 		for (Coordonnees c : deck) {
 			builder.append(getFaceVisible(c));
 		}
-		return builder.toString();
+		return builder.reverse().toString();
 	}
 	
 	/**
@@ -262,7 +271,7 @@ public abstract class Grille extends Observable implements Observer {
 	 * Secoue la grille pour mélanger les dés
 	 */
 	public void secouer() {
-		int r = (int) (Math.random() + 1000);
+		int r = (int) (Math.random() + 500);
 		De d1, d2;
 		Coordonnees c1, c2;
 		// On efface tous les mots qui ont été produits avec cette grille
@@ -301,7 +310,7 @@ public abstract class Grille extends Observable implements Observer {
 	 * Récupère la liste des voisins d'un dé dans la grille à partir de ses coordonnées passé en paramètre
 	 * 
 	 * @param	c
-	 * 			le couple de coordonnées pour lequel il faut trouver les voisins
+	 * 			le couple de coordonnées du dé pour lequel il faut trouver les voisins
 	 * 
 	 * @return	la liste des voisins d'un dé de la grille
 	 */
@@ -315,6 +324,126 @@ public abstract class Grille extends Observable implements Observer {
 			}
 		}
 		return des;
+	}
+	
+	/**
+	 * Récupère la liste des voisins non utilisés d'un dé dans la grille à partir de ses coordonnées passé en paramètre
+	 * 
+	 * @param	c
+	 * 			le couple de coordonnées du dé pour lequel il faut trouver les voisins
+	 * 
+	 * @return	la liste des voisins d'un dé de la grille
+	 */
+	public List<De> voisinsDisponibles(Coordonnees c) {
+		List<De> des = new ArrayList<>();
+		Coordonnees tmp;
+		for (Coordonnees points : PointCardinal.values()) {
+			tmp = c.ajoute(points);
+			if (contient(tmp) && !estUtilise(tmp)) {
+				des.add(getDe(tmp));
+			}
+		}
+		return des;
+	}
+	
+	/**
+	 * Récupère la liste des positions des voisins d'un dé dans la grille
+	 * 
+	 * @param	c
+	 * 			le couple de coordonnées pour lequel il faut trouver les voisins
+	 * 
+	 * @return	la liste des positions voisines d'un dé de la grille
+	 */
+	public List<Coordonnees> positionsVoisins(Coordonnees c) {
+		List<Coordonnees> coords = new ArrayList<>();
+		Coordonnees tmp;
+		for (Coordonnees points : PointCardinal.values()) {
+			tmp = c.ajoute(points);
+			if (contient(tmp)) {
+				coords.add(tmp);
+			}
+		}
+		return coords;
+	}
+	
+	/**
+	 * Récupère la liste des positions des voisins non utilisés d'un dé dans la grille
+	 * 
+	 * @param	c
+	 * 			le couple de coordonnées pour lequel il faut trouver les voisins
+	 * 
+	 * @return	la liste des positions voisines d'un dé de la grille
+	 */
+	public List<Coordonnees> positionsVoisinsDisponibles(Coordonnees c) {
+		List<Coordonnees> coords = new ArrayList<>();
+		Coordonnees tmp;
+		for (Coordonnees points : PointCardinal.values()) {
+			tmp = c.ajoute(points);
+			if (contient(tmp) && !estUtilise(tmp)) {
+				coords.add(tmp);
+			}
+		}
+		return coords;
+	}
+	
+	/**
+	 * Vérifie si le mot passé en paramètre existe dans la grille en respectant les règles du jeu
+	 * et l'écrit comme si l'utilisateur avait directement utiliser les dés de la grille
+	 * 
+	 * @param	mot
+	 * 			le mot à chercher dans la grille
+	 * 
+	 * @return	<code>true</code> si le mot est écrit à partir de la grille, <code>false</code> sinon
+	 */
+	public boolean ecrire(String mot) {
+		if (mot.length() == 0) {
+			return true;
+		}
+		Coordonnees parent;
+		// On parcourt la grille pour trouver la première lettre du mot
+		for (int y=0; y < dimension; y++) {
+			for (int x=0; x < dimension; x++) {
+				parent = new CoordonneesCartesiennes(x, y);
+				// On marque le dé comme étant utilisé
+				utiliserDe(parent);
+				// Récursivement, on cherche les voisins qui répondent à la recherche
+				if (getFaceVisible(parent).equals(String.valueOf(mot.charAt(0))) && (mot.length() == 1 || ecrire(mot.substring(1), parent))) {
+					return true;
+				}
+				// On rend le dé s'il ne permet pas d'écrire le mot
+				rendreDe(parent);
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Vérifie de manière récursive si le mot passé en paramètre existe dans la grille en respectant les règles du jeu
+	 * et l'écrit comme si l'utilisateur avait directement utiliser les dés de la grille
+	 * 
+	 * @param	mot
+	 * 			le mot à chercher dans la grille
+	 * @param	parent
+	 * 			le couple de coordonnées du dé parent du prochain dé à trouver
+	 * 
+	 * @return	<code>true</code> si le mot est écrit à partir de la grille, <code>false</code> sinon
+	 */
+	private boolean ecrire(String mot, Coordonnees parent) {
+		if (mot.length() == 0) {
+			return true;
+		}
+		// Comme cela, il n'apparaîtra pas dans les prochains voisins disponibles
+		for (Coordonnees c : positionsVoisinsDisponibles(parent)) {
+			// On marque le dé comme étant utilisé
+			// Récursivement, on cherche les voisins qui répondent à la recherche
+			utiliserDe(c);
+			if (getFaceVisible(c).equals(String.valueOf(mot.charAt(0))) && ecrire(mot.substring(1), c)) {
+				return true;
+			}
+			// On rend le dé s'il ne permet pas d'écrire le mot
+			rendreDe(c);
+		}
+		return false;
 	}
 	
 	/**

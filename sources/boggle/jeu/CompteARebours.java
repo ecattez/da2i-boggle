@@ -18,19 +18,13 @@
  */
 package boggle.jeu;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import java.util.Observable;
 
 /**
  * Le compte à rebours donne un temps imparti à chaque joueur
  * pour trouver des mots dans une grille.
  */
-public class CompteARebours extends Thread {
+public class CompteARebours extends Observable implements Runnable {
 	
 	public static final int ONE_SECOND = 1000;
 	
@@ -41,26 +35,14 @@ public class CompteARebours extends Thread {
 	
 	public CompteARebours(int sec) {
 		this.delay = sec;
-		super.start();
 	}
-	
-	/**
-	 * Démarre le compte à rebours
-	 */
-	public synchronized void start() {
-		this.countDown();
-		this.notifyAll();
-		try {
-			this.join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
-	
+
 	/**
 	 * Arrête le compte à rebours
+	 * 
+	 * Note: Pour pouvoir l'arrêter à tout moment, il est essentil qu'il n'y est pas le mot clé "synchronized"
 	 */
-	public synchronized void shutdown() {
+	public void shutdown() {
 		this.stop = true;
 	}
 	
@@ -69,30 +51,26 @@ public class CompteARebours extends Thread {
 	 * 
 	 * @return <code>true</code> si le compte à rebours est à 0, <code>false</code> sinon
 	 */
-	public synchronized boolean isOver() {
+	public boolean isOver() {
 		return stop;
 	}
 	
 	/**
-	 * Effectue un décompte d'une seconde
-	 */
-	private synchronized void countDown() {
-		try {
-			if (!stop) {
-				stop = (--delay == 0);
-			}
-			Thread.sleep(ONE_SECOND);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	/**
-	 * Le compte à rebours continue tant qu'il n'est pas arrivé à 0
+	 * Le compte à rebours continue tant qu'il n'est pas arrivé à 0 ou qu'il est arrêté par l'utilisateur
 	 */
 	public void run() {
 		while (!isOver()) {
-			countDown();
+			try {
+				if (!isOver()) {
+					System.out.println(delay--);
+					stop = (delay <= 0);
+					setChanged();
+					notifyObservers();
+				}
+				Thread.sleep(ONE_SECOND);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -103,39 +81,6 @@ public class CompteARebours extends Thread {
 		int min = (delay % 3600) / 60;
 		int sec = delay % 60;
 		return String.format("%02d:%02d", min, sec);
-	}
-	
-	public static void main(String[] args) {
-		final CompteARebours c = new CompteARebours(15);
-		JFrame f = new JFrame();
-		JButton stop = new JButton("Stop");
-		final JLabel label = new JLabel();
-		
-		new Thread() {
-			public void run() {
-				while (true) {
-					label.setText(c.toString());
-				}
-			}
-		}.start();
-		
-		stop.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-				c.shutdown();
-			}
-			
-		});
-		
-		f.setContentPane(new JPanel());
-		f.getContentPane().add(label);
-		f.getContentPane().add(stop);
-		f.pack();
-		f.setLocationRelativeTo(null);
-		f.setVisible(true);
-		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		c.start();
-		System.out.println("fin main");
 	}
 
 }

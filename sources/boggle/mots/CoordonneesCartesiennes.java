@@ -67,7 +67,7 @@ public class CoordonneesCartesiennes implements Coordonnees {
 	public boolean estVoisinDe(Coordonnees c) {
 		int rx = Math.abs(x - c.getX());
 		int ry = Math.abs(y - c.getY());
-		return (rx == 0 || rx == 1 && ry == 0 && ry == 1);
+		return (rx == 0 || rx == 1) && (ry == 0 || ry == 1);
 	}
 	
 	public String toString() {
