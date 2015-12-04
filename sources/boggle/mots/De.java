@@ -96,6 +96,7 @@ public class De extends Observable {
 			throw new BoggleException("Il n'y a pas de face n°" + i + " à ce dé."); 
 		}
 		faceVisible = i;
+		update();
 	}
 	
 	/**
@@ -112,7 +113,6 @@ public class De extends Observable {
 	 */
 	public void lancer() {
 		setFaceVisible((int) (Math.random()*NB_FACES));
-		update();
 	}
 	
 	public String toString() {

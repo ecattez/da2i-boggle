@@ -26,8 +26,8 @@ public class PartieTest {
 	 */
 	public static void main(String[] args) {
 		Joueur[] joueur = { new Humain("Edouard"), new Piko() };
-		final ArbreLexical arbre = ArbreLexical.lireMots("dict-fr.txt");
-		final GrilleLettres grille = new GrilleLettres(4, De.creerDes("des-4x4.csv"));
+		final ArbreLexical arbre = ArbreLexical.lireMots("liste_francais.txt");
+		final GrilleLettres grille = new GrilleLettres(5, De.creerDes("des-20x20.csv"));
 		final Partie partie = new Partie(grille, arbre, joueur);
 		
 		final JPanel container = new JPanel(new BorderLayout());

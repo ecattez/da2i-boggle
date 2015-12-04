@@ -41,7 +41,7 @@ public class CoordonneesCartesiennes implements Coordonnees {
 	
 	public boolean equals(Object o) {
 		Coordonnees c = (Coordonnees) o;
-		return x == c.getX() && y == c.getY();
+		return o != null && x == c.getX() && y == c.getY();
 	}
 	
 	/**

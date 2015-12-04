@@ -32,7 +32,10 @@ public class JObserver extends JPanel implements Observer {
 		protected void paintComponent(Graphics gph) {
 			this.setBackground(Color.WHITE);
 			this.setText(g.getFaceVisible(c));
-			if (g.estUtilise(c)) {
+			if (c.equals(g.getDernierePosition())) {
+				this.setBackground(Color.ORANGE);
+			}
+			else if (g.estUtilise(c)) {
 				this.setBackground(Color.RED);
 			}
 			super.paintComponent(gph);
