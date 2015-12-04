@@ -11,7 +11,6 @@ public class Piko extends IA {
 
 	public void run() {
 		List<String> mots = new ArrayList<String>();
-		long start = System.currentTimeMillis();
 		for (char c = 'A'; c <= 'Z'; c++) {
 			if (arbre.motsCommencantPar(String.valueOf(c), mots)) {
 				for (String mot : mots) {
@@ -22,9 +21,7 @@ public class Piko extends IA {
 				mots.clear();
 			}
 		}
-		System.out.println(System.currentTimeMillis() - start);
-		System.out.println(grille.getMots());
-		System.out.println(grille.getMots().size());
+		partie.stopperCompteARebours();
 	}
 
 }

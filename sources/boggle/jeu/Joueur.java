@@ -59,7 +59,9 @@ public abstract class Joueur extends Observable {
 	 * 			la grille utilisée pour la partie du joueur
 	 * @param	arbre
 	 * 			l'arbre lexical utilisé pour la partie du joueur
+	 * @param	partie
+	 * 			la partie dans laquelle joue le joueur
 	 */
-	public abstract void joue(GrilleLettres grille, ArbreLexical arbre);
+	public abstract void joue(GrilleLettres grille, ArbreLexical arbre, Partie partie);
 	
 }

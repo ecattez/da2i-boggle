@@ -28,14 +28,16 @@ public abstract class IA extends Joueur implements Runnable {
 	
 	protected GrilleLettres grille;
 	protected ArbreLexical arbre;
-
+	protected Partie partie;
+	
 	public IA(String name) {
 		super(name);
 	}
 	
-	public void joue(GrilleLettres grille, ArbreLexical arbre) {
+	public void joue(GrilleLettres grille, ArbreLexical arbre, Partie partie) {
 		this.grille = grille;
 		this.arbre = arbre;
+		this.partie = partie;
 		new Thread(this).start();
 	}
 

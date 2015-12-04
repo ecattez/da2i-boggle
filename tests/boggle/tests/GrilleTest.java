@@ -19,7 +19,7 @@ public class GrilleTest {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		final ArbreLexical arbre = ArbreLexical.lireMots("dict-fr-big.txt");
+		final ArbreLexical arbre = ArbreLexical.lireMots("dict-fr.txt");
 		final GrilleLettres grille = new GrilleLettres(4, De.creerDes("des-4x4.csv"));
 		final JPanel container = new JPanel(new BorderLayout());
 		final JObserver obs = new JObserver(grille);
@@ -43,8 +43,6 @@ public class GrilleTest {
 		f.setLocationRelativeTo(null);
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		f.setVisible(true);
-
-		new Piko().joue(grille, arbre);
 	}
 
 }

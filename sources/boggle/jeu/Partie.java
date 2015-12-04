@@ -171,7 +171,7 @@ public class Partie implements Iterable<Joueur>, Runnable {
 			System.out.println("Grille secouée.\n");
 			joueur = it.next();
 			System.out.println("Au tour de " + joueur.getName() + " (score: " + joueur.getScore() + ").\n");
-			joueur.joue(grille, arbre);
+			joueur.joue(grille, arbre, this);
 			// On démarre le compte à rebours
 			demarrerCompteARebours();
 			// La fin du tour se produit à la fin du compte à rebours
