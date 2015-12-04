@@ -41,13 +41,12 @@ public class JObserver extends JPanel implements Observer {
 	}
 	
 	private GrilleLettres g;
-	private int d;
 	
 	public JObserver(GrilleLettres g) {
 		super();
 		this.g = g;
 		this.g.addObserver(this);
-		this.d = g.dimension();
+		int d = g.dimension();
 		this.setLayout(new GridLayout(d,d));
 		for (int y = 0; y < d; y++) {
 			for (int x = 0; x < d; x++) {

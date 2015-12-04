@@ -55,9 +55,11 @@ public abstract class Joueur extends Observable {
 	/**
 	 * Le joueur effectue une action dans le Boggle
 	 * 
-	 * @param	g
+	 * @param	grille
 	 * 			la grille utilisée pour la partie du joueur
+	 * @param	arbre
+	 * 			l'arbre lexical utilisé pour la partie du joueur
 	 */
-	public abstract void joue(GrilleLettres g, ArbreLexical arbre);
+	public abstract void joue(GrilleLettres grille, ArbreLexical arbre);
 	
 }

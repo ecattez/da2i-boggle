@@ -36,41 +36,41 @@ public class Humain extends Joueur {
 		super(name);
 	}
 
-	public void joue(GrilleLettres g, ArbreLexical arbre) {
+	public void joue(GrilleLettres grille, ArbreLexical arbre) {
 		String s;
 		int x, y;
 		do {
-			System.out.println(g);
-			System.out.println(g.getLettresUtilisees());
+			System.out.println(grille);
+			System.out.println(grille.getLettresUtilisees());
 			System.out.print("Choisissez un (x,y): ");
 			x = sc.nextInt();
 			y = sc.nextInt();
 			
 			Coordonnees c = new CoordonneesCartesiennes(x, y);
-			Coordonnees tete = g.getDernierePosition();
+			Coordonnees tete = grille.getDernierePosition();
 			
 			if (tete == null) {
-				g.utiliserDe(c);
+				grille.utiliserDe(c);
 			}
 			// Le dé est le dernier choisit, on considère que le joueur annule sa dernière action, on dépile
 			else if (c.equals(tete)) {
-				g.rendreDe(c);
+				grille.rendreDe(c);
 			}
 			else if (c.estVoisinDe(tete)) {
 				// Le dé n'est pas utilisé et est voisin du dernier dé choisit, on l'ajoute à la pile
-				if (!g.estUtilise(c)) {
-					g.utiliserDe(c);
+				if (!grille.estUtilise(c)) {
+					grille.utiliserDe(c);
 				}
 			}
 			
-			System.out.println(g.getLettresUtilisees());
-			System.out.println(g.getMots());
+			System.out.println(grille.getLettresUtilisees());
+			System.out.println(grille.getMots());
 			
 			System.out.println("+: ajouter, fin: terminer, c:continuer");
 			s = sc.next();
 			if (s.equals("+")) {
-				g.stockerMot();
-				g.rendreTout();
+				grille.stockerMot();
+				grille.rendreTout();
 			}
 		} while (!s.equals("fin"));
 	}
