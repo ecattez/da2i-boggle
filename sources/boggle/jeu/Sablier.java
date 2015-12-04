@@ -21,24 +21,24 @@ package boggle.jeu;
 import java.util.Observable;
 
 /**
- * Le compte à rebours donne un temps imparti à chaque joueur
+ * Le sablier donne un temps imparti à chaque joueur
  * pour trouver des mots dans une grille.
  */
-public class CompteARebours extends Observable implements Runnable {
+public class Sablier extends Observable implements Runnable {
 	
 	public static final int ONE_SECOND = 1000;
 	
-	// Le temps en secondes du compte à rebours
+	// Le temps en secondes du sablier
 	private int delay;
-	// Indique si le compte à rebours est arrêté ou non
+	// Indique si le sablier est arrêté ou non
 	private boolean stop;
 	
-	public CompteARebours(int sec) {
+	public Sablier(int sec) {
 		this.delay = sec;
 	}
 
 	/**
-	 * Arrête le compte à rebours
+	 * Arrête le sablier
 	 * 
 	 * Note: Pour pouvoir l'arrêter à tout moment, il est essentil qu'il n'y est pas le mot clé "synchronized"
 	 */
@@ -47,16 +47,16 @@ public class CompteARebours extends Observable implements Runnable {
 	}
 	
 	/**
-	 * Vérifie si le compte à rebours est arrivé à son terme
+	 * Vérifie si le sablier est arrivé à son terme
 	 * 
-	 * @return <code>true</code> si le compte à rebours est à 0, <code>false</code> sinon
+	 * @return <code>true</code> si le sablier est à 0, <code>false</code> sinon
 	 */
 	public boolean isOver() {
 		return stop;
 	}
 	
 	/**
-	 * Le compte à rebours continue tant qu'il n'est pas arrivé à 0 ou qu'il est arrêté par l'utilisateur
+	 * Le sablier continue tant qu'il n'est pas arrivé à 0 ou qu'il est arrêté par l'utilisateur
 	 */
 	public void run() {
 		while (!isOver()) {
@@ -75,7 +75,7 @@ public class CompteARebours extends Observable implements Runnable {
 	}
 	
 	/**
-	 * Représentation textuelle du compte à rebours
+	 * Représentation textuelle du sablier
 	 */
 	public String toString() {
 		int min = (delay % 3600) / 60;

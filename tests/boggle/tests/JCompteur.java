@@ -28,11 +28,11 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import boggle.jeu.CompteARebours;
+import boggle.jeu.Sablier;
 
 public class JCompteur extends JLabel implements Observer {
 	
-	public JCompteur(CompteARebours car) {
+	public JCompteur(Sablier car) {
 		super(car.toString());
 		car.addObserver(this);
 	}
@@ -41,11 +41,11 @@ public class JCompteur extends JLabel implements Observer {
 	 * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
 	 */
 	public void update(Observable o, Object arg) {
-		setText(((CompteARebours) o).toString());
+		setText(((Sablier) o).toString());
 	}
 	
 	public static void main(String[] args) {
-		final CompteARebours c = new CompteARebours(15);
+		final Sablier c = new Sablier(15);
 		JFrame f = new JFrame();
 		JButton stop = new JButton("Stop");
 		final JCompteur compteur = new JCompteur(c);

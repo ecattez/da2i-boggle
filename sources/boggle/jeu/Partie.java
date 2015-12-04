@@ -20,6 +20,7 @@ package boggle.jeu;
 
 import java.util.Iterator;
 
+import boggle.BoggleException;
 import boggle.mots.ArbreLexical;
 import boggle.mots.GrilleLettres;
 
@@ -31,6 +32,7 @@ public class Partie implements Iterable<Joueur>, Runnable {
 	public static final int DEFAULT_CHRONO = 60;
 	public static final int DEFAULT_SCORECIBLE = 30;
 	public static final int DEFAULT_TOURMAX = 5;
+	public static final int[] DEFAULT_POINTS = { 1, 1, 2, 3, 5, 11 };
 	
 	private GrilleLettres grille;
 	private ArbreLexical arbre;
@@ -40,9 +42,15 @@ public class Partie implements Iterable<Joueur>, Runnable {
 	private int tourMax;
 	private int scoreCible;
 	private int chrono;
-	private CompteARebours compteARebours;
+	// Les points sont un ensemble de 6 nombre.
+	// Les points sont attribués à partir d'un mot de taille minimale
+	private int[] points;
+	private Sablier sablier;
 	
-	public Partie(GrilleLettres grille, ArbreLexical arbre, Joueur[] joueurs, int scoreCible, int tourMax, int chrono) {
+	public Partie(GrilleLettres grille, ArbreLexical arbre, Joueur[] joueurs, int scoreCible, int tourMax, int chrono, int[] points) {
+		if (points.length < 6) {
+			throw new BoggleException("Il manque des points à attribuer pour la taille des mots");
+		}
 		this.grille = grille;
 		this.arbre = arbre;
 		this.joueurs = joueurs;
@@ -50,11 +58,12 @@ public class Partie implements Iterable<Joueur>, Runnable {
 		this.scoreCible = scoreCible;
 		this.tour = 0;
 		this.tourMax = tourMax;
+		this.points = points;
 		this.chrono = chrono;
 	}
 	
 	public Partie(GrilleLettres grille, ArbreLexical arbre, Joueur[] joueur) {
-		this(grille, arbre, joueur, DEFAULT_SCORECIBLE, DEFAULT_TOURMAX, DEFAULT_CHRONO);
+		this(grille, arbre, joueur, DEFAULT_SCORECIBLE, DEFAULT_TOURMAX, DEFAULT_CHRONO, DEFAULT_POINTS);
 	}
 	
 	/**
@@ -134,27 +143,18 @@ public class Partie implements Iterable<Joueur>, Runnable {
 	 */
 	public void terminerTour(Joueur joueur) {
 		int taille;
-		int points;
+		int pt;
+		int min = grille.tailleMinimale();
 		for (String s : grille.getMots()) {
 			taille = s.length();
-			points = 0;
-			if (taille >= 3 && verifierMot(s)) {
-				if (taille == 3 || taille == 4) {
-					points = 1;
+			if (taille >= min && verifierMot(s)) {
+				if (taille - min < points.length) {
+					pt = points[taille - min];
 				}
-				else if (taille == 5) {
-					points = 2;
+				else {
+					pt = points[points.length - 1];
 				}
-				else if (taille == 6) {
-					points = 3;
-				}
-				else if (taille == 7) {
-					points = 5;
-				}
-				else if (taille < 7) {
-					points = 11;
-				}
-				joueur.incScore(points);
+				joueur.incScore(pt);
 			}
 		}
 		gagnant = (joueur.getScore() >= scoreCible);
@@ -174,11 +174,12 @@ public class Partie implements Iterable<Joueur>, Runnable {
 			System.out.println("Au tour de " + joueur.getName() + " (score: " + joueur.getScore() + ").\n");
 			joueur.joue(grille, arbre, this);
 			// On démarre le compte à rebours
-			demarrerCompteARebours();
+			demarrerSablier();
 			// La fin du tour se produit à la fin du compte à rebours
 			// ou lorsque celui-ci est stoppé (appuyer sur Terminer)
 			System.out.println("Fin du tour de " + joueur.getName() + ".\nCalcul des points en cours.\n");
 			terminerTour(joueur);
+			System.out.println("Résultat: " + joueur);
 			// On stocke le meilleur joueur courant de la partie
 			if (meilleur == null || meilleur.getScore() < joueur.getScore()) {
 				meilleur = joueur;
@@ -191,17 +192,17 @@ public class Partie implements Iterable<Joueur>, Runnable {
 	/**
 	 * Démarre le compte à rebours du tour du joueur courant
 	 */
-	public void demarrerCompteARebours() {
-		compteARebours = new CompteARebours(chrono);
-		compteARebours.run();
+	public void demarrerSablier() {
+		sablier = new Sablier(chrono);
+		sablier.run();
 	}
 	
 	/**
 	 * Arrête le compte à rebours du tour du joueur courant
 	 */
-	public void stopperCompteARebours() {
-		if (!compteARebours.isOver()) {
-			compteARebours.shutdown();
+	public void stopperSablier() {
+		if (!sablier.isOver()) {
+			sablier.shutdown();
 		}
 	}
 	

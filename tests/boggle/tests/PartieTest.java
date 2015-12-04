@@ -25,9 +25,9 @@ public class PartieTest {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Joueur[] joueur = { new Humain("Edouard"), new Piko() };
+		Joueur[] joueur = { new Piko() };
 		final ArbreLexical arbre = ArbreLexical.lireMots("liste_francais.txt");
-		final GrilleLettres grille = new GrilleLettres(5, De.creerDes("des-20x20.csv"));
+		final GrilleLettres grille = new GrilleLettres(4, De.creerDes("des-20x20.csv"));
 		final Partie partie = new Partie(grille, arbre, joueur);
 		
 		final JPanel container = new JPanel(new BorderLayout());
@@ -61,7 +61,7 @@ public class PartieTest {
 		terminer.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				partie.stopperCompteARebours();
+				partie.stopperSablier();
 			}
 			
 		});
