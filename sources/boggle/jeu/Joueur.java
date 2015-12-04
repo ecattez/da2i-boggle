@@ -52,6 +52,10 @@ public abstract class Joueur extends Observable {
 		this.score += n;
 	}
 	
+	public String toString() {
+		return name + " (score: " + score + ")";
+	}
+	
 	/**
 	 * Le joueur effectue une action dans le Boggle
 	 * 

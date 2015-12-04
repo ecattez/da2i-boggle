@@ -50,7 +50,7 @@ public class Partie implements Iterable<Joueur>, Runnable {
 		this.scoreCible = scoreCible;
 		this.tour = 0;
 		this.tourMax = tourMax;
-		this.chrono = 60;
+		this.chrono = chrono;
 	}
 	
 	public Partie(GrilleLettres grille, ArbreLexical arbre, Joueur[] joueur) {
@@ -165,7 +165,8 @@ public class Partie implements Iterable<Joueur>, Runnable {
 	 */
 	public void run() {
 		Iterator<Joueur> it = iterator();
-		Joueur joueur;
+		Joueur joueur = null;
+		Joueur meilleur = null;
 		while (!estTerminee()) {
 			grille.secouer();
 			System.out.println("Grille secouée.\n");
@@ -178,8 +179,13 @@ public class Partie implements Iterable<Joueur>, Runnable {
 			// ou lorsque celui-ci est stoppé (appuyer sur Terminer)
 			System.out.println("Fin du tour de " + joueur.getName() + ".\nCalcul des points en cours.\n");
 			terminerTour(joueur);
+			// On stocke le meilleur joueur courant de la partie
+			if (meilleur == null || meilleur.getScore() < joueur.getScore()) {
+				meilleur = joueur;
+			}
+			incTour();
 		}
-		// A la sortie de la boucle, si gagnant vaut true, le dernier joueur ayant joué est le vainqueur
+		System.out.println("Vainqueur: " + meilleur);
 	}
 	
 	/**

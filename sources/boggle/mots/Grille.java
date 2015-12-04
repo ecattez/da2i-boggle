@@ -212,6 +212,9 @@ public abstract class Grille extends Observable implements Observer {
 	 * @return	les lettres utilisée par l'utilisateur dans l'ordre d'utilisation
 	 */
 	public String getLettresUtilisees() {
+		if (deck.size() == 0) {
+			return "";
+		}
 		StringBuilder builder = new StringBuilder();
 		for (Coordonnees c : deck) {
 			builder.append(getFaceVisible(c));
