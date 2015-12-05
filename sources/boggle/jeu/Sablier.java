@@ -28,12 +28,15 @@ public class Sablier extends Observable implements Runnable {
 	
 	public static final int ONE_SECOND = 1000;
 	
-	// Le temps en secondes du sablier
+	// La durée totale que peut atteindre le sablier
+	private int delayMax;
+	// Le temps courant en secondes du sablier
 	private int delay;
 	// Indique si le sablier est arrêté ou non
 	private boolean stop;
 	
 	public Sablier(int sec) {
+		this.delayMax = sec;
 		this.delay = sec;
 	}
 
@@ -44,6 +47,14 @@ public class Sablier extends Observable implements Runnable {
 	 */
 	public void shutdown() {
 		this.stop = true;
+	}
+	
+	/**
+	 * Remet le sablier à son état initial
+	 */
+	public void reset() {
+		this.delay = delayMax;
+		this.stop = false;
 	}
 	
 	/**

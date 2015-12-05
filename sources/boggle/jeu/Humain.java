@@ -21,7 +21,7 @@ package boggle.jeu;
 import java.util.Scanner;
 
 import boggle.mots.ArbreLexical;
-import boggle.mots.GrilleLettres;
+import boggle.mots.Grille;
 
 /**
  * Implémentation d'un joueur humain
@@ -34,7 +34,7 @@ public class Humain extends Joueur {
 		super(name);
 	}
 
-	public void joue(GrilleLettres grille, ArbreLexical arbre, Partie partie) {
+	public void joue(Grille grille, ArbreLexical arbre, Partie partie) {
 		// Rien à faire
 	}
 

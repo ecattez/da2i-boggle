@@ -25,6 +25,8 @@ import java.text.Normalizer;
 import java.util.List;
 import java.util.Scanner;
 
+import boggle.BoggleException;
+
 /**
  * La classe ArbreLexical permet de stocker de façon compacte et d'accéder rapidement à un ensemble de mots.
  */
@@ -179,7 +181,7 @@ public class ArbreLexical {
 				}
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new BoggleException("Impossible de créer un arbre lexical avec le fichier " + fichier + "\n" + e);
 		}
 		return root;
 	}

@@ -20,8 +20,8 @@ package boggle.jeu;
 
 import java.util.Iterator;
 
-import boggle.BoggleException;
 import boggle.mots.ArbreLexical;
+import boggle.mots.Grille;
 import boggle.mots.GrilleLettres;
 
 /**
@@ -34,36 +34,46 @@ public class Partie implements Iterable<Joueur>, Runnable {
 	public static final int DEFAULT_TOURMAX = 5;
 	public static final int[] DEFAULT_POINTS = { 1, 1, 2, 3, 5, 11 };
 	
-	private GrilleLettres grille;
-	private ArbreLexical arbre;
+	private Regles regles;
+	private Grille grille;
+	private Sablier sablier;
 	private Joueur[] joueurs;
 	private boolean gagnant;
 	private int tour;
-	private int tourMax;
-	private int scoreCible;
-	private int chrono;
-	// Les points sont un ensemble de 6 nombre.
-	// Les points sont attribués à partir d'un mot de taille minimale
-	private int[] points;
-	private Sablier sablier;
 	
-	public Partie(GrilleLettres grille, ArbreLexical arbre, Joueur[] joueurs, int scoreCible, int tourMax, int chrono, int[] points) {
-		if (points.length < 6) {
-			throw new BoggleException("Il manque des points à attribuer pour la taille des mots");
-		}
-		this.grille = grille;
-		this.arbre = arbre;
+	public Partie(Regles regles, Joueur[] joueurs) {
+		this.regles = regles;
+		this.grille = new GrilleLettres(regles.getTailleMin() + 1, regles.getDes());
 		this.joueurs = joueurs;
 		this.gagnant = false;
-		this.scoreCible = scoreCible;
-		this.tour = 0;
-		this.tourMax = tourMax;
-		this.points = points;
-		this.chrono = chrono;
+		this.sablier = new Sablier(regles.getDureeSablier());
 	}
 	
-	public Partie(GrilleLettres grille, ArbreLexical arbre, Joueur[] joueur) {
-		this(grille, arbre, joueur, DEFAULT_SCORECIBLE, DEFAULT_TOURMAX, DEFAULT_CHRONO, DEFAULT_POINTS);
+	/**
+	 * Retourne la grille utilisée pour cette partie
+	 * 
+	 * @return	la grille (Grille) utilisée pour cette partie
+	 */
+	public Grille getGrille() {
+		return grille;
+	}
+	
+	/**
+	 * Retourne le dictionnaire de mot utilisé pour cette partie
+	 * 
+	 * @return	le dictionnaire (ArbreLexical) utilisé pour cette partie
+	 */
+	public ArbreLexical getDictionnaire() {
+		return regles.getDictionnaire();
+	}
+	
+	/**
+	 * Retourne les points attribués selon les mots choisis par le joueur
+	 * 
+	 * @return	le tableau des points à attribuer aux mots du joueur
+	 */
+	public int[] getPoints() {
+		return regles.getPoints();
 	}
 	
 	/**
@@ -71,8 +81,26 @@ public class Partie implements Iterable<Joueur>, Runnable {
 	 * 
 	 * @return	le score qu'un joueur doit atteindre pour gagner
 	 */
-	public int scoreCible() {
-		return scoreCible;
+	public int getScoreCible() {
+		return regles.getScoreCible();
+	}
+	
+	/**
+	 * Retourne le numéro du tour maximum
+	 * 
+	 * @return	le tour maximum
+	 */
+	public int getTourMax() {
+		return regles.getTourMax();
+	}
+	
+	/**
+	 * Retourne le sablier utilisé pour la partie
+	 * 
+	 * @return	le sablier (Sablier) utilisé
+	 */
+	public Sablier getSablier() {
+		return sablier;
 	}
 	
 	/**
@@ -82,15 +110,6 @@ public class Partie implements Iterable<Joueur>, Runnable {
 	 */
 	public int tour() {
 		return tour;
-	}
-	
-	/**
-	 * Retourne le numéro du tour maximum
-	 * 
-	 * @return	le tour maximum
-	 */
-	public int tourMax() {
-		return tourMax;
 	}
 
 	/**
@@ -113,7 +132,7 @@ public class Partie implements Iterable<Joueur>, Runnable {
 	 * @return <code>true</code> si la partie est terminée, <code>false</code> sinon
 	 */
 	public boolean estTerminee() {
-		return tour == tourMax || gagnant;
+		return tour == getTourMax() || gagnant;
 	}
 	
 	/**
@@ -132,7 +151,7 @@ public class Partie implements Iterable<Joueur>, Runnable {
 	 * @return	<code>true</code> si le mot est dans l'arbre, <code>false</code> sinon
 	 */
 	public boolean verifierMot(String mot) {
-		return arbre.contient(mot);
+		return getDictionnaire().contient(mot);
 	}
 	
 	/**
@@ -145,6 +164,7 @@ public class Partie implements Iterable<Joueur>, Runnable {
 		int taille;
 		int pt;
 		int min = grille.tailleMinimale();
+		int[] points = getPoints();
 		for (String s : grille.getMots()) {
 			taille = s.length();
 			if (taille >= min && verifierMot(s)) {
@@ -157,7 +177,9 @@ public class Partie implements Iterable<Joueur>, Runnable {
 				joueur.incScore(pt);
 			}
 		}
-		gagnant = (joueur.getScore() >= scoreCible);
+		// Le joueur gagne la partie s'il y a un score cible à atteindre (donc > 0)
+		// et qu'il a atteint voire dépassé ce score
+		gagnant = (getScoreCible() > 0 && joueur.getScore() >= getScoreCible());
 	}
 	
 	/**
@@ -172,7 +194,7 @@ public class Partie implements Iterable<Joueur>, Runnable {
 			System.out.println("Grille secouée.\n");
 			joueur = it.next();
 			System.out.println("Au tour de " + joueur.getName() + " (score: " + joueur.getScore() + ").\n");
-			joueur.joue(grille, arbre, this);
+			joueur.joue(grille, getDictionnaire(), this);
 			// On démarre le compte à rebours
 			demarrerSablier();
 			// La fin du tour se produit à la fin du compte à rebours
@@ -193,7 +215,7 @@ public class Partie implements Iterable<Joueur>, Runnable {
 	 * Démarre le compte à rebours du tour du joueur courant
 	 */
 	public void demarrerSablier() {
-		sablier = new Sablier(chrono);
+		sablier.reset();
 		sablier.run();
 	}
 	

@@ -21,7 +21,7 @@ package boggle.jeu;
 import java.util.Observable;
 
 import boggle.mots.ArbreLexical;
-import boggle.mots.GrilleLettres;
+import boggle.mots.Grille;
 
 /**
  * Représentation générique d'un joueur de Boggle
@@ -66,6 +66,6 @@ public abstract class Joueur extends Observable {
 	 * @param	partie
 	 * 			la partie dans laquelle joue le joueur
 	 */
-	public abstract void joue(GrilleLettres grille, ArbreLexical arbre, Partie partie);
+	public abstract void joue(Grille grille, ArbreLexical arbre, Partie partie);
 	
 }

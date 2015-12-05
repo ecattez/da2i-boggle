@@ -15,9 +15,8 @@ import boggle.jeu.Humain;
 import boggle.jeu.Joueur;
 import boggle.jeu.Partie;
 import boggle.jeu.Piko;
-import boggle.mots.ArbreLexical;
-import boggle.mots.De;
-import boggle.mots.GrilleLettres;
+import boggle.jeu.Regles;
+import boggle.mots.Grille;
 
 public class PartieTest {
 
@@ -25,10 +24,13 @@ public class PartieTest {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Joueur[] joueur = { new Piko() };
-		final ArbreLexical arbre = ArbreLexical.lireMots("liste_francais.txt");
-		final GrilleLettres grille = new GrilleLettres(4, De.creerDes("des-20x20.csv"));
-		final Partie partie = new Partie(grille, arbre, joueur);
+		Joueur[] joueur = { new Humain("Edouard"), new Piko() };
+		Regles regles = new Regles("regles-4x4.config");
+		
+		System.out.println(regles);
+		
+		final Partie partie = new Partie(regles, joueur);
+		final Grille grille = partie.getGrille();
 		
 		final JPanel container = new JPanel(new BorderLayout());
 		final JPanel bottom = new JPanel();

@@ -45,7 +45,7 @@ public class GrilleLettres extends Grille {
 			throw new BoggleException("Il n'y a pas aucun dé à placer dans la grille.");
 		}
 		if (des.length < dimension * dimension) {
-			throw new BoggleException("Il n'y a pas suffisamment de dé pour cette grille.");
+			throw new BoggleException("Il n'y a pas suffisamment de dés pour créer la grille.");
 		}
 		
 		this.grille = new De[dimension][dimension];

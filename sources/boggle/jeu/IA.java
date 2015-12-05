@@ -19,14 +19,14 @@
 package boggle.jeu;
 
 import boggle.mots.ArbreLexical;
-import boggle.mots.GrilleLettres;
+import boggle.mots.Grille;
 
 /**
  * Implémentation d'un joueur machine
  */
 public abstract class IA extends Joueur implements Runnable {
 	
-	protected GrilleLettres grille;
+	protected Grille grille;
 	protected ArbreLexical arbre;
 	protected Partie partie;
 	
@@ -34,7 +34,7 @@ public abstract class IA extends Joueur implements Runnable {
 		super(name);
 	}
 	
-	public void joue(GrilleLettres grille, ArbreLexical arbre, Partie partie) {
+	public void joue(Grille grille, ArbreLexical arbre, Partie partie) {
 		this.grille = grille;
 		this.arbre = arbre;
 		this.partie = partie;

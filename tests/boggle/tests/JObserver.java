@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 
 import boggle.mots.Coordonnees;
 import boggle.mots.CoordonneesCartesiennes;
-import boggle.mots.GrilleLettres;
+import boggle.mots.Grille;
 
 
 /*
@@ -43,9 +43,9 @@ public class JObserver extends JPanel implements Observer {
 		
 	}
 	
-	private GrilleLettres g;
+	private Grille g;
 	
-	public JObserver(GrilleLettres g) {
+	public JObserver(Grille g) {
 		super();
 		this.g = g;
 		this.g.addObserver(this);

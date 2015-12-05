@@ -154,7 +154,7 @@ public class De extends Observable {
 				}
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new BoggleException("Impossible de créer de dés avec le fichier " + fichier + "\n" + e);
 		}
 		return des.toArray(new De[des.size()]);		
 	}
