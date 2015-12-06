@@ -92,7 +92,7 @@ public class De extends Observable {
 	 * 			l'indice entre 0 et NB_FACES exclu
 	 */
 	public void setFaceVisible(int i) {
-		if (i < 0 || i >= NB_FACES) {
+		if (i < 0 || i >= faces.length) {
 			throw new BoggleException("Il n'y a pas de face n°" + i + " à ce dé."); 
 		}
 		faceVisible = i;
@@ -112,9 +112,12 @@ public class De extends Observable {
 	 * Simule un lancé du dé courant ce qui peut changer la face visible du dé
 	 */
 	public void lancer() {
-		setFaceVisible((int) (Math.random()*NB_FACES));
+		setFaceVisible((int) (Math.random() * faces.length));
 	}
 	
+	/**
+	 * Représentation textuelle d'un dé
+	 */
 	public String toString() {
 		String str = "";
 		String face;

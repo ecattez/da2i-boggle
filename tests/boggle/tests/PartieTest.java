@@ -11,11 +11,11 @@ import javax.swing.JTextField;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 
-import boggle.jeu.Humain;
-import boggle.jeu.Joueur;
 import boggle.jeu.Partie;
-import boggle.jeu.Piko;
 import boggle.jeu.Regles;
+import boggle.jeu.joueur.Humain;
+import boggle.jeu.joueur.Joueur;
+import boggle.jeu.joueur.Piko;
 import boggle.mots.Grille;
 
 public class PartieTest {
@@ -26,7 +26,6 @@ public class PartieTest {
 	public static void main(String[] args) {
 		Joueur[] joueur = { new Humain("Edouard"), new Piko() };
 		Regles regles = new Regles("regles-4x4.config");
-		
 		System.out.println(regles);
 		
 		final Partie partie = new Partie(regles, joueur);

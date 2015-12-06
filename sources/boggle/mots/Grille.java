@@ -274,7 +274,7 @@ public abstract class Grille extends Observable implements Observer {
 	 * Secoue la grille pour mélanger les dés
 	 */
 	public void secouer() {
-		int r = (int) (Math.random() + 500);
+		int r = (int) (Math.random() * 500);
 		De d1, d2;
 		Coordonnees c1, c2;
 		// On efface tous les mots qui ont été produits avec cette grille

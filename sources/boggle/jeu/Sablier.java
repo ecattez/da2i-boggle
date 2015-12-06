@@ -26,18 +26,23 @@ import java.util.Observable;
  */
 public class Sablier extends Observable implements Runnable {
 	
+	public static final int DEFAULT_DUREE = 60 * 5;
 	public static final int ONE_SECOND = 1000;
 	
 	// La durée totale que peut atteindre le sablier
-	private int delayMax;
+	private int dureeMax;
 	// Le temps courant en secondes du sablier
-	private int delay;
+	private int duree;
 	// Indique si le sablier est arrêté ou non
 	private boolean stop;
 	
 	public Sablier(int sec) {
-		this.delayMax = sec;
-		this.delay = sec;
+		this.dureeMax = sec;
+		this.duree = sec;
+	}
+	
+	public Sablier() {
+		this(DEFAULT_DUREE);
 	}
 
 	/**
@@ -53,7 +58,7 @@ public class Sablier extends Observable implements Runnable {
 	 * Remet le sablier à son état initial
 	 */
 	public void reset() {
-		this.delay = delayMax;
+		this.duree = dureeMax;
 		this.stop = false;
 	}
 	
@@ -73,8 +78,7 @@ public class Sablier extends Observable implements Runnable {
 		while (!isOver()) {
 			try {
 				if (!isOver()) {
-					System.out.println(delay--);
-					stop = (delay <= 0);
+					stop = (--duree <= 0);
 					setChanged();
 					notifyObservers();
 				}
@@ -89,8 +93,8 @@ public class Sablier extends Observable implements Runnable {
 	 * Représentation textuelle du sablier
 	 */
 	public String toString() {
-		int min = (delay % 3600) / 60;
-		int sec = delay % 60;
+		int min = (duree % 3600) / 60;
+		int sec = duree % 60;
 		return String.format("%02d:%02d", min, sec);
 	}
 

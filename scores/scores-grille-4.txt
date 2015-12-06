@@ -1,0 +1,8 @@
+#Scores pour les grilles de taille 4
+#Sun Dec 06 22:26:02 CET 2015
+Paul=500
+t=bonjour
+Thomas=230
+Edouard=500
+Remy=90
+Julien=350

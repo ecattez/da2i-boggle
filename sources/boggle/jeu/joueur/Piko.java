@@ -16,7 +16,7 @@
  * 
  * @author Edouard CATTEZ <edouard.cattez@sfr.fr> (La 7 Production)
  */
-package boggle.jeu;
+package boggle.jeu.joueur;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -168,7 +168,7 @@ public class ArbreLexical {
 	 * @param	fichier
 	 * 			le nom du fichier à charger
 	 */
-	public static ArbreLexical lireMots(String fichier) {
+	public static ArbreLexical creerArbre(String fichier) {
 		ArbreLexical root = new ArbreLexical();
 		Path path = Paths.get("config", fichier);
 		String word;

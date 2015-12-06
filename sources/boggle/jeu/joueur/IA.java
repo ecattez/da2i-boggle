@@ -16,8 +16,9 @@
  * 
  * @author Edouard CATTEZ <edouard.cattez@sfr.fr> (La 7 Production)
  */
-package boggle.jeu;
+package boggle.jeu.joueur;
 
+import boggle.jeu.Partie;
 import boggle.mots.ArbreLexical;
 import boggle.mots.Grille;
 

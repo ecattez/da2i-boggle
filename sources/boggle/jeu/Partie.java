@@ -20,12 +20,17 @@ package boggle.jeu;
 
 import java.util.Iterator;
 
+import boggle.jeu.joueur.Joueur;
 import boggle.mots.ArbreLexical;
 import boggle.mots.Grille;
 import boggle.mots.GrilleLettres;
 
 /**
  * Représentation d'une partie générique de Boggle entre plusieurs joueurs.
+ * 
+ * Note :
+ * - si le score à atteindre est <= 0, la partie s'arrête quand le dernier tour est passé
+ * - si le tour maximal atteignable est <= 0, la partie s'arrête quand le score à atteindre est passé
  */
 public class Partie implements Iterable<Joueur>, Runnable {
 	
@@ -177,9 +182,6 @@ public class Partie implements Iterable<Joueur>, Runnable {
 				joueur.incScore(pt);
 			}
 		}
-		// Le joueur gagne la partie s'il y a un score cible à atteindre (donc > 0)
-		// et qu'il a atteint voire dépassé ce score
-		gagnant = (getScoreCible() > 0 && joueur.getScore() >= getScoreCible());
 	}
 	
 	/**
@@ -193,19 +195,22 @@ public class Partie implements Iterable<Joueur>, Runnable {
 			grille.secouer();
 			System.out.println("Grille secouée.\n");
 			joueur = it.next();
-			System.out.println("Au tour de " + joueur.getName() + " (score: " + joueur.getScore() + ").\n");
+			System.out.println("Au tour de " + joueur.getNom() + " (score: " + joueur.getScore() + ").\n");
 			joueur.joue(grille, getDictionnaire(), this);
 			// On démarre le compte à rebours
 			demarrerSablier();
 			// La fin du tour se produit à la fin du compte à rebours
 			// ou lorsque celui-ci est stoppé (appuyer sur Terminer)
-			System.out.println("Fin du tour de " + joueur.getName() + ".\nCalcul des points en cours.\n");
+			System.out.println("Fin du tour de " + joueur.getNom() + ".\nCalcul des points en cours.\n");
 			terminerTour(joueur);
 			System.out.println("Résultat: " + joueur);
 			// On stocke le meilleur joueur courant de la partie
 			if (meilleur == null || meilleur.getScore() < joueur.getScore()) {
 				meilleur = joueur;
 			}
+			// Le joueur gagne la partie s'il y a un score cible à atteindre (donc > 0)
+			// et qu'il a atteint voire dépassé ce score
+			gagnant = (getScoreCible() > 0 && meilleur.getScore() >= getScoreCible());
 			incTour();
 		}
 		System.out.println("Vainqueur: " + meilleur);

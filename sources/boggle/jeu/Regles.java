@@ -18,9 +18,11 @@
  */
 package boggle.jeu;
 
+import java.io.BufferedReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Properties;
 
 import boggle.BoggleException;
@@ -35,8 +37,8 @@ public class Regles {
 	
 	public static final int DEFAULT_TAILLEMIN = 3;
 	public static final int DEFAULT_DUREESABLIER = 60;
-	public static final int DEFAULT_SCORECIBLE = 30;
-	public static final int DEFAULT_TOURMAX = 5;
+	public static final int DEFAULT_SCORECIBLE = 100;
+	public static final int DEFAULT_TOURMAX = 10;
 	public static final int[] DEFAULT_POINTS = { 1, 1, 2, 3, 5, 11 };
 	
 	private De[] des;
@@ -50,46 +52,104 @@ public class Regles {
 	// Le constructeur avec l'utilisation d'un fichier
 	public Regles(String fichierRegles) {
 		Path regles = Paths.get("config", fichierRegles);
-		if (!Files.isRegularFile(regles)) {
-			throw new BoggleException("Le fichier " + fichierRegles + " n'est pas un fichier de configuration correct");
+		if (!Files.exists(regles)) {
+			throw new BoggleException("Le fichier " + fichierRegles + " n'existe pas");
 		}
 		Properties prop = new Properties();
-		try {
-			prop.load(Files.newBufferedReader(regles));
-			this.tailleMin = Integer.parseInt(prop.getProperty("taille-min", String.valueOf(DEFAULT_TAILLEMIN)));
-			this.des = De.creerDes(prop.getProperty("des"));
-			this.dictionnaire = ArbreLexical.lireMots(prop.getProperty("dictionnaire"));
-			this.tourMax = Integer.parseInt(prop.getProperty("tour-max", String.valueOf(DEFAULT_TOURMAX)));
-			this.scoreCible = Integer.parseInt(prop.getProperty("score-cible", String.valueOf(DEFAULT_SCORECIBLE)));
-			this.dureeSablier = Integer.parseInt(prop.getProperty("duree-sablier", String.valueOf(DEFAULT_DUREESABLIER)));
-			
-			String[] pointsArray = prop.getProperty("points", String.valueOf(DEFAULT_POINTS)).split(",");
-			if (pointsArray.length < 6) {
-				throw new BoggleException("Il manque des points à attribuer pour la taille des mots");
-			}
-			this.points = new int[pointsArray.length];
+		try (BufferedReader in = Files.newBufferedReader(regles)) {
+			prop.load(in);
+		} catch (Exception e) {
+			throw new BoggleException("Une erreur s'est produite à l'ouverture du fichier " + fichierRegles + "\n" + e);
+		}
+		
+		String sTailleMin = prop.getProperty("taille-min");
+		String sTourMax = prop.getProperty("tour-max");
+		String sScoreCible = prop.getProperty("score-cible");
+		String sDureeSablier = prop.getProperty("duree-sablier");
+		String sDes = prop.getProperty("des");
+		String sDico = prop.getProperty("dictionnaire");
+		String sPoints = prop.getProperty("points");
+		
+		this.tailleMin =  (isInteger(sTailleMin) ? Integer.parseInt(sTailleMin) : DEFAULT_TAILLEMIN);
+		this.tourMax = (isInteger(sTourMax) ? Integer.parseInt(sTourMax) : DEFAULT_TOURMAX);
+		this.scoreCible = (isInteger(sScoreCible) ? Integer.parseInt(sScoreCible) : DEFAULT_SCORECIBLE);
+		this.dureeSablier = (isInteger(sDureeSablier) ? Integer.parseInt(sDureeSablier) : DEFAULT_DUREESABLIER);
+		
+		if (sPoints != null && sPoints.contains(",")) {
+			String[] pointsArray = sPoints.split(",");
+			points = new int[pointsArray.length];
 			for (int i=0; i < pointsArray.length; i++) {
 				points[i] = Integer.parseInt(pointsArray[i]);
 			}
-		} catch (Exception e) {
-			throw new BoggleException("Impossible de charger une configuration à partir du fichier " + fichierRegles + "\n" + e);
 		}
+		
+		// Vérifie que les valeurs sont toutes correctes
+		check(tailleMin, points, tourMax, scoreCible, dureeSablier);
+		
+		this.des = De.creerDes(sDes);
+		this.dictionnaire = ArbreLexical.creerArbre(sDico);
 	}
 	
 	// Le constructeur avec chaque paramètre
-	public Regles(De[] des, ArbreLexical dictionnaire, int tailleMin, int[] points, int tourMax, int scoreCible, int tempsSablier) {
-		this.des = des;
-		this.dictionnaire = dictionnaire;
+	public Regles(De[] des, ArbreLexical dictionnaire, int tailleMin, int[] points, int tourMax, int scoreCible, int dureeSablier) {
+		check(tailleMin, points, tourMax, scoreCible, dureeSablier);
 		this.tailleMin = tailleMin;
-		this.points = points;
 		this.tourMax = tourMax;
 		this.scoreCible = scoreCible;
-		this.dureeSablier = tempsSablier;
+		this.dureeSablier = dureeSablier;
+		this.des = des;
+		this.dictionnaire = dictionnaire;
+		this.points = points;
+		
 	}
 	
 	// Le constructeur de chaque paramètre simplifé avec les valeurs par défaut
 	public Regles(De[] des, ArbreLexical dictionnaire, int tailleMin) {
 		this(des, dictionnaire, tailleMin, DEFAULT_POINTS, DEFAULT_TOURMAX, DEFAULT_SCORECIBLE, DEFAULT_DUREESABLIER);
+	}
+	
+	/**
+	 * Vérifie certains paramètres nécessaires à la création d'une instance de Règles
+	 * 
+	 * @param	tailleMin
+	 * 			la taille minimale d'un mot
+	 * @param	points
+	 * 			les points à attribuer selon chaque mot
+	 * @param	tourMax
+	 * 			le tour maximal de la partie
+	 * @param	scoreCible
+	 * 			le score à atteindre lors d'une partie
+	 * @param	dureeSablier
+	 * 			la durée maximale du sablier
+	 * 
+	 * @return	<code>true</code> si toutes les vérifications se sont biens déroulés, une <code>BoggleException</code> sinon
+	 */
+	private boolean check(int tailleMin, int[] points, int tourMax, int scoreCible, int dureeSablier) {
+		if (tailleMin < 1) {
+			throw new BoggleException("La taille minimale d'un mot ne peut être < 0");
+		}
+		if (tourMax < 1 && scoreCible < 1) {
+			throw new BoggleException("Les règles doivent définir un tour maximal et/ou un score cible à atteindre");
+		}
+		if (points == null || points.length < 6) {
+			throw new BoggleException("Il manque des points à attribuer pour la taille des mots");
+		}
+		if (dureeSablier < 1) {
+			throw new BoggleException("Le sablier ne peut pas avoir une durée < 0");
+		}
+		return true;
+	}
+	
+	/**
+	 * Vérifie si la chaîne passée en paramètre est un entier (positif ou négatif)
+	 * 
+	 * @param	str
+	 * 			la chaîne à vérifier
+	 * 
+	 * @return	<code>true</code> si la chaîne représente un entier, <code>false</code> sinon
+	 */
+	private boolean isInteger(String str) {
+		return str != null && str.matches("[+-]?\\d+(\\.\\d+)?");
 	}
 
 	/**
@@ -231,7 +291,7 @@ public class Regles {
 	 */
 	public String toString() {
 		return String.format("des: %s\ndictionnaire: %s\ntaille-min: %d\npoints: %s\ntour-max: %d\nscore-cible: %d\nduree-sablier: %d",
-				des, dictionnaire, tailleMin, points, tourMax, scoreCible, dureeSablier);
+				Arrays.toString(des), dictionnaire, tailleMin, Arrays.toString(points), tourMax, scoreCible, dureeSablier);
 	}
 	
 }

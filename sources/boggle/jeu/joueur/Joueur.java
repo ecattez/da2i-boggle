@@ -16,10 +16,11 @@
  * 
  * @author Edouard CATTEZ <edouard.cattez@sfr.fr> (La 7 Production)
  */
-package boggle.jeu;
+package boggle.jeu.joueur;
 
 import java.util.Observable;
 
+import boggle.jeu.Partie;
 import boggle.mots.ArbreLexical;
 import boggle.mots.Grille;
 
@@ -28,32 +29,62 @@ import boggle.mots.Grille;
  */
 public abstract class Joueur extends Observable {
 	
-	private String name;
+	private String nom;
 	private int score;
 	
-	public Joueur(String name) {
-		this.name = name;
+	public Joueur(String nom) {
+		this.nom = nom;
 		this.score = 0;
 	}
 	
-	public String getName() {
-		return name;
+	/**
+	 * Retourne le nom du joueur
+	 * 
+	 * @return	le nom du joueur
+	 */
+	public String getNom() {
+		return nom;
 	}
 	
+	/**
+	 * Retourne le score courant du joueur
+	 * 
+	 * @return	le score courant du joueur
+	 */
 	public int getScore() {
 		return score;
 	}
 	
+	/**
+	 * Réinitialise le score courant du joueur à 0
+	 */
 	public void resetScore() {
 		this.score = 0;
 	}
 	
+	/**
+	 * Incrémente de n le score du joueur
+	 * 
+	 * @param	n
+	 * 			l'incrémentation du score du joueur
+	 */
 	public void incScore(int n) {
 		this.score += n;
 	}
 	
+	/**
+	 * Deux joueurs sont égaux s'ils ont le même nom
+	 */
+	public boolean equals(Object o) {
+		Joueur j = (Joueur) o;
+		return j != null && nom == j.nom;
+	}
+	
+	/**
+	 * Représentation textuelle du joueur
+	 */
 	public String toString() {
-		return name + " (score: " + score + ")";
+		return nom + " (score: " + score + ")";
 	}
 	
 	/**
