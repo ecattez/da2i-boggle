@@ -51,6 +51,7 @@ public class Partie implements Iterable<Joueur>, Runnable {
 		this.grille = new GrilleLettres(regles.getTailleMin() + 1, regles.getDes());
 		this.joueurs = joueurs;
 		this.gagnant = false;
+		this.tour = 1;
 		this.sablier = new Sablier(regles.getDureeSablier());
 	}
 	
@@ -170,9 +171,13 @@ public class Partie implements Iterable<Joueur>, Runnable {
 		int pt;
 		int min = grille.tailleMinimale();
 		int[] points = getPoints();
-		for (String s : grille.getMots()) {
-			taille = s.length();
-			if (taille >= min && verifierMot(s)) {
+		Iterator<String> it = grille.getMots().iterator();
+		String mot;
+		joueur.terminerTour();
+		while (it.hasNext()) {
+			mot = it.next();
+			taille = mot.length();
+			if (taille >= min && verifierMot(mot)) {
 				if (taille - min < points.length) {
 					pt = points[taille - min];
 				}

@@ -21,9 +21,11 @@ package boggle.mots;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Set;
 
 import boggle.BoggleException;
 
@@ -37,8 +39,8 @@ public abstract class Grille extends Observable implements Observer {
 	// La taille de la grille (dimension x dimension)
 	private int dimension;
 	
-	// On utilise une liste pour stocker les mots fabriqués avec cette grille
-	private List<String> mots;
+	// On utilise une liste (à contenu unique) pour stocker les mots fabriqués avec cette grille
+	private Set<String> mots;
 	
 	// On utilise une double file pour conserver les positions utilisée par le joueur
 	// lors de la création d'un mot. Elle est vidée à chaque nouveau mot.
@@ -55,7 +57,7 @@ public abstract class Grille extends Observable implements Observer {
 			throw new BoggleException("La dimension minimale d'une grille est " + DIMENSION_MIN);
 		}
 		this.dimension = dimension;
-		this.mots = new ArrayList<>();
+		this.mots = new HashSet<>();
 		this.deck = new ArrayDeque<>();
 	}
 	
@@ -243,7 +245,7 @@ public abstract class Grille extends Observable implements Observer {
 	 * 
 	 * @return	la liste de tous les mots obtenus par le joueur avec cette grille
 	 */
-	public List<String> getMots() {
+	public Set<String> getMots() {
 		return mots;
 	}
 	

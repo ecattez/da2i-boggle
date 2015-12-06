@@ -36,6 +36,11 @@ public class Piko extends IA {
 			if (arbre.motsCommencantPar(String.valueOf(c), mots)) {
 				for (String mot : mots) {
 					if (mot.length() >= grille.tailleMinimale() && grille.ecrire(mot)) {
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
 						grille.stockerMot();
 					}
 				}

@@ -30,6 +30,7 @@ public abstract class IA extends Joueur implements Runnable {
 	protected Grille grille;
 	protected ArbreLexical arbre;
 	protected Partie partie;
+	protected Thread thread;
 	
 	public IA(String name) {
 		super(name);
@@ -39,7 +40,13 @@ public abstract class IA extends Joueur implements Runnable {
 		this.grille = grille;
 		this.arbre = arbre;
 		this.partie = partie;
-		new Thread(this).start();
+		this.thread = new Thread(this);
+		thread.start();
+	}
+	
+	@Deprecated
+	public void terminerTour() {
+		thread.stop();
 	}
 
 }
