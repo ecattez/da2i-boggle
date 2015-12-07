@@ -52,7 +52,7 @@ public class JPartie extends JPanel implements Observer {
 		this.jGrille = new JGrille(grille);
 		this.jSablier = new JSablier(partie.getSablier());
 		this.jListeMots = new JList<String>(new ListMotsModel(grille));
-		this.jListeScores = new JList<Joueur>(new ListJoueursModel(partie.getJoueur()));
+		this.jListeScores = new JList<Joueur>(new ListJoueursModel(partie.getJoueurs()));
 		this.tourLabel = new JLabel();
 		this.zoneSaisie = new JTextField();
 		this.ajouter = new DecorateurBoutonPlat(new JButton("Ajouter"));
@@ -70,15 +70,9 @@ public class JPartie extends JPanel implements Observer {
 			
 		});
 		
-		ajouter.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (grille.getLettresUtilisees().length() >= grille.tailleMinimale()) {
-					grille.stockerMot();
-					grille.rendreTout();
-					zoneSaisie.setText("");
-				}
-			}
-		});
+		zoneSaisie.addActionListener(new AjouterListener());
+		
+		ajouter.addActionListener(new AjouterListener());
 		
 		vider.addActionListener(new ActionListener() {
 
@@ -133,10 +127,27 @@ public class JPartie extends JPanel implements Observer {
 		tourLabel.setText("Tour de " + joueur.getNom());
 		zoneSaisie.setText("");
 		zoneSaisie.setEnabled(enabled);
+		zoneSaisie.requestFocusInWindow();
 		ajouter.setEnabled(enabled);
 		vider.setEnabled(enabled);
 		terminer.setEnabled(enabled);
 		jGrille.setEnabled(enabled);
+	}
+	
+	/**
+	 * Evénement qui se produit lorsqu'un joueur souhaite ajouter un mot à sa liste de mots
+	 */
+	class AjouterListener implements ActionListener {
+		
+		public void actionPerformed(ActionEvent e) {
+			Grille grille = partie.getGrille();
+			if (grille.getLettresUtilisees().length() >= grille.tailleMinimale()) {
+				grille.stockerMot();
+				grille.rendreTout();
+				zoneSaisie.setText("");
+			}
+		}
+		
 	}
 
 }

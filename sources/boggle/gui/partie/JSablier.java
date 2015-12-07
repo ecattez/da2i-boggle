@@ -1,5 +1,6 @@
 package boggle.gui.partie;
 
+import java.awt.Color;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -16,6 +17,7 @@ public class JSablier extends JLabel implements Observer {
 
 	public JSablier(final Sablier sablier) {
 		super(sablier.toString());
+		this.setForeground(Color.RED);
 		sablier.addObserver(this);
 	}
 
