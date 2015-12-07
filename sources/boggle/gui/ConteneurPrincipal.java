@@ -12,16 +12,12 @@ public class ConteneurPrincipal extends JPanel {
 
 	public static final String BOGGLE = "BOGGLE";
 	public static final String NOUVELLE_PARTIE = "NOUVELLE_PARTIE";
-	public static final String CONFIGURATION = "CONFIGURATION";
 	public static final String ECRAN_JEU = "ECRAN_JEU";
 	public static final String CLASSEMENT = "CLASSEMENT";
 
 	private JButton nouvellePartie;
 	private JButton menuPrincipal;
 	private JButton jouer;
-	private JButton configuration;
-	private JButton suivant;
-	private JButton precedent;
 	private JButton classement;
 
 	private CardLayout card;
@@ -46,9 +42,10 @@ public class ConteneurPrincipal extends JPanel {
 			this.add(new EcranNouvellePartie(), NOUVELLE_PARTIE);
 			this.add(new EcranJeu(), ECRAN_JEU);
 			this.add(new EcranClassement(), CLASSEMENT);
-			this.add(new EcranConfiguration(), CONFIGURATION);	
+			
 		}
 	}
+	
 
 	public class ConteneurBouton extends JPanel {
 
@@ -58,16 +55,11 @@ public class ConteneurPrincipal extends JPanel {
 			nouvellePartie = new JButton("Nouvelle Partie");
 			menuPrincipal = new JButton("Menu Principale");
 			jouer = new JButton("Jouer");
-			configuration = new JButton("Configuration");
-			suivant = new JButton("Suivant");
-			precedent = new JButton("Précédent");
 			classement = new JButton("classement");
 			this.add(nouvellePartie);
 			this.add(jouer);
-			this.add(configuration);
-			this.add(suivant);
-			this.add(precedent);
 			this.add(menuPrincipal);
+			this.add(classement);
 
 			// jouer correspond a la configuration de la partie ( nb joueurs etc )
 			jouer.addActionListener(new ActionListener() {
@@ -78,31 +70,7 @@ public class ConteneurPrincipal extends JPanel {
 				}
 			});
 
-			configuration.addActionListener(new ActionListener() {
-
-				public void actionPerformed(ActionEvent e) {
-					card.show(conteneurCarte, CONFIGURATION);
-					
-
-				}
-			});
-
-			suivant.addActionListener(new ActionListener() {
-
-				public void actionPerformed(ActionEvent e) {
-					card.next(conteneurCarte);
-					conteneurBouton.cacherBouton(jouer);
-
-				}
-			});
-
-			precedent.addActionListener(new ActionListener() {
-
-				public void actionPerformed(ActionEvent e) {
-					card.previous(conteneurCarte);
-
-				}
-			});
+		
 
 			menuPrincipal.addActionListener(new ActionListener() {
 
@@ -120,8 +88,16 @@ public class ConteneurPrincipal extends JPanel {
 				public void actionPerformed(ActionEvent e) {
 					card.show(conteneurCarte, NOUVELLE_PARTIE);
 
-					conteneurBouton.afficherBouton(jouer,configuration,classement);
+					
 
+				}
+			});
+			
+			classement.addActionListener(new ActionListener() {
+				
+				public void actionPerformed(ActionEvent arg0) {
+				
+					card.show(conteneurCarte, CLASSEMENT);
 				}
 			});
 
@@ -163,12 +139,12 @@ public class ConteneurPrincipal extends JPanel {
 		public EcranBoggle() {
 			super();
 			this.setBackground(Color.CYAN);
-			
+			this.recharger();
 
 		}
 
 		public void recharger() {
-			conteneurBouton.afficherBouton(jouer);
+			conteneurBouton.cacherBouton(menuPrincipal,nouvellePartie);
 		}
 	}
 
@@ -181,7 +157,7 @@ public class ConteneurPrincipal extends JPanel {
 		}
 
 		public void recharger() {
-			conteneurBouton.cacherBouton(jouer);
+			conteneurBouton.cacherBouton(nouvellePartie);
 		}
 	}
 
@@ -202,12 +178,13 @@ public class ConteneurPrincipal extends JPanel {
 		
 		public EcranClassement() {
 			super();
-			this.setBackground(Color.GREEN);
+			this.setBackground(Color.RED);
+			
 		}
 
 	
 		public void recharger() {
-			conteneurBouton.cacherBouton(jouer,suivant,precedent);
+			conteneurBouton.cacherBouton(jouer);
 			
 		}
 
