@@ -13,11 +13,13 @@ import boggle.mots.Grille;
  */
 public class ListMotsModel extends AbstractListModel<String> implements Observer {
 	
+	private static final long serialVersionUID = -4104833440035573086L;
+	
 	private List<String> mots;
 	
 	public ListMotsModel(Grille grille) {
-		this.mots = grille.getMots();
 		grille.addObserver(this);
+		this.mots = grille.getMots();
 	}
 	
 	public String getElementAt(int i) {

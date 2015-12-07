@@ -37,6 +37,12 @@ public abstract class Joueur extends Observable {
 		this.score = 0;
 	}
 	
+	// Notifie les observeurs que le joueur a changé
+	private void update() {
+		setChanged();
+		notifyObservers();
+	}
+	
 	/**
 	 * Retourne le nom du joueur
 	 * 
@@ -60,6 +66,7 @@ public abstract class Joueur extends Observable {
 	 */
 	public void resetScore() {
 		this.score = 0;
+		update();
 	}
 	
 	/**
@@ -70,6 +77,7 @@ public abstract class Joueur extends Observable {
 	 */
 	public void incScore(int n) {
 		this.score += n;
+		update();
 	}
 	
 	/**
@@ -98,5 +106,13 @@ public abstract class Joueur extends Observable {
 	 * 			la partie dans laquelle joue le joueur
 	 */
 	public abstract void joue(Grille grille, ArbreLexical arbre, Partie partie);
+	
+	/**
+	 * Vérifie si le joueur est un utilisateur humain qui a besoin d'intéragir avec le jeu
+	 * aux travers d'entrées/sorties telles que le clavier et la souris
+	 * 
+	 * @return	<code>true</code> si le joueur est un humain, <code>false</code> sinon
+	 */
+	public abstract boolean estHumain();
 	
 }

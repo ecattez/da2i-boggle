@@ -43,8 +43,7 @@ public class IAHardcore extends IA {
 						}
 						// Si le tour s'est fini plus tôt que prévu (sablier terminé)
 						// on arrête tous les traitements
-						System.out.println(partie.getJoueurCourant());
-						if (!this.equals(partie.getJoueurCourant())) {
+						if (!this.equals(partie.getJoueurCourant()) || partie.estTerminee()) {
 							return;
 						}
 						grille.stockerMot();

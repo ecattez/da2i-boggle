@@ -16,34 +16,23 @@
  * 
  * @author Edouard CATTEZ <edouard.cattez@sfr.fr> (La 7 Production)
  */
-package boggle.jeu.joueur;
+package boggle.gui.decorateur;
 
-import boggle.jeu.Partie;
-import boggle.mots.ArbreLexical;
-import boggle.mots.Grille;
+import java.awt.Color;
+
+import javax.swing.JButton;
 
 /**
- * Implémentation d'un joueur machine
+ * Définition d'un bouton plat type Material Design.
  */
-public abstract class IA extends Joueur implements Runnable {
-	
-	protected Grille grille;
-	protected ArbreLexical arbre;
-	protected Partie partie;
-	
-	public IA(String name) {
-		super(name);
-	}
-	
-	public void joue(Grille grille, ArbreLexical arbre, Partie partie) {
-		this.grille = grille;
-		this.arbre = arbre;
-		this.partie = partie;
-		new Thread(this).start();
-	}
-	
-	public boolean estHumain() {
-		return false;
+public class DecorateurBoutonPlat extends DecorateurBouton {
+
+	private static final long serialVersionUID = 8813538990842453141L;
+
+	public DecorateurBoutonPlat(JButton bouton) {
+		super(bouton);
+		this.setBackground(Color.WHITE);
+		this.setForeground(Color.BLACK);
 	}
 
 }

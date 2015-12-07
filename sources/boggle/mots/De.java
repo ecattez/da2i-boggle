@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Scanner;
 
+import boggle.Ascii;
 import boggle.BoggleException;
 
 /**
@@ -42,11 +43,15 @@ public class De extends Observable {
 	private boolean utilise;
 	
 	public De(String[] faces) {
-		this.faces = faces;
+		this.faces = new String[faces.length];
+		for (int i=0; i < faces.length; i++) {
+			this.faces[i] = Ascii.normalizeUpper(faces[i]);
+		}
 		this.faceVisible = 0;
 		this.utilise = false;
 	}
 	
+	// Notifie les observeurs que le dé à changé
 	private void update() {
 		setChanged();
 		notifyObservers();
@@ -173,14 +178,6 @@ public class De extends Observable {
 	public static De[] melange(De[] des) {
 		Collections.shuffle(Arrays.asList(des));
 		return des;
-	}
-	
-	public static void main(String[] args) {
-		De[] des = De.creerDes("des-4x4.csv");
-		for (De de : des) {
-			de.lancer();
-			System.out.println(de);
-		}
 	}
 	
 }

@@ -47,7 +47,9 @@ public class Partie extends Observable implements Iterable<Joueur>, Runnable {
 	private boolean gagnant;
 	private int tour;
 	
-	private Joueur joueurCourant;
+	// Indice du joueur courant utilisé par l'iterateur.
+	// Il se trouve ici car on en a besoin pour la méthode getJoueurCourant()
+	private int i = -1;
 	
 	public Partie(Regles regles, Joueur[] joueurs) {
 		this.regles = regles;
@@ -150,7 +152,7 @@ public class Partie extends Observable implements Iterable<Joueur>, Runnable {
 	 * @return	le joueur courant
 	 */
 	public Joueur getJoueurCourant() {
-		return joueurCourant;
+		return joueurs[i % joueurs.length];
 	}
 	
 	/**
@@ -212,37 +214,31 @@ public class Partie extends Observable implements Iterable<Joueur>, Runnable {
 	 */
 	public void run() {
 		Iterator<Joueur> it = iterator();
+		Joueur joueur = null;
 		Joueur meilleur = null;
 		
-		// On notifie que la partie commence
-		update();
 		while (!estTerminee()) {
 			grille.secouer();
-			joueurCourant = it.next();
-			joueurCourant.joue(grille, getDictionnaire(), this);
+			joueur = it.next();
+			// On notifie que la partie est passée à un nouveau tour de jeu
+			setChanged();
+			notifyObservers();
+			joueur.joue(grille, getDictionnaire(), this);
 			// On démarre le compte à rebours
 			demarrerSablier();
 			// La fin du tour se produit à la fin du compte à rebours
 			// ou lorsque celui-ci est stoppé (appuyer sur Terminer)
-			terminerTour(joueurCourant);
+			terminerTour(joueur);
 			// On stocke le meilleur joueur courant de la partie
-			if (meilleur == null || meilleur.getScore() < joueurCourant.getScore()) {
-				meilleur = joueurCourant;
+			if (meilleur == null || meilleur.getScore() < joueur.getScore()) {
+				meilleur = joueur;
 			}
 			// Le joueur gagne la partie s'il y a un score cible à atteindre (donc > 0)
 			// et qu'il a atteint voire dépassé ce score
 			gagnant = (getScoreCible() > 0 && meilleur.getScore() >= getScoreCible());
 			incTour();
-			// On notifie que la partie a changé
-			update();
 		}
 		System.out.println("Vainqueur: " + meilleur);
-	}
-	
-	// Notifie les observeurs que la partie a changé
-	private void update() {
-		setChanged();
-		notifyObservers();
 	}
 	
 	/**
@@ -266,8 +262,6 @@ public class Partie extends Observable implements Iterable<Joueur>, Runnable {
 	 * Implémentation d'un iterateur sur les joueurs.
 	 */
 	private class JoueurIterator implements Iterator<Joueur> {
-		
-		private int i = -1;
 		
 		/**
 		 * Retourne toujours vrai tant qu'il y a des joueurs dans la partie

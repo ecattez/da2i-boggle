@@ -12,6 +12,8 @@ import boggle.jeu.Sablier;
  */
 public class JSablier extends JLabel implements Observer {
 	
+	private static final long serialVersionUID = 7770571884846643267L;
+
 	public JSablier(final Sablier sablier) {
 		super(sablier.toString());
 		sablier.addObserver(this);

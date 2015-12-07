@@ -2,6 +2,7 @@ package boggle.gui.partie;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Observable;
@@ -9,6 +10,7 @@ import java.util.Observer;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -16,8 +18,8 @@ import javax.swing.JTextField;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 
+import boggle.gui.decorateur.DecorateurBoutonPlat;
 import boggle.jeu.Partie;
-import boggle.jeu.joueur.Humain;
 import boggle.jeu.joueur.Joueur;
 import boggle.mots.Grille;
 
@@ -26,12 +28,15 @@ import boggle.mots.Grille;
  */
 public class JPartie extends JPanel implements Observer {
 
+	private static final long serialVersionUID = 7040160301203717007L;
+	
 	private Partie partie;
 	private JGrille jGrille;
 	private JSablier jSablier;
 	private JList<String> jListeMots;
 	private JList<Joueur> jListeScores;
 	
+	private JLabel tourLabel;
 	private JTextField zoneSaisie;
 	
 	private JButton ajouter;
@@ -41,18 +46,18 @@ public class JPartie extends JPanel implements Observer {
 	public JPartie(final Partie partie) {
 		super(new BorderLayout(10,10));
 		
-		partie.addObserver(this);
-		
 		final Grille grille = partie.getGrille();
 		this.partie = partie;
+		this.partie.addObserver(this);
 		this.jGrille = new JGrille(grille);
 		this.jSablier = new JSablier(partie.getSablier());
 		this.jListeMots = new JList<String>(new ListMotsModel(grille));
-		this.jListeScores = new JList<Joueur>(new ListJoueursModel(partie));
+		this.jListeScores = new JList<Joueur>(new ListJoueursModel(partie.getJoueur()));
+		this.tourLabel = new JLabel();
 		this.zoneSaisie = new JTextField();
-		this.ajouter = new JButton("Ajouter");
-		this.vider = new JButton("Vider");
-		this.terminer = new JButton("Terminer");
+		this.ajouter = new DecorateurBoutonPlat(new JButton("Ajouter"));
+		this.vider = new DecorateurBoutonPlat(new JButton("Vider"));
+		this.terminer = new DecorateurBoutonPlat(new JButton("Terminer"));
 		
 		zoneSaisie.setPreferredSize(new Dimension(200,20));
 		
@@ -92,6 +97,10 @@ public class JPartie extends JPanel implements Observer {
 			
 		});
 		
+		JPanel haut = new JPanel(new FlowLayout(FlowLayout.LEADING));
+		haut.add(tourLabel);
+		haut.add(jSablier);
+		
 		JPanel boutons = new JPanel();
 		boutons.add(ajouter);
 		boutons.add(vider);
@@ -102,7 +111,7 @@ public class JPartie extends JPanel implements Observer {
 		
 		JPanel center = new JPanel();
 		center.setLayout(new BoxLayout(center, BoxLayout.PAGE_AXIS));
-		center.add(jSablier);
+		center.add(haut);
 		center.add(jGrille);
 		center.add(panelSaisie);
 		center.add(boutons);
@@ -119,11 +128,15 @@ public class JPartie extends JPanel implements Observer {
 	}
 
 	public void update(Observable obs, Object o) {
-		boolean enabled = partie.getJoueurCourant() instanceof Humain;
+		Joueur joueur = partie.getJoueurCourant();
+		boolean enabled = joueur.estHumain();
+		tourLabel.setText("Tour de " + joueur.getNom());
+		zoneSaisie.setText("");
 		zoneSaisie.setEnabled(enabled);
 		ajouter.setEnabled(enabled);
 		vider.setEnabled(enabled);
 		terminer.setEnabled(enabled);
+		jGrille.setEnabled(enabled);
 	}
 
 }

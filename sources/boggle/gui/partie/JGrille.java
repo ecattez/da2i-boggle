@@ -2,6 +2,7 @@ package boggle.gui.partie;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -20,6 +21,8 @@ import boggle.mots.Grille;
  * Représente une grille de dés
  */
 public class JGrille extends JPanel implements Observer {
+	
+	private static final long serialVersionUID = -258981629780565455L;
 	
 	public static final Color DEFAULT_COLOR = Color.WHITE;
 	public static final Color COULEUR_DE_UTILISE = Color.GREEN;
@@ -46,17 +49,27 @@ public class JGrille extends JPanel implements Observer {
 		this.repaint();
 	}
 	
+	// Rédéfinit la méthode setEnabled pour appeler la méthode setEnabled de chaque JDe
+	public void setEnabled(boolean enabled) {
+		super.setEnabled(enabled);
+		for (int i=0; i < this.getComponentCount(); i++) {
+			this.getComponent(i).setEnabled(enabled);
+		}
+	}
+	
 	/**
 	 * Représente en interne un dé
 	 */
 	class JDe extends JButton {
+		
+		private static final long serialVersionUID = 6952888330383232312L;
 		
 		public Coordonnees coord;
 		
 		public JDe(final Coordonnees coord) {
 			this.coord = coord;
 			this.setPreferredSize(new Dimension(64, 64));
-			this.setText(grille.getFaceVisible(coord));
+			this.setFont(new Font("Arial", Font.PLAIN, 30));
 			this.addActionListener(new ActionListener() {
 				
 				public void actionPerformed(ActionEvent e) {

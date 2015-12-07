@@ -229,7 +229,8 @@ public abstract class Grille extends Observable implements Observer {
 		}
 		StringBuilder builder = new StringBuilder();
 		for (Coordonnees c : deck) {
-			builder.append(getFaceVisible(c));
+			// On utilise un second StringBuilder au cas où la face d'un dé est un ensemble de lettres
+			builder.append(new StringBuilder(getFaceVisible(c)).reverse());
 		}
 		return builder.reverse().toString();
 	}

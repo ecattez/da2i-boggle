@@ -5,7 +5,6 @@ import java.util.Observer;
 
 import javax.swing.AbstractListModel;
 
-import boggle.jeu.Partie;
 import boggle.jeu.joueur.Joueur;
 
 /**
@@ -13,23 +12,25 @@ import boggle.jeu.joueur.Joueur;
  */
 public class ListJoueursModel extends AbstractListModel<Joueur> implements Observer {
 	
+	private static final long serialVersionUID = -6285952535980327348L;
+	
 	private Joueur[] joueurs;
 	
-	public ListJoueursModel(Partie partie) {
-		this.joueurs = partie.getJoueur();
-		partie.addObserver(this);
+	public ListJoueursModel(Joueur[] joueurs) {
+		for (int i=0; i < joueurs.length; i++) {
+			joueurs[i].addObserver(this);
+		}
+		this.joueurs = joueurs;
 	}
 
 	public Joueur getElementAt(int i) {
 		return joueurs[i];
 	}
 
-	@Override
 	public int getSize() {
 		return joueurs.length;
 	}
-
-	@Override
+	
 	public void update(Observable obs, Object o) {
 		this.fireContentsChanged(this, 0, getSize() - 1);
 	}
