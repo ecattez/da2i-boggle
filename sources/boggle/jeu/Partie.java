@@ -18,7 +18,10 @@
  */
 package boggle.jeu;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Observable;
 
 import boggle.jeu.joueur.Joueur;
@@ -47,9 +50,8 @@ public class Partie extends Observable implements Iterable<Joueur>, Runnable {
 	private boolean gagnant;
 	private int tour;
 	
-	// Indice du joueur courant utilisé par l'iterateur.
-	// Il se trouve ici car on en a besoin pour la méthode getJoueurCourant()
-	private int i = -1;
+	// Le joueur courant dans la partie
+	private Joueur joueur;
 	
 	public Partie(Regles regles, Joueur[] joueurs) {
 		this.regles = regles;
@@ -152,13 +154,13 @@ public class Partie extends Observable implements Iterable<Joueur>, Runnable {
 	 * @return	le joueur courant
 	 */
 	public Joueur getJoueurCourant() {
-		return joueurs[i % joueurs.length];
+		return joueur;
 	}
 	
 	/**
 	 * Retourne tous les joueurs de la partie
 	 */
-	public Joueur[] getJoueur() {
+	public Joueur[] getJoueurs() {
 		return joueurs;
 	}
 	
@@ -192,10 +194,7 @@ public class Partie extends Observable implements Iterable<Joueur>, Runnable {
 		int pt;
 		int min = grille.tailleMinimale();
 		int[] points = getPoints();
-		Iterator<String> it = grille.getMots().iterator();
-		String mot;
-		while (it.hasNext()) {
-			mot = it.next();
+		for (String mot : grille.getMots()) {
 			taille = mot.length();
 			if (taille >= min && verifierMot(mot)) {
 				if (taille - min < points.length) {
@@ -210,11 +209,24 @@ public class Partie extends Observable implements Iterable<Joueur>, Runnable {
 	}
 	
 	/**
+	 * Etablit un classement des différents joueurs de la partie dans l'ordre des vainqueurs (décroissants)
+	 * 
+	 * @return une liste d'instance de Score représentant chaque joueur et son score
+	 */
+	public List<Score> etablirClassement() {
+		List<Score> scores = new ArrayList<Score>();
+		for (Joueur joueur : joueurs) {
+			scores.add(new Score(joueur));
+		}
+		Collections.sort(scores);
+		return scores;
+	}
+	
+	/**
 	 * Démarre la partie
 	 */
 	public void run() {
 		Iterator<Joueur> it = iterator();
-		Joueur joueur = null;
 		Joueur meilleur = null;
 		
 		while (!estTerminee()) {
@@ -239,6 +251,7 @@ public class Partie extends Observable implements Iterable<Joueur>, Runnable {
 			incTour();
 		}
 		System.out.println("Vainqueur: " + meilleur);
+		System.out.println(etablirClassement());
 	}
 	
 	/**
@@ -262,6 +275,8 @@ public class Partie extends Observable implements Iterable<Joueur>, Runnable {
 	 * Implémentation d'un iterateur sur les joueurs.
 	 */
 	private class JoueurIterator implements Iterator<Joueur> {
+		
+		private int i = -1;
 		
 		/**
 		 * Retourne toujours vrai tant qu'il y a des joueurs dans la partie

@@ -35,6 +35,10 @@ public abstract class IA extends Joueur implements Runnable {
 		super(name);
 	}
 	
+	protected boolean forcerArret() {
+		return !this.equals(partie.getJoueurCourant()) || partie.estTerminee();
+	}
+	
 	public void joue(Grille grille, ArbreLexical arbre, Partie partie) {
 		this.grille = grille;
 		this.arbre = arbre;
