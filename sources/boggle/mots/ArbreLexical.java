@@ -32,10 +32,10 @@ import boggle.BoggleException;
  */
 public class ArbreLexical {
 
-	public static final int TAILLE_ALPHABET = 26 ;
+	public static final int TAILLE_ALPHABET = 26;
 	
-	private boolean estMot ; // vrai si le noeud courant est la fin d'un mot valide
-	private ArbreLexical[] fils = new ArbreLexical[TAILLE_ALPHABET] ; // les sous-arbres
+	private boolean estMot; // vrai si le noeud courant est la fin d'un mot valide
+	private ArbreLexical[] fils = new ArbreLexical[TAILLE_ALPHABET]; // les sous-arbres
 
 	/**
 	 * Crée un arbre vide (sans aucun mot)
@@ -72,9 +72,9 @@ public class ArbreLexical {
 	public boolean estMot() {
 		return estMot ;
 	}
-
+	
 	/**
-	 * Place le mot spécifié dans l'arbre
+	 * Place le mot en paramètre dans l'arbre
 	 * 
 	 * @param	word
 	 * 			le mot à ajouter dans l'arbre
@@ -82,16 +82,29 @@ public class ArbreLexical {
 	 * @return	<code>true</code> si le mot a été ajouté, <code>false</code> sinon
 	 */
 	public boolean ajouter(String word) {
+		word = Normalizer.normalize(word, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "").toUpperCase();
+		return word.matches("[A-Z]+") && ajouterNorme(word);
+	}
+
+	/**
+	 * Place le mot préalablement normé (ASCII en majuscule) dans l'arbre
+	 * 
+	 * @param	word
+	 * 			le mot à ajouter dans l'arbre
+	 * 
+	 * @return	<code>true</code> si le mot a été ajouté, <code>false</code> sinon
+	 */
+	private boolean ajouterNorme(String word) {
 		if (word.length() == 0) {
 			estMot = true;
 			return true;
 		}
-		char c = Character.toUpperCase(word.charAt(0));
+		char c = word.charAt(0);
 		int i = indexOf(c);
 		if (fils[i] == null) {
 			fils[i] = new ArbreLexical();
 		}
-		return fils[i].ajouter(word.substring(1));
+		return fils[i].ajouterNorme(word.substring(1));
 	}
 
 	/**
@@ -171,14 +184,9 @@ public class ArbreLexical {
 	public static ArbreLexical creerArbre(String fichier) {
 		ArbreLexical root = new ArbreLexical();
 		Path path = Paths.get("config", fichier);
-		String word;
 		try (Scanner sc = new Scanner(path)) {
 			while (sc.hasNextLine()) {
-				word = Normalizer.normalize(sc.nextLine(), Normalizer.Form.NFD);
-				word = word.replaceAll("[^\\p{ASCII}]", "").toUpperCase();
-				if (word.matches("[A-Z]+")) {
-					root.ajouter(word);
-				}
+				root.ajouter(sc.nextLine());
 			}
 		} catch (IOException e) {
 			throw new BoggleException("Impossible de créer un arbre lexical avec le fichier " + fichier + "\n" + e);

@@ -21,6 +21,7 @@ package boggle.jeu;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -89,7 +90,7 @@ public final class Scores {
 		Path scoreFile = getPathByDimension(n);
 		mkdirScores();
 		prop.setProperty(joueur.getNom(), String.valueOf(joueur.getScore()));
-		try (BufferedWriter out = Files.newBufferedWriter(scoreFile, StandardOpenOption.CREATE)) {
+		try (BufferedWriter out = Files.newBufferedWriter(scoreFile, Charset.forName("UTF-8"), StandardOpenOption.CREATE)) {
 			prop.store(out, "Scores pour les grilles de taille " + n);
 		} catch (IOException e) {
 			throw new BoggleException("Une erreur s'est produite lors de l'écriture du fichier de score " + scoreFile + "\n" + e);
@@ -107,7 +108,7 @@ public final class Scores {
 	private static Properties chargerProperties(int n) {
 		Properties prop = new Properties();
 		Path scoreFile = getPathByDimension(n);
-		try (BufferedReader in = Files.newBufferedReader(scoreFile)) {
+		try (BufferedReader in = Files.newBufferedReader(scoreFile, Charset.forName("UTF-8"))) {
 			prop.load(in);
 		} catch (IOException e) {
 			throw new BoggleException("Une erreur s'est produite lors de l'ouverture du fichier de score " + scoreFile + "\n" + e);

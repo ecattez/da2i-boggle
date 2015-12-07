@@ -17,7 +17,8 @@ public class ListMotsModel extends AbstractListModel<String> implements Observer
 	}
 	
 	public String getElementAt(int i) {
-		return grille.getMots().get(i);
+		String elt = grille.getMots().get(i);
+		return elt == null ? "" : elt;
 	}
 
 	public int getSize() {

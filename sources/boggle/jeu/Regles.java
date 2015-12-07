@@ -19,6 +19,7 @@
 package boggle.jeu;
 
 import java.io.BufferedReader;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -56,7 +57,7 @@ public class Regles {
 			throw new BoggleException("Le fichier " + fichierRegles + " n'existe pas");
 		}
 		Properties prop = new Properties();
-		try (BufferedReader in = Files.newBufferedReader(regles)) {
+		try (BufferedReader in = Files.newBufferedReader(regles, Charset.forName("UTF-8"))) {
 			prop.load(in);
 		} catch (Exception e) {
 			throw new BoggleException("Une erreur s'est produite à l'ouverture du fichier " + fichierRegles + "\n" + e);
@@ -91,21 +92,21 @@ public class Regles {
 	}
 	
 	// Le constructeur avec chaque paramètre
-	public Regles(De[] des, ArbreLexical dictionnaire, int tailleMin, int[] points, int tourMax, int scoreCible, int dureeSablier) {
+	public Regles(String fichierDes, String fichierDico, int tailleMin, int[] points, int tourMax, int scoreCible, int dureeSablier) {
 		check(tailleMin, points, tourMax, scoreCible, dureeSablier);
 		this.tailleMin = tailleMin;
 		this.tourMax = tourMax;
 		this.scoreCible = scoreCible;
 		this.dureeSablier = dureeSablier;
-		this.des = des;
-		this.dictionnaire = dictionnaire;
+		this.des = De.creerDes(fichierDes);
+		this.dictionnaire = ArbreLexical.creerArbre(fichierDico);
 		this.points = points;
 		
 	}
 	
 	// Le constructeur de chaque paramètre simplifé avec les valeurs par défaut
-	public Regles(De[] des, ArbreLexical dictionnaire, int tailleMin) {
-		this(des, dictionnaire, tailleMin, DEFAULT_POINTS, DEFAULT_TOURMAX, DEFAULT_SCORECIBLE, DEFAULT_DUREESABLIER);
+	public Regles(String fichierDes, String fichierDico, int tailleMin) {
+		this(fichierDes, fichierDico, tailleMin, DEFAULT_POINTS, DEFAULT_TOURMAX, DEFAULT_SCORECIBLE, DEFAULT_DUREESABLIER);
 	}
 	
 	/**
