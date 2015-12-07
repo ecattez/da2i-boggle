@@ -37,8 +37,8 @@ public class Sablier extends Observable implements Runnable {
 	private boolean stop;
 	
 	public Sablier(int sec) {
-		this.dureeMax = sec;
-		this.duree = sec;
+		this.dureeMax = sec + 1;
+		this.duree = dureeMax;
 	}
 	
 	public Sablier() {
@@ -76,12 +76,12 @@ public class Sablier extends Observable implements Runnable {
 	 */
 	public void run() {
 		while (!isOver()) {
+			if (!isOver()) {
+				stop = (--duree <= 0);
+				setChanged();
+				notifyObservers();
+			}
 			try {
-				if (!isOver()) {
-					stop = (--duree <= 0);
-					setChanged();
-					notifyObservers();
-				}
 				Thread.sleep(ONE_SECOND);
 			} catch (InterruptedException e) {
 				e.printStackTrace();

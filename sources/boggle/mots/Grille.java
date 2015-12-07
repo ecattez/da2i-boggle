@@ -150,6 +150,18 @@ public abstract class Grille extends Observable implements Observer {
 	}
 	
 	/**
+	 * Vérifie si le dé de coordonnées (x,y) est le dernier utilisé
+	 * 
+	 * @param	c
+	 * 			les coordonnées du dernier dé utilisé dans la grille
+	 * 
+	 * @return	<code>true</code> si le dé est le dernier utilisé, <false> sinon
+	 */
+	public boolean estDernierUtilise(Coordonnees c) {
+		return c.equals(deck.peek());
+	}
+	
+	/**
 	 * Retourne la position du dernier dé utilisé par le joueur
 	 * 
 	 * @return	les coordonnées du dernier dé utilisé par le joueur
@@ -191,7 +203,7 @@ public abstract class Grille extends Observable implements Observer {
 	/**
 	 * Rend disponible tous les dés de la grille
 	 */
-	public void rendreTout() {
+	public synchronized void rendreTout() {
 		while (!deck.isEmpty()) {
 			getDe(deck.pop()).rendre();
 		}

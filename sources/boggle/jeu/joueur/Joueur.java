@@ -99,16 +99,4 @@ public abstract class Joueur extends Observable {
 	 */
 	public abstract void joue(Grille grille, ArbreLexical arbre, Partie partie);
 	
-	/**
-	 * Le joueur termine son tour
-	 * 
-	 * @param	grille
-	 * 			la grille utilisée pour la partie du joueur
-	 * @param	arbre
-	 * 			l'arbre lexical utilisé pour la partie du joueur
-	 * @param	partie
-	 * 			la partie dans laquelle joue le joueur
-	 */
-	public abstract void terminerTour();
-	
 }

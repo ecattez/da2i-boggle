@@ -19,6 +19,7 @@
 package boggle.jeu;
 
 import java.util.Iterator;
+import java.util.Observable;
 
 import boggle.jeu.joueur.Joueur;
 import boggle.mots.ArbreLexical;
@@ -32,7 +33,7 @@ import boggle.mots.GrilleLettres;
  * - si le score à atteindre est <= 0, la partie s'arrête quand le dernier tour est passé
  * - si le tour maximal atteignable est <= 0, la partie s'arrête quand le score à atteindre est passé
  */
-public class Partie implements Iterable<Joueur>, Runnable {
+public class Partie extends Observable implements Iterable<Joueur>, Runnable {
 	
 	public static final int DEFAULT_CHRONO = 60;
 	public static final int DEFAULT_SCORECIBLE = 30;
@@ -45,6 +46,8 @@ public class Partie implements Iterable<Joueur>, Runnable {
 	private Joueur[] joueurs;
 	private boolean gagnant;
 	private int tour;
+	
+	private Joueur joueurCourant;
 	
 	public Partie(Regles regles, Joueur[] joueurs) {
 		this.regles = regles;
@@ -142,6 +145,22 @@ public class Partie implements Iterable<Joueur>, Runnable {
 	}
 	
 	/**
+	 * Retourne le joueur qui joue actuellement
+	 * 
+	 * @return	le joueur courant
+	 */
+	public Joueur getJoueurCourant() {
+		return joueurCourant;
+	}
+	
+	/**
+	 * Retourne tous les joueurs de la partie
+	 */
+	public Joueur[] getJoueur() {
+		return joueurs;
+	}
+	
+	/**
 	 * Retourne un itérateur sur les joueurs de la partie
 	 */
 	public Iterator<Joueur> iterator() {
@@ -173,7 +192,6 @@ public class Partie implements Iterable<Joueur>, Runnable {
 		int[] points = getPoints();
 		Iterator<String> it = grille.getMots().iterator();
 		String mot;
-		joueur.terminerTour();
 		while (it.hasNext()) {
 			mot = it.next();
 			taille = mot.length();
@@ -194,31 +212,37 @@ public class Partie implements Iterable<Joueur>, Runnable {
 	 */
 	public void run() {
 		Iterator<Joueur> it = iterator();
-		Joueur joueur = null;
 		Joueur meilleur = null;
+		
+		// On notifie que la partie commence
+		update();
 		while (!estTerminee()) {
 			grille.secouer();
-			System.out.println("Grille secouée.\n");
-			joueur = it.next();
-			System.out.println("Au tour de " + joueur.getNom() + " (score: " + joueur.getScore() + ").\n");
-			joueur.joue(grille, getDictionnaire(), this);
+			joueurCourant = it.next();
+			joueurCourant.joue(grille, getDictionnaire(), this);
 			// On démarre le compte à rebours
 			demarrerSablier();
 			// La fin du tour se produit à la fin du compte à rebours
 			// ou lorsque celui-ci est stoppé (appuyer sur Terminer)
-			System.out.println("Fin du tour de " + joueur.getNom() + ".\nCalcul des points en cours.\n");
-			terminerTour(joueur);
-			System.out.println("Résultat: " + joueur);
+			terminerTour(joueurCourant);
 			// On stocke le meilleur joueur courant de la partie
-			if (meilleur == null || meilleur.getScore() < joueur.getScore()) {
-				meilleur = joueur;
+			if (meilleur == null || meilleur.getScore() < joueurCourant.getScore()) {
+				meilleur = joueurCourant;
 			}
 			// Le joueur gagne la partie s'il y a un score cible à atteindre (donc > 0)
 			// et qu'il a atteint voire dépassé ce score
 			gagnant = (getScoreCible() > 0 && meilleur.getScore() >= getScoreCible());
 			incTour();
+			// On notifie que la partie a changé
+			update();
 		}
 		System.out.println("Vainqueur: " + meilleur);
+	}
+	
+	// Notifie les observeurs que la partie a changé
+	private void update() {
+		setChanged();
+		notifyObservers();
 	}
 	
 	/**

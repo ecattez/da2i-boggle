@@ -39,8 +39,4 @@ public class Humain extends Joueur {
 		// Rien à faire
 	}
 	
-	public void terminerTour() {
-		// Rien à faire
-	}
-
 }
