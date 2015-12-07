@@ -42,7 +42,6 @@ public class ConteneurPrincipal extends JPanel {
 			this.add(new EcranNouvellePartie(), NOUVELLE_PARTIE);
 			this.add(new EcranJeu(), ECRAN_JEU);
 			this.add(new EcranClassement(), CLASSEMENT);
-			
 		}
 	}
 	
@@ -120,7 +119,7 @@ public class ConteneurPrincipal extends JPanel {
 
 		}
 
-		public void afficherTout() {
+		public void afficherToutbg() {
 			this.afficher(true);
 		}
 		// les "..." designe un tableau
@@ -152,8 +151,8 @@ public class ConteneurPrincipal extends JPanel {
 
 		public EcranNouvellePartie() {
 			super();
-			this.setBackground(Color.ORANGE);
-
+			this.setBackground(Color.GREEN);
+			this.add(new NouvellePartie());
 		}
 
 		public void recharger() {
@@ -163,6 +162,11 @@ public class ConteneurPrincipal extends JPanel {
 
 	public abstract class Ecran extends JPanel {
 
+		public Ecran(){}
+		public Ecran(LayoutManager layout){
+			super(layout);
+		}
+		
 		public abstract void recharger();
 
 		public void setVisible(boolean visible)	{
