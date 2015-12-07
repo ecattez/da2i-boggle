@@ -18,46 +18,45 @@
  */
 package boggle.jeu;
 
-import java.util.Observable;
-
-import boggle.mots.ArbreLexical;
-import boggle.mots.GrilleLettres;
+import java.util.Map;
 
 /**
- * Représentation générique d'un joueur de Boggle
+ * Un score est une implémentation de {@link Map.Entry} avec comme clé le nom d'un joueur et comme valeur son score
  */
-public abstract class Joueur extends Observable {
+public class Score implements Map.Entry<String, Integer>, Comparable<Score> {
 	
-	private String name;
-	private int score;
+	private String nomJoueur;
+	private Integer scoreJoueur;
 	
-	public Joueur(String name) {
-		this.name = name;
-		this.score = 0;
+	public Score(String nomJoueur, Integer scoreJoueur) {
+		this.nomJoueur = nomJoueur;
+		this.scoreJoueur = scoreJoueur;
+	}
+
+	public String getKey() {
+		return nomJoueur;
+	}
+
+	public Integer getValue() {
+		return scoreJoueur;
+	}
+
+	public Integer setValue(Integer value) {
+		int v = scoreJoueur;
+		scoreJoueur = value;
+		return v;
 	}
 	
-	public String getName() {
-		return name;
-	}
-	
-	public int getScore() {
-		return score;
-	}
-	
-	public void resetScore() {
-		this.score = 0;
-	}
-	
-	public void incScore(int n) {
-		this.score += n;
+	/* La comparaison se fait dans l'ordre décroissant */
+	public int compareTo(Score o) {
+		return o.scoreJoueur.compareTo(scoreJoueur);
 	}
 	
 	/**
-	 * Le joueur effectue une action dans le Boggle
-	 * 
-	 * @param	g
-	 * 			la grille utilisée pour la partie du joueur
+	 * Représentation textuelle d'un score
 	 */
-	public abstract void joue(GrilleLettres g, ArbreLexical arbre);
-	
+	public String toString() {
+		return nomJoueur + "=" + scoreJoueur;
+	}
+
 }

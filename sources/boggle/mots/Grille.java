@@ -37,7 +37,7 @@ public abstract class Grille extends Observable implements Observer {
 	// La taille de la grille (dimension x dimension)
 	private int dimension;
 	
-	// On utilise une liste pour stocker les mots fabriqués avec cette grille
+	// On utilise une liste (à contenu unique) pour stocker les mots fabriqués avec cette grille
 	private List<String> mots;
 	
 	// On utilise une double file pour conserver les positions utilisée par le joueur
@@ -212,6 +212,9 @@ public abstract class Grille extends Observable implements Observer {
 	 * @return	les lettres utilisée par l'utilisateur dans l'ordre d'utilisation
 	 */
 	public String getLettresUtilisees() {
+		if (deck.size() == 0) {
+			return "";
+		}
 		StringBuilder builder = new StringBuilder();
 		for (Coordonnees c : deck) {
 			builder.append(getFaceVisible(c));
@@ -225,7 +228,8 @@ public abstract class Grille extends Observable implements Observer {
 	 * @return	<code>true</code> si le mot a bien été enregistré, <code>false</code> sinon
 	 */
 	public boolean stockerMot() {
-		return mots.add(getLettresUtilisees());
+		String mot = getLettresUtilisees();
+		return !mots.contains(mot) && mots.add(mot);
 	}
 	
 	/**
@@ -271,7 +275,7 @@ public abstract class Grille extends Observable implements Observer {
 	 * Secoue la grille pour mélanger les dés
 	 */
 	public void secouer() {
-		int r = (int) (Math.random() + 500);
+		int r = (int) (Math.random() * 500);
 		De d1, d2;
 		Coordonnees c1, c2;
 		// On efface tous les mots qui ont été produits avec cette grille
@@ -395,7 +399,7 @@ public abstract class Grille extends Observable implements Observer {
 	 * 
 	 * @return	<code>true</code> si le mot est écrit à partir de la grille, <code>false</code> sinon
 	 */
-	public boolean ecrire(String mot) {
+	public synchronized boolean ecrire(String mot) {
 		if (mot.length() == 0) {
 			return true;
 		}

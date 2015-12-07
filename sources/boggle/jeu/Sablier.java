@@ -21,24 +21,32 @@ package boggle.jeu;
 import java.util.Observable;
 
 /**
- * Le compte à rebours donne un temps imparti à chaque joueur
+ * Le sablier donne un temps imparti à chaque joueur
  * pour trouver des mots dans une grille.
  */
-public class CompteARebours extends Observable implements Runnable {
+public class Sablier extends Observable implements Runnable {
 	
+	public static final int DEFAULT_DUREE = 60 * 5;
 	public static final int ONE_SECOND = 1000;
 	
-	// Le temps en secondes du compte à rebours
-	private int delay;
-	// Indique si le compte à rebours est arrêté ou non
+	// La durée totale que peut atteindre le sablier
+	private int dureeMax;
+	// Le temps courant en secondes du sablier
+	private int duree;
+	// Indique si le sablier est arrêté ou non
 	private boolean stop;
 	
-	public CompteARebours(int sec) {
-		this.delay = sec;
+	public Sablier(int sec) {
+		this.dureeMax = sec;
+		this.duree = sec;
+	}
+	
+	public Sablier() {
+		this(DEFAULT_DUREE);
 	}
 
 	/**
-	 * Arrête le compte à rebours
+	 * Arrête le sablier
 	 * 
 	 * Note: Pour pouvoir l'arrêter à tout moment, il est essentil qu'il n'y est pas le mot clé "synchronized"
 	 */
@@ -47,23 +55,30 @@ public class CompteARebours extends Observable implements Runnable {
 	}
 	
 	/**
-	 * Vérifie si le compte à rebours est arrivé à son terme
+	 * Remet le sablier à son état initial
+	 */
+	public void reset() {
+		this.duree = dureeMax;
+		this.stop = false;
+	}
+	
+	/**
+	 * Vérifie si le sablier est arrivé à son terme
 	 * 
-	 * @return <code>true</code> si le compte à rebours est à 0, <code>false</code> sinon
+	 * @return <code>true</code> si le sablier est à 0, <code>false</code> sinon
 	 */
 	public boolean isOver() {
 		return stop;
 	}
 	
 	/**
-	 * Le compte à rebours continue tant qu'il n'est pas arrivé à 0 ou qu'il est arrêté par l'utilisateur
+	 * Le sablier continue tant qu'il n'est pas arrivé à 0 ou qu'il est arrêté par l'utilisateur
 	 */
 	public void run() {
 		while (!isOver()) {
 			try {
 				if (!isOver()) {
-					System.out.println(delay--);
-					stop = (delay <= 0);
+					stop = (--duree <= 0);
 					setChanged();
 					notifyObservers();
 				}
@@ -75,11 +90,11 @@ public class CompteARebours extends Observable implements Runnable {
 	}
 	
 	/**
-	 * Représentation textuelle du compte à rebours
+	 * Représentation textuelle du sablier
 	 */
 	public String toString() {
-		int min = (delay % 3600) / 60;
-		int sec = delay % 60;
+		int min = (duree % 3600) / 60;
+		int sec = duree % 60;
 		return String.format("%02d:%02d", min, sec);
 	}
 

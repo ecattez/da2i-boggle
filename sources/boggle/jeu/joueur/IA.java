@@ -16,16 +16,35 @@
  * 
  * @author Edouard CATTEZ <edouard.cattez@sfr.fr> (La 7 Production)
  */
-package boggle.jeu;
+package boggle.jeu.joueur;
 
+import boggle.jeu.Partie;
+import boggle.mots.ArbreLexical;
+import boggle.mots.Grille;
 
 /**
  * Implémentation d'un joueur machine
  */
 public abstract class IA extends Joueur implements Runnable {
-
+	
+	protected Grille grille;
+	protected ArbreLexical arbre;
+	protected Partie partie;
+	protected boolean tourFini;
+	
 	public IA(String name) {
 		super(name);
+	}
+	
+	public void joue(Grille grille, ArbreLexical arbre, Partie partie) {
+		this.grille = grille;
+		this.arbre = arbre;
+		this.partie = partie;
+		new Thread(this).start();
+	}
+	
+	public void terminerTour() {
+		tourFini = true;
 	}
 
 }

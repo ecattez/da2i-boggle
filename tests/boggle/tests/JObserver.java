@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 
 import boggle.mots.Coordonnees;
 import boggle.mots.CoordonneesCartesiennes;
-import boggle.mots.GrilleLettres;
+import boggle.mots.Grille;
 
 
 /*
@@ -32,7 +32,10 @@ public class JObserver extends JPanel implements Observer {
 		protected void paintComponent(Graphics gph) {
 			this.setBackground(Color.WHITE);
 			this.setText(g.getFaceVisible(c));
-			if (g.estUtilise(c)) {
+			if (c.equals(g.getDernierePosition())) {
+				this.setBackground(Color.ORANGE);
+			}
+			else if (g.estUtilise(c)) {
 				this.setBackground(Color.RED);
 			}
 			super.paintComponent(gph);
@@ -40,14 +43,13 @@ public class JObserver extends JPanel implements Observer {
 		
 	}
 	
-	private GrilleLettres g;
-	private int d;
+	private Grille g;
 	
-	public JObserver(GrilleLettres g) {
+	public JObserver(Grille g) {
 		super();
 		this.g = g;
 		this.g.addObserver(this);
-		this.d = g.dimension();
+		int d = g.dimension();
 		this.setLayout(new GridLayout(d,d));
 		for (int y = 0; y < d; y++) {
 			for (int x = 0; x < d; x++) {
