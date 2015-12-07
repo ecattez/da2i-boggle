@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.CaretEvent;
@@ -15,7 +16,7 @@ import boggle.jeu.Partie;
 import boggle.jeu.Regles;
 import boggle.jeu.joueur.Humain;
 import boggle.jeu.joueur.Joueur;
-import boggle.jeu.joueur.Piko;
+import boggle.jeu.joueur.IAHardcore;
 import boggle.mots.Grille;
 
 public class PartieTest {
@@ -24,7 +25,7 @@ public class PartieTest {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Joueur[] joueur = { new Humain("Edouard"), new Piko() };
+		Joueur[] joueur = { new IAHardcore("Picault"), new IAHardcore("Beaufils") };
 		Regles regles = new Regles("regles-4x4.config");
 		System.out.println(regles);
 		
@@ -37,6 +38,7 @@ public class PartieTest {
 		final JTextField text = new JTextField();
 		final JButton ajouter = new JButton("ajouter");
 		final JButton terminer = new JButton("terminer");
+		final ListMotsModel model = new ListMotsModel(grille);
 		
 		text.addCaretListener(new CaretListener() {
 
@@ -67,6 +69,8 @@ public class PartieTest {
 			
 		});
 		
+		JList<String> jlist = new JList<String>(model);
+		container.add(jlist, BorderLayout.WEST);
 		container.add(obs, BorderLayout.CENTER);
 		container.add(text, BorderLayout.SOUTH);
 		container.add(bottom, BorderLayout.EAST);

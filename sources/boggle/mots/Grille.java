@@ -21,11 +21,9 @@ package boggle.mots;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.Set;
 
 import boggle.BoggleException;
 
@@ -40,7 +38,7 @@ public abstract class Grille extends Observable implements Observer {
 	private int dimension;
 	
 	// On utilise une liste (à contenu unique) pour stocker les mots fabriqués avec cette grille
-	private Set<String> mots;
+	private List<String> mots;
 	
 	// On utilise une double file pour conserver les positions utilisée par le joueur
 	// lors de la création d'un mot. Elle est vidée à chaque nouveau mot.
@@ -57,7 +55,7 @@ public abstract class Grille extends Observable implements Observer {
 			throw new BoggleException("La dimension minimale d'une grille est " + DIMENSION_MIN);
 		}
 		this.dimension = dimension;
-		this.mots = new HashSet<>();
+		this.mots = new ArrayList<>();
 		this.deck = new ArrayDeque<>();
 	}
 	
@@ -230,7 +228,8 @@ public abstract class Grille extends Observable implements Observer {
 	 * @return	<code>true</code> si le mot a bien été enregistré, <code>false</code> sinon
 	 */
 	public boolean stockerMot() {
-		return mots.add(getLettresUtilisees());
+		String mot = getLettresUtilisees();
+		return !mots.contains(mot) && mots.add(mot);
 	}
 	
 	/**
@@ -245,7 +244,7 @@ public abstract class Grille extends Observable implements Observer {
 	 * 
 	 * @return	la liste de tous les mots obtenus par le joueur avec cette grille
 	 */
-	public Set<String> getMots() {
+	public List<String> getMots() {
 		return mots;
 	}
 	
@@ -400,7 +399,7 @@ public abstract class Grille extends Observable implements Observer {
 	 * 
 	 * @return	<code>true</code> si le mot est écrit à partir de la grille, <code>false</code> sinon
 	 */
-	public boolean ecrire(String mot) {
+	public synchronized boolean ecrire(String mot) {
 		if (mot.length() == 0) {
 			return true;
 		}

@@ -24,15 +24,17 @@ import java.util.List;
 /**
  * IA difficile
  */
-public class Piko extends IA {
+public class IAHardcore extends IA {
 	
-	public Piko() {
-		super("Piko");
+	public IAHardcore(String name) {
+		super(name);
 	}
 
 	public void run() {
 		List<String> mots = new ArrayList<String>();
-		for (char c = 'A'; c <= 'Z'; c++) {
+		//char c = 'A';
+		tourFini = false;
+		for (char c = 'A'; !tourFini && c <= 'Z'; c++) {
 			if (arbre.motsCommencantPar(String.valueOf(c), mots)) {
 				for (String mot : mots) {
 					if (mot.length() >= grille.tailleMinimale() && grille.ecrire(mot)) {
@@ -40,6 +42,11 @@ public class Piko extends IA {
 							Thread.sleep(1000);
 						} catch (InterruptedException e) {
 							e.printStackTrace();
+						}
+						// Si le tour s'est fini plus tôt que prévu (sablier terminé)
+						// on arrête tous les traitements
+						if (tourFini) {
+							return;
 						}
 						grille.stockerMot();
 					}

@@ -8,7 +8,7 @@ import javax.swing.JTextField;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 
-import boggle.jeu.joueur.Piko;
+import boggle.jeu.joueur.IAHardcore;
 import boggle.mots.ArbreLexical;
 import boggle.mots.De;
 import boggle.mots.GrilleLettres;
