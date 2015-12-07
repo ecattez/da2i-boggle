@@ -78,7 +78,7 @@ public final class Scores {
 	}
 	
 	/**
-	 * Ajoute le (meilleur) score d'un joueur dans le fichier correspondant
+	 * Ajoute le score d'un joueur dans le fichier correspondant
 	 * 
 	 * @param	n
 	 * 			la taille des grilles résolues par le joueur, lui valant son score
@@ -86,7 +86,36 @@ public final class Scores {
 	 * 			le joueur pour lequel il faut sauvegarder le score
 	 */
 	public static void ajouterScore(int n, Joueur joueur) {
+		ajouterScore(chargerProperties(n), n, joueur);
+	}
+	
+	/**
+	 * Ajoute le meilleur score d'un joueur dans le fichier correspondant
+	 * 
+	 * @param	n
+	 * 			la taille des grilles résolues par le joueur, lui valant son score
+	 * @param	joueur
+	 * 			le joueur pour lequel il faut sauvegarder le score
+	 */
+	public static void ajouterMeilleurScore(int n, Joueur joueur) {
 		Properties prop = chargerProperties(n);
+		String value = prop.getProperty(joueur.getNom());
+		if (value != null && value.matches("[0-9]+") && joueur.getScore() > Integer.parseInt(value)) {
+			ajouterScore(prop, n, joueur);
+		}
+	}
+	
+	/**
+	 * Ajoute le score d'un joueur dans le fichier correspondant
+	 * 
+	 * @param	prop
+	 * 			le fichier de propriété représentant les scores des joueurs selon la taille de la grille
+	 * @param	n
+	 * 			la taille des grilles résolues par le joueur, lui valant son score
+	 * @param	joueur
+	 * 			le joueur pour lequel il faut sauvegarder le score
+	 */
+	private static void ajouterScore(Properties prop, int n, Joueur joueur) {
 		Path scoreFile = getPathByDimension(n);
 		mkdirScores();
 		prop.setProperty(joueur.getNom(), String.valueOf(joueur.getScore()));

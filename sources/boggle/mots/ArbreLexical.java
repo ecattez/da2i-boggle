@@ -21,10 +21,10 @@ package boggle.mots ;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.Normalizer;
 import java.util.List;
 import java.util.Scanner;
 
+import boggle.Ascii;
 import boggle.BoggleException;
 
 /**
@@ -82,8 +82,9 @@ public class ArbreLexical {
 	 * @return	<code>true</code> si le mot a été ajouté, <code>false</code> sinon
 	 */
 	public boolean ajouter(String word) {
-		word = Normalizer.normalize(word, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "").toUpperCase();
-		return word.matches("[A-Z]+") && ajouterNorme(word);
+		String normalized = Ascii.normalizeUpper(word);
+		// On ajoute le mot s'il est entièrement en majuscule et qu'il a la même taille que le mot de départ
+		return normalized.matches("[A-Z]+") && normalized.length() == word.length() && ajouterNorme(normalized);
 	}
 
 	/**

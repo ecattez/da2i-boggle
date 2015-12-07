@@ -30,7 +30,6 @@ public abstract class IA extends Joueur implements Runnable {
 	protected Grille grille;
 	protected ArbreLexical arbre;
 	protected Partie partie;
-	protected boolean tourFini;
 	
 	public IA(String name) {
 		super(name);
@@ -43,8 +42,8 @@ public abstract class IA extends Joueur implements Runnable {
 		new Thread(this).start();
 	}
 	
-	public void terminerTour() {
-		tourFini = true;
+	public boolean estHumain() {
+		return false;
 	}
 
 }

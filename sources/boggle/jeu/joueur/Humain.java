@@ -38,9 +38,9 @@ public class Humain extends Joueur {
 	public void joue(Grille grille, ArbreLexical arbre, Partie partie) {
 		// Rien à faire
 	}
-	
-	public void terminerTour() {
-		// Rien à faire
-	}
 
+	public boolean estHumain() {
+		return true;
+	}
+	
 }
