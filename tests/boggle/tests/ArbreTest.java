@@ -11,15 +11,11 @@ public class ArbreTest {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		ArbreLexical root = new ArbreLexical();
+		ArbreLexical root = ArbreLexical.creerArbre("dict-fr.txt");
 		List<String> mots = new ArrayList<String>();
-		root.ajouter("CHAT");
-		root.ajouter("CHATON");
-		root.ajouter("CHATEAU");
-		root.ajouter("CHATOYANT");
-		root.motsCommencantPar("CHAT", mots);
+		root.motsCommencantPar("D", mots);
 		
-		System.out.println(mots);
+		System.out.println(mots.contains("DEME"));
 	}
 
 }

@@ -16,38 +16,19 @@
  * 
  * @author Edouard CATTEZ <edouard.cattez@sfr.fr> (La 7 Production)
  */
-package boggle.jeu.joueur;
+package boggle.gui.decorateur;
 
-import boggle.jeu.Partie;
-import boggle.mots.ArbreLexical;
-import boggle.mots.Grille;
+import javax.swing.JButton;
 
 /**
- * Implémentation d'un joueur machine
+ * Implémente le pattern Decorateur sur les JButtons.
  */
-public abstract class IA extends Joueur implements Runnable {
+public class DecorateurBouton extends JButton {
 	
-	protected Grille grille;
-	protected ArbreLexical arbre;
-	protected Partie partie;
-	
-	public IA(String name) {
-		super(name);
-	}
-	
-	protected boolean forcerArret() {
-		return !this.equals(partie.getJoueurCourant()) || partie.estTerminee();
-	}
-	
-	public void joue(Grille grille, ArbreLexical arbre, Partie partie) {
-		this.grille = grille;
-		this.arbre = arbre;
-		this.partie = partie;
-		new Thread(this).start();
-	}
-	
-	public boolean estHumain() {
-		return false;
+	private static final long serialVersionUID = 772827254096143798L;
+
+	public DecorateurBouton(JButton bouton) {
+		super(bouton.getText());
 	}
 
 }

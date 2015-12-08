@@ -20,6 +20,8 @@ package boggle.jeu;
 
 import java.util.Map;
 
+import boggle.jeu.joueur.Joueur;
+
 /**
  * Un score est une implémentation de {@link Map.Entry} avec comme clé le nom d'un joueur et comme valeur son score
  */
@@ -31,6 +33,10 @@ public class Score implements Map.Entry<String, Integer>, Comparable<Score> {
 	public Score(String nomJoueur, Integer scoreJoueur) {
 		this.nomJoueur = nomJoueur;
 		this.scoreJoueur = scoreJoueur;
+	}
+	
+	public Score(Joueur joueur) {
+		this(joueur.getNom(), joueur.getScore());
 	}
 
 	public String getKey() {

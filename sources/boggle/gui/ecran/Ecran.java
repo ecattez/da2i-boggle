@@ -16,38 +16,32 @@
  * 
  * @author Edouard CATTEZ <edouard.cattez@sfr.fr> (La 7 Production)
  */
-package boggle.jeu.joueur;
+package boggle.gui.ecran;
 
-import boggle.jeu.Partie;
-import boggle.mots.ArbreLexical;
-import boggle.mots.Grille;
+import java.awt.LayoutManager;
+
+import javax.swing.JPanel;
 
 /**
- * Implémentation d'un joueur machine
+ * Représentation d'un écran
  */
-public abstract class IA extends Joueur implements Runnable {
+public abstract class Ecran extends JPanel {
 	
-	protected Grille grille;
-	protected ArbreLexical arbre;
-	protected Partie partie;
+	private static final long serialVersionUID = 4088889425334087954L;
+
+	public Ecran() {}
 	
-	public IA(String name) {
-		super(name);
+	public Ecran(LayoutManager layout) {
+		super(layout);
 	}
 	
-	protected boolean forcerArret() {
-		return !this.equals(partie.getJoueurCourant()) || partie.estTerminee();
-	}
-	
-	public void joue(Grille grille, ArbreLexical arbre, Partie partie) {
-		this.grille = grille;
-		this.arbre = arbre;
-		this.partie = partie;
-		new Thread(this).start();
-	}
-	
-	public boolean estHumain() {
-		return false;
+	public abstract void recharger();
+
+	public void setVisible(boolean visible)	{
+		super.setVisible(visible);
+		if (visible) {
+			recharger();
+		}
 	}
 
 }
