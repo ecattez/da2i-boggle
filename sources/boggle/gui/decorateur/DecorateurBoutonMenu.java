@@ -16,41 +16,27 @@
  * 
  * @author Edouard CATTEZ <edouard.cattez@sfr.fr> (La 7 Production)
  */
-package boggle.gui.ecran;
+package boggle.gui.decorateur;
 
-import java.awt.LayoutManager;
+import java.awt.Color;
+import java.awt.Dimension;
 
-import javax.swing.JPanel;
-
-import boggle.gui.ConteneurPrincipal;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
 
 /**
- * Représentation d'un écran
+ * Définition d'un bouton plat type Material Design.
  */
-public abstract class Ecran extends JPanel {
-	
-	private static final long serialVersionUID = 4088889425334087954L;
-	
-	protected ConteneurPrincipal mainPanel;
-	
-	public Ecran(ConteneurPrincipal mainPanel) {
-		super();
-		this.mainPanel = mainPanel;
-	}
-	
-	public Ecran(ConteneurPrincipal mainPanel, LayoutManager layout) {
-		super(layout);
-		this.mainPanel = mainPanel;
-		this.recharger();
-	}
-	
-	public abstract void recharger();
+public class DecorateurBoutonMenu extends DecorateurBouton {
 
-	public void setVisible(boolean visible)	{
-		super.setVisible(visible);
-		if (visible) {
-			recharger();
-		}
+	private static final long serialVersionUID = 8813538990842453141L;
+
+	public DecorateurBoutonMenu(JButton bouton) {
+		super(bouton);
+		this.setBorder(BorderFactory.createLineBorder(new Color(206,42,13)));
+		this.setPreferredSize(new Dimension(100, 30));
+		this.setBackground(Color.WHITE);
+		this.setForeground(Color.BLACK);
 	}
 
 }

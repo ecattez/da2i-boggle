@@ -18,39 +18,18 @@
  */
 package boggle.gui.ecran;
 
-import java.awt.LayoutManager;
-
-import javax.swing.JPanel;
-
 import boggle.gui.ConteneurPrincipal;
 
-/**
- * Représentation d'un écran
- */
-public abstract class Ecran extends JPanel {
-	
-	private static final long serialVersionUID = 4088889425334087954L;
-	
-	protected ConteneurPrincipal mainPanel;
-	
-	public Ecran(ConteneurPrincipal mainPanel) {
-		super();
-		this.mainPanel = mainPanel;
-	}
-	
-	public Ecran(ConteneurPrincipal mainPanel, LayoutManager layout) {
-		super(layout);
-		this.mainPanel = mainPanel;
-		this.recharger();
-	}
-	
-	public abstract void recharger();
+public class EcranClassement extends Ecran {
 
-	public void setVisible(boolean visible)	{
-		super.setVisible(visible);
-		if (visible) {
-			recharger();
-		}
+	public EcranClassement(ConteneurPrincipal mainPanel) {
+		super(mainPanel);
+	}
+
+	public void recharger() {
+		mainPanel.cacherTout();
+		mainPanel.afficherBouton(mainPanel.BOUTON_MENU_PRINCIPAL);
+		mainPanel.afficherBouton(mainPanel.BOUTON_NOUVELLE_PARTIE);
 	}
 
 }
