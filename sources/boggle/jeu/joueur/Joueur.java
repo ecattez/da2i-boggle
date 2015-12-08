@@ -27,14 +27,20 @@ import boggle.mots.Grille;
 /**
  * Représentation générique d'un joueur de Boggle
  */
-public abstract class Joueur extends Observable {
+public abstract class Joueur extends Observable implements Comparable<Joueur> {
 	
 	private String nom;
 	private int score;
 	
-	public Joueur(String nom) {
+	// Constructeur utilisé surtout pour l'objet Classement
+	// On peut retrouver le score du joueur stocké dans un fichier
+	public Joueur(String nom, int score) {
 		this.nom = nom;
-		this.score = 0;
+		this.score = score;
+	}
+	
+	public Joueur(String nom) {
+		this(nom, 0);
 	}
 	
 	// Notifie les observeurs que le joueur a changé
@@ -59,6 +65,16 @@ public abstract class Joueur extends Observable {
 	 */
 	public int getScore() {
 		return score;
+	}
+	
+	/**
+	 * Change le score du joueur
+	 * 
+	 * @param	score
+	 * 			le nouveau score du joueur
+	 */
+	public void setScore(int score) {
+		this.score = score;
 	}
 	
 	/**
@@ -93,6 +109,13 @@ public abstract class Joueur extends Observable {
 	 */
 	public String toString() {
 		return nom + " (score: " + score + ")";
+	}
+	
+	/**
+	 * Compare deux joueurs sur leur score de manière décroissante
+	 */
+	public int compareTo(Joueur joueur) {
+		return joueur.score - score;
 	}
 	
 	/**
