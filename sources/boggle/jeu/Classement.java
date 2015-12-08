@@ -166,10 +166,12 @@ public class Classement {
 	 */
 	private static Properties charger(Path path) {
 		Properties prop = new Properties();
-		try (BufferedReader in = Files.newBufferedReader(path, Charset.forName("UTF-8"))){
-			prop.load(in);
-		} catch (IOException e) {
-			throw new BoggleException("Une erreur s'est produite lors de l'ouverture du fichier " + path + "\n" + e);
+		if (Files.isRegularFile(path)) {
+			try (BufferedReader in = Files.newBufferedReader(path, Charset.forName("UTF-8"))){
+				prop.load(in);
+			} catch (IOException e) {
+				throw new BoggleException("Une erreur s'est produite lors de l'ouverture du fichier " + path + "\n" + e);
+			}
 		}
 		return prop;
 	}
