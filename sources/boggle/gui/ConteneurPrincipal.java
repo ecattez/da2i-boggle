@@ -8,6 +8,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+
 public class ConteneurPrincipal extends JPanel {
 
 	public static final String BOGGLE = "BOGGLE";
@@ -30,6 +31,10 @@ public class ConteneurPrincipal extends JPanel {
 		conteneurCarte = new ConteneurCarte();
 		this.add(conteneurCarte, BorderLayout.CENTER);
 		this.add(conteneurBouton, BorderLayout.SOUTH);
+		//card.first(Container parent)
+		//card.previous(parent)
+		//card.next(parent)
+		//card.show(parent, name)
 	}
 
 	public class ConteneurCarte extends JPanel {
