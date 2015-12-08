@@ -18,10 +18,7 @@
  */
 package boggle.jeu;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Observable;
 
 import boggle.jeu.joueur.Joueur;
@@ -209,17 +206,12 @@ public class Partie extends Observable implements Iterable<Joueur>, Runnable {
 	}
 	
 	/**
-	 * Etablit un classement des différents joueurs de la partie dans l'ordre des vainqueurs (décroissants)
+	 * Etablit un classement des différents joueurs de la partie dans l'ordre décroissants de leur score
 	 * 
-	 * @return une liste d'instance de Score représentant chaque joueur et son score
+	 * @return une nouvelle instance de Classement représentant les joueurs classés selon leur score
 	 */
-	public List<Score> etablirClassement() {
-		List<Score> scores = new ArrayList<Score>();
-		for (Joueur joueur : joueurs) {
-			scores.add(new Score(joueur));
-		}
-		Collections.sort(scores);
-		return scores;
+	public Classement etablirClassement() {
+		return new Classement(grille.dimension(), joueurs);
 	}
 	
 	/**

@@ -31,8 +31,12 @@ public class Humain extends Joueur {
 	
 	public static Scanner sc = new Scanner(System.in);
 
-	public Humain(String name) {
-		super(name);
+	public Humain(String nom) {
+		super(nom);
+	}
+	
+	public Humain(String nom, int score) {
+		super(nom, score);
 	}
 
 	public void joue(Grille grille, ArbreLexical arbre, Partie partie) {
