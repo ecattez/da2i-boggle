@@ -12,13 +12,16 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 
+import boggle.gui.classement.JClassement;
 import boggle.gui.decorateur.DecorateurBoutonPlat;
+import boggle.jeu.Classement;
 import boggle.jeu.Partie;
 import boggle.jeu.joueur.Joueur;
 import boggle.mots.Grille;
@@ -122,16 +125,24 @@ public class JPartie extends JPanel implements Observer {
 	}
 
 	public void update(Observable obs, Object o) {
-		Joueur joueur = partie.getJoueurCourant();
-		boolean enabled = joueur.estHumain();
-		tourLabel.setText("Tour de " + joueur.getNom());
-		zoneSaisie.setText("");
-		zoneSaisie.setEnabled(enabled);
-		zoneSaisie.requestFocusInWindow();
-		ajouter.setEnabled(enabled);
-		vider.setEnabled(enabled);
-		terminer.setEnabled(enabled);
-		jGrille.setEnabled(enabled);
+		if (partie.estTerminee()) {
+			Classement classement = partie.etablirClassement();
+			JClassement jClassement = new JClassement(classement);
+			JOptionPane.showMessageDialog(this.getParent(), jClassement, "Classement", JOptionPane.INFORMATION_MESSAGE);
+			classement.sauvegarderMeilleursScores();
+		}
+		else {
+			Joueur joueur = partie.getJoueurCourant();
+			boolean enabled = joueur.estHumain();
+			tourLabel.setText("Tour de " + joueur.getNom());
+			zoneSaisie.setText("");
+			zoneSaisie.setEnabled(enabled);
+			zoneSaisie.requestFocusInWindow();
+			ajouter.setEnabled(enabled);
+			vider.setEnabled(enabled);
+			terminer.setEnabled(enabled);
+			jGrille.setEnabled(enabled);
+		}
 	}
 	
 	/**

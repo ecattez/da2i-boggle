@@ -225,8 +225,7 @@ public class Partie extends Observable implements Iterable<Joueur>, Runnable {
 			grille.secouer();
 			joueur = it.next();
 			// On notifie que la partie est passée à un nouveau tour de jeu
-			setChanged();
-			notifyObservers();
+			update();
 			joueur.joue(grille, getDictionnaire(), this);
 			// On démarre le compte à rebours
 			demarrerSablier();
@@ -242,6 +241,8 @@ public class Partie extends Observable implements Iterable<Joueur>, Runnable {
 			gagnant = (getScoreCible() > 0 && meilleur.getScore() >= getScoreCible());
 			incTour();
 		}
+		// On notifie les observeurs que la partie est terminée
+		update();
 		System.out.println("Vainqueur: " + meilleur);
 		System.out.println(etablirClassement());
 	}
@@ -261,6 +262,12 @@ public class Partie extends Observable implements Iterable<Joueur>, Runnable {
 		if (!sablier.isOver()) {
 			sablier.shutdown();
 		}
+	}
+	
+	// Notifie aux observeurs que la partie a changé
+	private void update() {
+		setChanged();
+		notifyObservers();
 	}
 	
 	/**

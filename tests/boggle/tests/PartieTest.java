@@ -6,7 +6,6 @@ import javax.swing.JPanel;
 import boggle.gui.partie.JPartie;
 import boggle.jeu.Partie;
 import boggle.jeu.Regles;
-import boggle.jeu.joueur.Humain;
 import boggle.jeu.joueur.IAHardcore;
 import boggle.jeu.joueur.Joueur;
 
@@ -16,7 +15,7 @@ public class PartieTest {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Joueur[] joueur = { new Humain("Edouard"), new IAHardcore("Picault"), new IAHardcore("Beaufils") };
+		Joueur[] joueur = { new IAHardcore("Picault"), new IAHardcore("Beaufils") };
 		Regles regles = new Regles("regles-4x4.config");
 		System.out.println(regles);
 		
