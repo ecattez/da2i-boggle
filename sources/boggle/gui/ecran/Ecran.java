@@ -22,6 +22,8 @@ import java.awt.LayoutManager;
 
 import javax.swing.JPanel;
 
+import boggle.gui.ConteneurPrincipal;
+
 /**
  * Représentation d'un écran
  */
