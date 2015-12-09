@@ -39,9 +39,12 @@ public class CoordonneesCartesiennes implements Coordonnees {
 		return y;
 	}
 	
+	/**
+	 * Deux coordonnées sont égales si leur abscisse et leur ordonnées sont égales
+	 */
 	public boolean equals(Object o) {
 		Coordonnees c = (Coordonnees) o;
-		return x == c.getX() && y == c.getY();
+		return c != null && x == c.getX() && y == c.getY();
 	}
 	
 	/**
@@ -67,9 +70,12 @@ public class CoordonneesCartesiennes implements Coordonnees {
 	public boolean estVoisinDe(Coordonnees c) {
 		int rx = Math.abs(x - c.getX());
 		int ry = Math.abs(y - c.getY());
-		return (rx == 0 || rx == 1 && ry == 0 && ry == 1);
+		return (rx == 0 || rx == 1) && (ry == 0 || ry == 1);
 	}
 	
+	/**
+	 * Représentation textuelle des coordonnées cartésiennes
+	 */
 	public String toString() {
 		return "Coordonnees(" + x + "," + y + ")";
 	}

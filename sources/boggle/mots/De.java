@@ -25,14 +25,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Observable;
 import java.util.Scanner;
 
+import boggle.Ascii;
 import boggle.BoggleException;
 
 /**
  * Représente un dé à NB_FACES faces.
  */
-public class De {
+public class De extends Observable {
 	
 	public static final int NB_FACES = 6;
 	
@@ -41,23 +43,42 @@ public class De {
 	private boolean utilise;
 	
 	public De(String[] faces) {
-		this.faces = faces;
+		this.faces = new String[faces.length];
+		for (int i=0; i < faces.length; i++) {
+			this.faces[i] = Ascii.normalizeUpper(faces[i]);
+		}
 		this.faceVisible = 0;
 		this.utilise = false;
+	}
+	
+	// Notifie les observeurs que le dé à changé
+	private void update() {
+		setChanged();
+		notifyObservers();
 	}
 	
 	/**
 	 * Informe que l'on utilise le dé
 	 */
-	public void utiliser() {
-		utilise = true;
+	public boolean utiliser() {
+		if (!utilise) {
+			utilise = true;
+			update();
+			return true;
+		}
+		return false;
 	}
 	
 	/**
 	 * Informe que l'on a fini d'utiliser le dé
 	 */
-	public void rendre() {
-		utilise = false;
+	public boolean rendre() {
+		if (utilise) {
+			utilise = false;
+			update();
+			return true;
+		}
+		return false;
 	}
 	
 	/**
@@ -76,10 +97,11 @@ public class De {
 	 * 			l'indice entre 0 et NB_FACES exclu
 	 */
 	public void setFaceVisible(int i) {
-		if (i < 0 || i >= NB_FACES) {
+		if (i < 0 || i >= faces.length) {
 			throw new BoggleException("Il n'y a pas de face n°" + i + " à ce dé."); 
 		}
 		faceVisible = i;
+		update();
 	}
 	
 	/**
@@ -95,9 +117,12 @@ public class De {
 	 * Simule un lancé du dé courant ce qui peut changer la face visible du dé
 	 */
 	public void lancer() {
-		setFaceVisible((int) (Math.random()*NB_FACES));
+		setFaceVisible((int) (Math.random() * faces.length));
 	}
 	
+	/**
+	 * Représentation textuelle d'un dé
+	 */
 	public String toString() {
 		String str = "";
 		String face;
@@ -137,7 +162,7 @@ public class De {
 				}
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new BoggleException("Impossible de créer de dés avec le fichier " + fichier + "\n" + e);
 		}
 		return des.toArray(new De[des.size()]);		
 	}
@@ -153,14 +178,6 @@ public class De {
 	public static De[] melange(De[] des) {
 		Collections.shuffle(Arrays.asList(des));
 		return des;
-	}
-	
-	public static void main(String[] args) {
-		De[] des = De.creerDes("des-4x4.csv");
-		for (De de : des) {
-			de.lancer();
-			System.out.println(de);
-		}
 	}
 	
 }
