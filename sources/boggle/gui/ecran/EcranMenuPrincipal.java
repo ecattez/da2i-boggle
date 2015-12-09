@@ -10,14 +10,12 @@ import javax.swing.JPanel;
 
 import boggle.gui.Bucket;
 import boggle.gui.ConteneurPrincipal;
-import boggle.jeu.Classement;
 import boggle.jeu.Partie;
-import boggle.jeu.Regles;
-import boggle.jeu.joueur.IAHardcore;
-import boggle.jeu.joueur.Joueur;
 
 public class EcranMenuPrincipal extends Ecran {
 	
+	private static final long serialVersionUID = -6774404505867511769L;
+
 	public EcranMenuPrincipal(ConteneurPrincipal mainPanel) {
 		super(mainPanel, new BorderLayout());
 		
@@ -43,21 +41,12 @@ public class EcranMenuPrincipal extends Ecran {
 
 	public void recharger() {
 		mainPanel.cacherTout();
-		mainPanel.afficherBouton(mainPanel.BOUTON_JOUER);
-		mainPanel.afficherBouton(mainPanel.BOUTON_CLASSEMENT);
+		mainPanel.afficherBouton(mainPanel.BOUTON_JOUER, mainPanel.BOUTON_CLASSEMENTS);
 		
+		// Si une partie est en cours, on la termine directement
 		Partie partie = Bucket.getInstance().getPartie();
-		if (partie == null || partie.estTerminee()) {
-			Joueur[] joueurs = { new IAHardcore("Picault"), new IAHardcore("Beaufils") };
-			Regles regles = new Regles("regles-4x4.config");
-			partie = new Partie(regles, joueurs);
-			
-			Bucket.getInstance().push(joueurs);
-			Bucket.getInstance().push(regles);
-			Bucket.getInstance().push(partie);
-			
-			System.out.println(joueurs);
-			System.out.println(regles);
+		if (partie != null && !partie.estTerminee()) {
+			partie.forcerArret();
 		}
 	}
 

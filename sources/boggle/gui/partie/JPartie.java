@@ -19,6 +19,7 @@ import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 
 import boggle.gui.Bucket;
+import boggle.gui.classement.JClassement;
 import boggle.gui.decorateur.DecorateurBoutonPlat;
 import boggle.jeu.Classement;
 import boggle.jeu.Partie;
@@ -36,7 +37,7 @@ public class JPartie extends JPanel implements Observer {
 	private JGrille jGrille;
 	private JSablier jSablier;
 	private JList<String> jListeMots;
-	private JList<Joueur> jListeScores;
+	private JClassement jClassement;
 	
 	private JLabel tourLabel;
 	private JTextField zoneSaisie;
@@ -54,7 +55,7 @@ public class JPartie extends JPanel implements Observer {
 		this.jGrille = new JGrille(grille);
 		this.jSablier = new JSablier(partie.getSablier());
 		this.jListeMots = new JList<String>(new ListMotsModel(grille));
-		this.jListeScores = new JList<Joueur>(new ListJoueursModel(partie.getJoueurs()));
+		this.jClassement = new JClassement(partie.etablirClassement());
 		this.tourLabel = new JLabel();
 		this.zoneSaisie = new JTextField();
 		this.ajouter = new DecorateurBoutonPlat(new JButton("Ajouter"));
@@ -113,19 +114,18 @@ public class JPartie extends JPanel implements Observer {
 		center.add(boutons);
 		
 		JScrollPane gauche = new JScrollPane(jListeMots);
-		JScrollPane droite = new JScrollPane(jListeScores);
 		
 		gauche.setPreferredSize(new Dimension(200,300));
-		droite.setPreferredSize(new Dimension(200,300));
+		jClassement.setPreferredSize(new Dimension(200,300));
 		
 		this.add(gauche, BorderLayout.WEST);
 		this.add(center, BorderLayout.CENTER);
-		this.add(droite, BorderLayout.EAST);
+		this.add(jClassement, BorderLayout.EAST);
 	}
 
 	public void update(Observable obs, Object o) {
 		if (partie.estTerminee()) {
-			Classement classement = partie.etablirClassement();
+			Classement classement = jClassement.getClassement();
 			classement.sauvegarderMeilleursScores();
 			Bucket.getInstance().push(classement);
 		}

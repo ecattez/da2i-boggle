@@ -26,6 +26,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.Properties;
 
 import boggle.BoggleException;
@@ -35,7 +37,7 @@ import boggle.jeu.joueur.Joueur;
 /**
  * Représentation d'un classement de différents joueurs, triés dans l'ordre décroissant de leurs scores.
  */
-public class Classement {
+public class Classement extends Observable implements Observer {
 	
 	private static final String CLASSEMENT_FOLDER = "classement";
 
@@ -46,6 +48,18 @@ public class Classement {
 		Arrays.sort(joueurs);
 		this.classementPath = Paths.get(CLASSEMENT_FOLDER, "classement-" + n + ".txt");
 		this.joueurs = joueurs;
+		for (int i = 0; i < joueurs.length; i++) {
+			joueurs[i].addObserver(this);
+		}
+	}
+	
+	/**
+	 * Retourne tous les joueurs du classement
+	 * 
+	 * @return	le tableau des joueurs classés
+	 */
+	public Joueur[] getJoueurs() {
+		return this.joueurs;
 	}
 	
 	/**
@@ -83,6 +97,15 @@ public class Classement {
 	 */
 	public int nbLignes() {
 		return joueurs.length;
+	}
+	
+	/**
+	 * Lorsque les joueurs changent, le classement changent aussi.
+	 * (C'est le même principe qu'avec la Grille et les Dés)
+	 */
+	public void update(Observable obs, Object o) {
+		this.setChanged();
+		this.notifyObservers();
 	}
 	
 	/**

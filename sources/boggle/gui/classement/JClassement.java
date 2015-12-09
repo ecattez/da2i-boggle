@@ -18,6 +18,10 @@
  */
 package boggle.gui.classement;
 
+import java.util.Arrays;
+import java.util.Observable;
+import java.util.Observer;
+
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -27,7 +31,7 @@ import boggle.jeu.Classement;
 /**
  * Représentation visuelle d'une instance de Classement
  */
-public class JClassement extends JScrollPane {
+public class JClassement extends JScrollPane implements Observer {
 	
 	private static final long serialVersionUID = 8994111109824949559L;
 	
@@ -36,9 +40,19 @@ public class JClassement extends JScrollPane {
 	
 	public JClassement(Classement classement) {
 		super();
+		classement.addObserver(this);
 		this.classement = classement;
 		this.tableModel = new TableClassementModel();
 		this.setViewportView(new JTable(tableModel));
+	}
+	
+	/**
+	 * Retourne le classement associé à la vue courante
+	 * 
+	 * @return	l'instance de Classement associée à une vue
+	 */
+	public Classement getClassement() {
+		return this.classement;
 	}
 	
 	/**
@@ -60,6 +74,12 @@ public class JClassement extends JScrollPane {
 			return classement.getScore(row);
 		}
 
+	}
+	
+	// Le classement a changé, on met à jour la JTable en triant les joueurs
+	public void update(Observable obs, Object o) {
+		Arrays.sort(classement.getJoueurs());
+		tableModel.fireTableDataChanged();
 	}
 
 }

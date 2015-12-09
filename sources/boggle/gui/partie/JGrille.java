@@ -26,8 +26,8 @@ public class JGrille extends JPanel implements Observer {
 	
 	public static final Color DEFAULT_FONT_COLOR = Color.BLACK;
 	public static final Color DEFAULT_COLOR = Color.WHITE;
-	public static final Color COULEUR_DE_UTILISE = new Color(157,206,187);
-	public static final Color COULEUR_DERNIER_DE_UTILISE = new Color(0,127,82);
+	public static final Color COULEUR_DE_UTILISE = new Color(180,120,126);
+	public static final Color COULEUR_DERNIER_DE_UTILISE = new Color(169,62,73);
 	
 	private Grille grille;
 	
@@ -65,12 +65,12 @@ public class JGrille extends JPanel implements Observer {
 		
 		private static final long serialVersionUID = 6952888330383232312L;
 		
-		public Coordonnees coord;
+		private Coordonnees coord;
 		
 		public JDe(final Coordonnees coord) {
 			this.coord = coord;
 			this.setPreferredSize(new Dimension(64, 64));
-			this.setFont(new Font("Arial", Font.PLAIN, 30));
+			this.setFont(new Font("Arial", Font.PLAIN, 25));
 			this.addActionListener(new ActionListener() {
 				
 				public void actionPerformed(ActionEvent e) {

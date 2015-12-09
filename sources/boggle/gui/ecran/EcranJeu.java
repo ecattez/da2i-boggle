@@ -7,6 +7,8 @@ import boggle.jeu.Partie;
 
 public class EcranJeu extends Ecran {
 	
+	private static final long serialVersionUID = -2902887394692862062L;
+	
 	private Partie partie;
 
 	public EcranJeu(ConteneurPrincipal mainPanel) {
@@ -15,7 +17,7 @@ public class EcranJeu extends Ecran {
 
 	public void recharger() {
 		mainPanel.cacherTout();
-		mainPanel.afficherBouton(mainPanel.BOUTON_MENU_PRINCIPAL, mainPanel.BOUTON_NOUVELLE_PARTIE, mainPanel.BOUTON_CLASSEMENT);
+		mainPanel.afficherBouton(mainPanel.BOUTON_MENU_PRINCIPAL, mainPanel.BOUTON_NOUVELLE_PARTIE);
 		if (partie == null || partie.estTerminee()) {
 			partie = Bucket.getInstance().getPartie();
 			this.removeAll();

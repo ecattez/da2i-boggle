@@ -23,11 +23,13 @@ import boggle.gui.ConteneurPrincipal;
 import boggle.gui.classement.JClassement;
 import boggle.jeu.Classement;
 
-public class EcranClassement extends Ecran {
+public class EcranClassements extends Ecran {
+	
+	private static final long serialVersionUID = 599000474435628090L;
 	
 	private Classement classement;
 
-	public EcranClassement(ConteneurPrincipal mainPanel) {
+	public EcranClassements(ConteneurPrincipal mainPanel) {
 		super(mainPanel);
 	}
 

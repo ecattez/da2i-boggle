@@ -10,13 +10,14 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import boggle.gui.decorateur.DecorateurBoutonMenu;
-import boggle.gui.ecran.EcranClassement;
+import boggle.gui.ecran.EcranClassements;
 import boggle.gui.ecran.EcranJeu;
 import boggle.gui.ecran.EcranMenuPrincipal;
 import boggle.gui.ecran.EcranNouvellePartie;
 
-
 public class ConteneurPrincipal extends JPanel {
+	
+	private static final long serialVersionUID = -6812760104234654908L;
 	
 	private static ConteneurPrincipal mainPanel;
 	
@@ -29,13 +30,14 @@ public class ConteneurPrincipal extends JPanel {
 
 	public static final String ECRAN_MENU_PRINCIPAL = "MENU_PRINCIPAL";
 	public static final String ECRAN_NOUVELLE_PARTIE = "NOUVELLE_PARTIE";
-	public static final String ECRAN_JEU = "PARTIE";
-	public static final String ECRAN_CLASSEMENT = "CLASSEMENT";
+	public static final String ECRAN_JEU = "DEMARRER_PARTIE";
+	public static final String ECRAN_CLASSEMENTS = "CLASSEMENTS";
 
 	public final JButton BOUTON_MENU_PRINCIPAL = new DecorateurBoutonMenu(new JButton("Menu Principal"));
 	public final JButton BOUTON_NOUVELLE_PARTIE = new DecorateurBoutonMenu(new JButton("Nouvelle Partie"));
 	public final JButton BOUTON_JOUER = new DecorateurBoutonMenu(new JButton("Jouer"));
-	public final JButton BOUTON_CLASSEMENT = new DecorateurBoutonMenu(new JButton("Classement"));
+	public final JButton BOUTON_CLASSEMENTS = new DecorateurBoutonMenu(new JButton("Classements"));
+	
 
 	private CardLayout card = new CardLayout();
 	private ConteneurBouton conteneurBouton = new ConteneurBouton();
@@ -50,9 +52,9 @@ public class ConteneurPrincipal extends JPanel {
 	
 	private void initBoutons() {
 		BOUTON_MENU_PRINCIPAL.addActionListener(new ShowListener(ECRAN_MENU_PRINCIPAL));
-		BOUTON_JOUER.addActionListener(new ShowListener(ECRAN_JEU));
+		BOUTON_JOUER.addActionListener(new ShowListener(ECRAN_NOUVELLE_PARTIE));
 		BOUTON_NOUVELLE_PARTIE.addActionListener(new ShowListener(ECRAN_NOUVELLE_PARTIE));
-		BOUTON_CLASSEMENT.addActionListener(new ShowListener(ECRAN_CLASSEMENT));
+		BOUTON_CLASSEMENTS.addActionListener(new ShowListener(ECRAN_CLASSEMENTS));
 	}
 	
 	public void first() {
@@ -107,12 +109,14 @@ public class ConteneurPrincipal extends JPanel {
 	
 	class ConteneurBouton extends JPanel {
 
+		private static final long serialVersionUID = -8315476781439910162L;
+
 		public ConteneurBouton() {
 			super();
+			this.add(BOUTON_MENU_PRINCIPAL);
 			this.add(BOUTON_NOUVELLE_PARTIE);
 			this.add(BOUTON_JOUER);
-			this.add(BOUTON_MENU_PRINCIPAL);
-			this.add(BOUTON_CLASSEMENT);
+			this.add(BOUTON_CLASSEMENTS);
 			this.setBackground(Color.WHITE);
 		}
 
@@ -146,12 +150,14 @@ public class ConteneurPrincipal extends JPanel {
 
 	class ConteneurCarte extends JPanel {
 
+		private static final long serialVersionUID = 6976246954825647830L;
+
 		public ConteneurCarte() {
 			super(card);
 			this.add(new EcranMenuPrincipal(ConteneurPrincipal.this), ECRAN_MENU_PRINCIPAL);
 			this.add(new EcranNouvellePartie(ConteneurPrincipal.this), ECRAN_NOUVELLE_PARTIE);
 			this.add(new EcranJeu(ConteneurPrincipal.this), ECRAN_JEU);
-			this.add(new EcranClassement(ConteneurPrincipal.this), ECRAN_CLASSEMENT);
+			this.add(new EcranClassements(ConteneurPrincipal.this), ECRAN_CLASSEMENTS);
 		}
 		
 	}
