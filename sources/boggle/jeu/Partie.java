@@ -44,6 +44,7 @@ public class Partie extends Observable implements Iterable<Joueur>, Runnable {
 	private Grille grille;
 	private Sablier sablier;
 	private Joueur[] joueurs;
+	private boolean forcerArret;
 	private boolean gagnant;
 	private int tour;
 	
@@ -55,6 +56,7 @@ public class Partie extends Observable implements Iterable<Joueur>, Runnable {
 		this.grille = new GrilleLettres(regles.getTailleMin() + 1, regles.getDes());
 		this.joueurs = joueurs;
 		this.gagnant = false;
+		this.forcerArret = false;
 		this.tour = 1;
 		this.sablier = new Sablier(regles.getDureeSablier());
 	}
@@ -142,7 +144,14 @@ public class Partie extends Observable implements Iterable<Joueur>, Runnable {
 	 * @return <code>true</code> si la partie est terminée, <code>false</code> sinon
 	 */
 	public boolean estTerminee() {
-		return tour == getTourMax() || gagnant;
+		return forcerArret || tour == getTourMax() || gagnant;
+	}
+	
+	/**
+	 * Force l'arrêt de la partie courrante
+	 */
+	public void forcerArret() {
+		forcerArret = true;
 	}
 	
 	/**
