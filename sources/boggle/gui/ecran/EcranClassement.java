@@ -18,9 +18,14 @@
  */
 package boggle.gui.ecran;
 
+import boggle.gui.Bucket;
 import boggle.gui.ConteneurPrincipal;
+import boggle.gui.classement.JClassement;
+import boggle.jeu.Classement;
 
 public class EcranClassement extends Ecran {
+	
+	private Classement classement;
 
 	public EcranClassement(ConteneurPrincipal mainPanel) {
 		super(mainPanel);
@@ -30,6 +35,12 @@ public class EcranClassement extends Ecran {
 		mainPanel.cacherTout();
 		mainPanel.afficherBouton(mainPanel.BOUTON_MENU_PRINCIPAL);
 		mainPanel.afficherBouton(mainPanel.BOUTON_NOUVELLE_PARTIE);
+		Classement classement = Bucket.getInstance().getClassement();
+		if (classement != null && classement != this.classement) {
+			this.removeAll();
+			this.classement = classement;
+			this.add(new JClassement(classement));
+		}
 	}
 
 }

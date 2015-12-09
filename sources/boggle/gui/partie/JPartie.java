@@ -12,14 +12,13 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 
-import boggle.gui.classement.JClassement;
+import boggle.gui.Bucket;
 import boggle.gui.decorateur.DecorateurBoutonPlat;
 import boggle.jeu.Classement;
 import boggle.jeu.Partie;
@@ -127,9 +126,8 @@ public class JPartie extends JPanel implements Observer {
 	public void update(Observable obs, Object o) {
 		if (partie.estTerminee()) {
 			Classement classement = partie.etablirClassement();
-			JClassement jClassement = new JClassement(classement);
-			JOptionPane.showMessageDialog(this.getParent(), jClassement, "Classement", JOptionPane.INFORMATION_MESSAGE);
 			classement.sauvegarderMeilleursScores();
+			Bucket.getInstance().push(classement);
 		}
 		else {
 			Joueur joueur = partie.getJoueurCourant();

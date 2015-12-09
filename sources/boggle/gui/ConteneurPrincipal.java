@@ -50,7 +50,7 @@ public class ConteneurPrincipal extends JPanel {
 	
 	private void initBoutons() {
 		BOUTON_MENU_PRINCIPAL.addActionListener(new ShowListener(ECRAN_MENU_PRINCIPAL));
-		BOUTON_JOUER.addActionListener(new ShowListener(ECRAN_NOUVELLE_PARTIE));
+		BOUTON_JOUER.addActionListener(new ShowListener(ECRAN_JEU));
 		BOUTON_NOUVELLE_PARTIE.addActionListener(new ShowListener(ECRAN_NOUVELLE_PARTIE));
 		BOUTON_CLASSEMENT.addActionListener(new ShowListener(ECRAN_CLASSEMENT));
 	}

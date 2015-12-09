@@ -8,7 +8,13 @@ import java.awt.Font;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import boggle.gui.Bucket;
 import boggle.gui.ConteneurPrincipal;
+import boggle.jeu.Classement;
+import boggle.jeu.Partie;
+import boggle.jeu.Regles;
+import boggle.jeu.joueur.IAHardcore;
+import boggle.jeu.joueur.Joueur;
 
 public class EcranMenuPrincipal extends Ecran {
 	
@@ -39,6 +45,20 @@ public class EcranMenuPrincipal extends Ecran {
 		mainPanel.cacherTout();
 		mainPanel.afficherBouton(mainPanel.BOUTON_JOUER);
 		mainPanel.afficherBouton(mainPanel.BOUTON_CLASSEMENT);
+		
+		Partie partie = Bucket.getInstance().getPartie();
+		if (partie == null || partie.estTerminee()) {
+			Joueur[] joueurs = { new IAHardcore("Picault"), new IAHardcore("Beaufils") };
+			Regles regles = new Regles("regles-4x4.config");
+			partie = new Partie(regles, joueurs);
+			
+			Bucket.getInstance().push(joueurs);
+			Bucket.getInstance().push(regles);
+			Bucket.getInstance().push(partie);
+			
+			System.out.println(joueurs);
+			System.out.println(regles);
+		}
 	}
 
 
