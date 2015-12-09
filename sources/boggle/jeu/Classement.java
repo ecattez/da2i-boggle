@@ -41,12 +41,12 @@ public class Classement extends Observable implements Observer {
 	
 	private static final String CLASSEMENT_FOLDER = "classement";
 
-	private Path classementPath;
+	private int dimensionGrille;
 	private Joueur[] joueurs;
 	
 	public Classement(int n, Joueur[] joueurs) {
 		Arrays.sort(joueurs);
-		this.classementPath = Paths.get(CLASSEMENT_FOLDER, "classement-" + n + ".txt");
+		this.dimensionGrille = n;
 		this.joueurs = joueurs;
 		for (int i = 0; i < joueurs.length; i++) {
 			joueurs[i].addObserver(this);
@@ -123,6 +123,7 @@ public class Classement extends Observable implements Observer {
 	 */
 	public void sauvegarderMeilleursScores() {
 		creerDossier();
+		Path classementPath = Paths.get(CLASSEMENT_FOLDER, "classement-" + dimensionGrille + ".txt");
 		Properties prop = charger(classementPath);
 		String nom;
 		String value;
