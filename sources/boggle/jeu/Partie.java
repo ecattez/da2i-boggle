@@ -152,6 +152,7 @@ public class Partie extends Observable implements Iterable<Joueur>, Runnable {
 	 */
 	public void forcerArret() {
 		forcerArret = true;
+		stopperSablier();
 	}
 	
 	/**
