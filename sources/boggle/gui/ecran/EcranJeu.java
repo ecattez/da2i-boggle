@@ -1,5 +1,7 @@
 package boggle.gui.ecran;
 
+import java.util.Observable;
+
 import boggle.gui.Bucket;
 import boggle.gui.ecran.EcranManager.Bouton;
 import boggle.gui.partie.JPartie;

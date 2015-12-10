@@ -1,0 +1,4 @@
+#Fri Dec 11 00:27:06 CET 2015
+Bonjour=11
+Yayaya=0
+Nom\ du\ joueur=0

@@ -35,10 +35,11 @@ import boggle.BoggleException;
  * L'objet Regles stocke en mémoire certaines règles de jeu administrable à une partie
  * via le constructeur de {@link Partie}
  */
-public class Regles {
+public class Regles implements Cloneable {
 	
 	public static final int DEFAULT_TAILLEMIN = 3;
 	public static final int DEFAULT_DUREESABLIER = 60;
+	public static final int DEFAULT_DUREESABLIER_MIN = 30;
 	public static final int DEFAULT_SCORECIBLE = 50;
 	public static final int DEFAULT_TOURMAX = 10;
 	public static final int[] DEFAULT_POINTS = { 1, 1, 2, 3, 5, 11 };
@@ -112,6 +113,9 @@ public class Regles {
 	 * 			le nouveau chemin du fichier de dés
 	 */
 	public void setFichierDes(Path fichierDes) {
+		if (fichierDes == null) {
+			throw new BoggleException("Le fichier de des ne peut pas être null");
+		}
 		this.fichierDes = fichierDes;
 	}
 	
@@ -141,6 +145,9 @@ public class Regles {
 	 * 			le nouveau chemin du fichier dictionnaire
 	 */
 	public void setFichierDictionnaire(Path fichierDico) {
+		if (fichierDico == null) {
+			throw new BoggleException("Le fichier dictionnaire ne peut pas être null");
+		}
 		this.fichierDico = fichierDico;
 	}
 	
@@ -259,8 +266,8 @@ public class Regles {
 	 * 			la nouvelle durée totale du sablier
 	 */
 	public void setDureeSablier(int dureeSablier) {
-		if (dureeSablier < 1) {
-			throw new BoggleException("Le sablier ne peut pas avoir une durée < 1 sec");
+		if (dureeSablier < DEFAULT_DUREESABLIER_MIN) {
+			throw new BoggleException("Le sablier ne peut pas avoir une durée < " + DEFAULT_DUREESABLIER_MIN + " sec");
 		}
 		this.dureeSablier = dureeSablier;
 	}
@@ -298,10 +305,27 @@ public class Regles {
 	}
 	
 	/**
-	 * Une représentation succinte d'une instance de Regles
+	 * Une représentation d'une instance de Regles par son titre
 	 */
 	public String toString() {
 		return titre;
+	}
+	
+	/**
+	 * Crée une instance de Regles à partir de l'instance courante
+	 */
+	public Regles clone() {
+		Regles clone = new Regles();
+		clone.titre = titre;
+		clone.tailleMin = tailleMin;
+		clone.tourMax = tourMax;
+		clone.scoreCible = scoreCible;
+		clone.dureeSablier = dureeSablier;
+		clone.points = new int[points.length];
+		for (int i = 0; i < points.length; i++) {
+			clone.points[i] = points[i];
+		}
+		return clone;
 	}
 	
 	/**

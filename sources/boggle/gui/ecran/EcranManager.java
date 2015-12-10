@@ -2,6 +2,7 @@ package boggle.gui.ecran;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -25,7 +26,6 @@ public class EcranManager extends JPanel {
 		MENU_PRINCIPAL("Menu Principal", Ecran.MENU_PRINCIPAL),
 		NOUVELLE_PARTIE("Nouvelle partie", Ecran.NOUVELLE_PARTIE),
 		JOUER("Jouer", Ecran.NOUVELLE_PARTIE),
-		DEMARRER_PARTIE("Démarrer partie", Ecran.JEU),
 		CLASSEMENTS("Classements", Ecran.CLASSEMENTS);
 		
 		private final String name;
@@ -105,6 +105,7 @@ public class EcranManager extends JPanel {
 		for (Ecran ecran : Ecran.values()) {
 			conteneurPrincipal.add(ecran.ecranReel, ecran.getLabel());
 		}
+		this.conteneurBoutons.setBackground(Color.WHITE);
 		this.add(conteneurPrincipal, BorderLayout.CENTER);
 		this.add(conteneurBoutons, BorderLayout.SOUTH);
 	}

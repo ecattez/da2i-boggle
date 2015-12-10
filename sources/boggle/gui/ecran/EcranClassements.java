@@ -18,6 +18,7 @@
  */
 package boggle.gui.ecran;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -35,12 +36,20 @@ public class EcranClassements extends AbstractEcran {
 	
 	private List<Classement> classements;
 	
-	public EcranClassements() {}
+	public EcranClassements() {
+		this.classements = new ArrayList<Classement>();
+		this.afficherClassements();
+	}
 
 	public void recharger() {
 		cacherBoutons();
 		afficherBoutons(Bouton.MENU_PRINCIPAL, Bouton.NOUVELLE_PARTIE);
-		classements = Classement.listerTous();
+		afficherClassements();
+	}
+	
+	public void afficherClassements() {
+		classements.clear();
+		classements.addAll(Classement.listerTous());
 		JTabbedPane pane = new JTabbedPane();
 		Iterator<Classement> it = classements.iterator();
 		Classement c;
