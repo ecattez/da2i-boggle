@@ -143,7 +143,7 @@ public abstract class Grille extends Observable implements Observer {
 	 * @param	c
 	 * 			les coordonnées du dé dans la grille
 	 */
-	public void utiliserDe(Coordonnees c) {
+	public synchronized void utiliserDe(Coordonnees c) {
 		if (getDe(c).utiliser()) {
 			deck.push(c);
 		}
@@ -185,7 +185,7 @@ public abstract class Grille extends Observable implements Observer {
 	 * @param	c
 	 * 			les coordonnées du dé dans la grille
 	 */
-	public void rendreDe(Coordonnees c) {
+	public synchronized void rendreDe(Coordonnees c) {
 		if (getDe(c).rendre()) {
 			deck.remove(c);
 		}
@@ -194,7 +194,7 @@ public abstract class Grille extends Observable implements Observer {
 	/**
 	 * Rend disponible le dernier dé utilisé par le joueur
 	 */
-	public void rendreDernierDeUtilise() {
+	public synchronized void rendreDernierDeUtilise() {
 		if (deck.size() > 0) {
 			getDe(deck.pop()).rendre();
 		}
@@ -214,7 +214,7 @@ public abstract class Grille extends Observable implements Observer {
 	 * 
 	 * @return	les positions (en String) des lettres utilisées par le joueur dans leur ordre d'utilisation
 	 */
-	public String getPositionsUtilisees() {
+	public synchronized String getPositionsUtilisees() {
 		return deck.toString();
 	}
 	
@@ -223,7 +223,7 @@ public abstract class Grille extends Observable implements Observer {
 	 * 
 	 * @return	les lettres utilisée par l'utilisateur dans l'ordre d'utilisation
 	 */
-	public String getLettresUtilisees() {
+	public synchronized String getLettresUtilisees() {
 		if (deck.size() == 0) {
 			return "";
 		}
@@ -240,7 +240,7 @@ public abstract class Grille extends Observable implements Observer {
 	 * 
 	 * @return	<code>true</code> si le mot a bien été enregistré, <code>false</code> sinon
 	 */
-	public boolean stockerMot() {
+	public synchronized boolean stockerMot() {
 		String mot = getLettresUtilisees();
 		return !mots.contains(mot) && mots.add(mot);
 	}
@@ -248,7 +248,7 @@ public abstract class Grille extends Observable implements Observer {
 	/**
 	 * Vide la liste de tous les mots obtenus avec cette grille
 	 */
-	public void viderMotsStockes() {
+	public synchronized void viderMotsStockes() {
 		mots.clear();
 	}
 	
@@ -287,7 +287,7 @@ public abstract class Grille extends Observable implements Observer {
 	/**
 	 * Secoue la grille pour mélanger les dés
 	 */
-	public void secouer() {
+	public synchronized void secouer() {
 		int r = (int) (Math.random() * 500);
 		De d1, d2;
 		Coordonnees c1, c2;
