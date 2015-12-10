@@ -44,6 +44,7 @@ public class IAHardcore extends IA {
 						// Si le tour s'est fini plus tôt que prévu (sablier terminé)
 						// on arrête tous les traitements
 						if (forcerArret()) {
+							grille.rendreTout();
 							return;
 						}
 						grille.stockerMot();

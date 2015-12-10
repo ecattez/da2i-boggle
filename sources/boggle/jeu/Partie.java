@@ -23,6 +23,7 @@ import java.util.Observable;
 
 import boggle.jeu.joueur.Joueur;
 import boggle.mots.ArbreLexical;
+import boggle.mots.De;
 import boggle.mots.Grille;
 import boggle.mots.GrilleLettres;
 
@@ -36,9 +37,11 @@ import boggle.mots.GrilleLettres;
 public class Partie extends Observable implements Iterable<Joueur>, Runnable {
 	
 	private Regles regles;
+	private ArbreLexical arbre;
 	private Grille grille;
 	private Sablier sablier;
 	private Joueur[] joueurs;
+	private Classement classement;
 	private boolean forcerArret;
 	private boolean gagnant;
 	private int tour;
@@ -48,12 +51,14 @@ public class Partie extends Observable implements Iterable<Joueur>, Runnable {
 	
 	public Partie(Regles regles, Joueur[] joueurs) {
 		this.regles = regles;
-		this.grille = new GrilleLettres(regles.getTailleMin() + 1, regles.getDes());
+		this.arbre = ArbreLexical.creerArbre(regles.getFichierDictionnaire());
+		this.grille = new GrilleLettres(regles.getTailleMin() + 1, De.creerDes(regles.getFichierDes()));
 		this.joueurs = joueurs;
 		this.gagnant = false;
 		this.forcerArret = false;
 		this.tour = 1;
 		this.sablier = new Sablier(regles.getDureeSablier());
+		this.classement = new Classement("Grille " + grille.dimension() + "x" + grille.dimension(), joueurs);
 	}
 	
 	/**
@@ -71,7 +76,7 @@ public class Partie extends Observable implements Iterable<Joueur>, Runnable {
 	 * @return	le dictionnaire (ArbreLexical) utilisé pour cette partie
 	 */
 	public ArbreLexical getDictionnaire() {
-		return regles.getDictionnaire();
+		return arbre;
 	}
 	
 	/**
@@ -182,7 +187,7 @@ public class Partie extends Observable implements Iterable<Joueur>, Runnable {
 	 * @return	<code>true</code> si le mot est dans l'arbre, <code>false</code> sinon
 	 */
 	public boolean verifierMot(String mot) {
-		return getDictionnaire().contient(mot);
+		return arbre.contient(mot);
 	}
 	
 	/**
@@ -215,8 +220,8 @@ public class Partie extends Observable implements Iterable<Joueur>, Runnable {
 	 * 
 	 * @return une nouvelle instance de Classement représentant les joueurs classés selon leur score
 	 */
-	public Classement etablirClassement() {
-		return new Classement(grille.dimension(), joueurs);
+	public Classement getClassement() {
+		return classement;
 	}
 	
 	/**
@@ -231,7 +236,7 @@ public class Partie extends Observable implements Iterable<Joueur>, Runnable {
 			joueur = it.next();
 			// On notifie que la partie est passée à un nouveau tour de jeu
 			update();
-			joueur.joue(grille, getDictionnaire(), this);
+			joueur.joue(grille, arbre, this);
 			// On démarre le compte à rebours
 			demarrerSablier();
 			// La fin du tour se produit à la fin du compte à rebours
@@ -248,8 +253,6 @@ public class Partie extends Observable implements Iterable<Joueur>, Runnable {
 		}
 		// On notifie les observeurs que la partie est terminée
 		update();
-		System.out.println("Vainqueur: " + meilleur);
-		System.out.println(etablirClassement());
 	}
 	
 	/**

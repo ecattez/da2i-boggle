@@ -53,7 +53,7 @@ public class JPartie extends JPanel implements Observer {
 		this.jGrille = new JGrille(grille);
 		this.jSablier = new JSablier(partie.getSablier());
 		this.jMots = new JMots(grille);
-		this.jClassement = new JClassement(partie.etablirClassement());
+		this.jClassement = new JClassement(partie.getClassement());
 		this.tourLabel = new JLabel();
 		this.zoneSaisie = new JTextField();
 		this.ajouter = new DecorateurBoutonPlat(new JButton("Ajouter"));
@@ -121,9 +121,12 @@ public class JPartie extends JPanel implements Observer {
 
 	public void update(Observable obs, Object o) {
 		if (partie.estTerminee()) {
-			Classement classement = jClassement.getClassement();
+			Classement classement = partie.getClassement();
 			classement.sauvegarderMeilleursScores();
+			classement.trier();
 			Bucket.getInstance().push(classement);
+			this.add(new JLabel(partie.getJoueurs()[0] + " a gagné cette partie."), BorderLayout.SOUTH);
+			this.validate();
 		}
 		else {
 			Joueur joueur = partie.getJoueurCourant();

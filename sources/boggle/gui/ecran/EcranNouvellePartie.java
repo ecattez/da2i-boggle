@@ -18,11 +18,24 @@
  */
 package boggle.gui.ecran;
 
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
 import boggle.gui.Bucket;
 import boggle.gui.NouvellePartie;
+import boggle.gui.decorateur.DecorateurBoutonPlat;
 import boggle.gui.ecran.EcranManager.Bouton;
+import boggle.gui.partie.JoueurPanel;
 import boggle.jeu.Partie;
-import boggle.jeu.Regles;
+import boggle.jeu.joueur.Humain;
 import boggle.jeu.joueur.IAHardcore;
 import boggle.jeu.joueur.Joueur;
 
@@ -30,8 +43,31 @@ public class EcranNouvellePartie extends AbstractEcran {
 
 	private static final long serialVersionUID = 4790691387769043379L;
 
+	private JPanel centre;
+	private JPanel ouest;
+	
 	public EcranNouvellePartie() {
+		super(new BorderLayout());
 		this.add(new NouvellePartie());
+		centre = new JPanel(new BorderLayout());
+		ouest = new JPanel();
+		ouest.setLayout(new BoxLayout(ouest, BoxLayout.Y_AXIS));
+		ouest.add(new JoueurPanel());
+
+		int size = ouest.getComponentCount();
+		Joueur[] joueurs = new Joueur[size];
+		for(int i = 0 ; i < size; i++) {
+			JoueurPanel joueurPanel = (JoueurPanel) ouest.getComponent(i);
+			if (joueurPanel.estHumain()) {
+				joueurs[i] = new Humain(joueurPanel.getNomJoueur());
+			} 
+			else {
+				joueurs[i] = new IAHardcore(joueurPanel.getNomJoueur());
+			}
+		}
+		
+//		this.add(new JScrollPane(ouest), BorderLayout.WEST);
+//		this.add(centre, BorderLayout.CENTER);
 	}
 	
 	public void recharger() {
@@ -40,18 +76,6 @@ public class EcranNouvellePartie extends AbstractEcran {
 		Partie partie = Bucket.getInstance().getPartie();
 		if (partie != null && !partie.estTerminee()) {
 			partie.forcerArret();
-		}
-		if (partie == null || partie.estTerminee()) {
-			Joueur[] joueurs = { new IAHardcore("Picault"), new IAHardcore("Beaufils") };
-			Regles regles = new Regles("regles-4x4.config");
-			partie = new Partie(regles, joueurs);
-			
-			Bucket.getInstance().push(joueurs);
-			Bucket.getInstance().push(regles);
-			Bucket.getInstance().push(partie);
-			
-			System.out.println(joueurs);
-			System.out.println(regles);
 		}
 	}
 

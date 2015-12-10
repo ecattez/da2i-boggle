@@ -16,7 +16,7 @@ public class PartieTest {
 	 */
 	public static void main(String[] args) {
 		Joueur[] joueur = { new IAHardcore("Picault"), new IAHardcore("Beaufils") };
-		Regles regles = new Regles("regles-4x4.config");
+		Regles regles = Regles.chargerRegles("regles-4x4.config");
 		System.out.println(regles);
 		
 		final Partie partie = new Partie(regles, joueur);

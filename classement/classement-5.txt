@@ -1,7 +1,0 @@
-#Tue Dec 08 21:25:05 CET 2015
-edouard=300
-remy=999
-julien=80
-thomas=99
-tony=70
-maxime=112

@@ -1,5 +1,0 @@
-#Thu Dec 10 11:37:16 CET 2015
-edouard=100
-julien=80
-thomas=99
-remy=200

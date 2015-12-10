@@ -18,7 +18,13 @@
  */
 package boggle.gui.ecran;
 
-import boggle.gui.Bucket;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+
 import boggle.gui.classement.JClassement;
 import boggle.gui.ecran.EcranManager.Bouton;
 import boggle.jeu.Classement;
@@ -27,18 +33,29 @@ public class EcranClassements extends AbstractEcran {
 	
 	private static final long serialVersionUID = 599000474435628090L;
 	
-	private Classement classement;
+	private List<Classement> classements;
 	
 	public EcranClassements() {}
 
 	public void recharger() {
 		cacherBoutons();
 		afficherBoutons(Bouton.MENU_PRINCIPAL, Bouton.NOUVELLE_PARTIE);
-		Classement classement = Bucket.getInstance().getClassement();
-		if (classement != null && classement != this.classement) {
-			this.removeAll();
-			this.classement = classement;
-			this.add(new JClassement(classement));
+		classements = Classement.listerTous();
+		JTabbedPane pane = new JTabbedPane();
+		Iterator<Classement> it = classements.iterator();
+		Classement c;
+		while (it.hasNext()) {
+			c = it.next();
+			pane.add(c.getTitle(), new JClassement(c));
+		}
+		this.removeAll();
+		if (pane.getComponentCount() > 0) {
+			this.add(pane);
+		}
+		else {
+			JPanel aucunClassement = new JPanel();
+			aucunClassement.add(new JLabel("Il n'y a actuellement aucun classement sauvegardé"));
+			this.add(aucunClassement);
 		}
 	}
 

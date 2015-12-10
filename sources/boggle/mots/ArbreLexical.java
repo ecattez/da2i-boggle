@@ -34,8 +34,10 @@ public class ArbreLexical {
 
 	public static final int TAILLE_ALPHABET = 26;
 	
-	private boolean estMot; // vrai si le noeud courant est la fin d'un mot valide
-	private ArbreLexical[] fils = new ArbreLexical[TAILLE_ALPHABET]; // les sous-arbres
+	// vrai si le noeud courant est la fin d'un mot valide
+	private boolean estMot;
+	// les sous-arbres
+	private ArbreLexical[] fils = new ArbreLexical[TAILLE_ALPHABET];
 
 	/**
 	 * Crée un arbre vide (sans aucun mot)
@@ -180,12 +182,21 @@ public class ArbreLexical {
 	 * Crée un arbre lexical qui contient tous les mots du fichier spécifié.
 	 * 
 	 * @param	fichier
-	 * 			le nom du fichier à charger
+	 * 			le chemin du fichier à charger
 	 */
 	public static ArbreLexical creerArbre(String fichier) {
+		return creerArbre(Paths.get(fichier));
+	}
+	
+	/**
+	 * Crée un arbre lexical qui contient tous les mots du fichier spécifié.
+	 * 
+	 * @param	fichier
+	 * 			le chemin du fichier à charger
+	 */
+	public static ArbreLexical creerArbre(Path fichier) {
 		ArbreLexical root = new ArbreLexical();
-		Path path = Paths.get("config", fichier);
-		try (Scanner sc = new Scanner(path)) {
+		try (Scanner sc = new Scanner(fichier)) {
 			while (sc.hasNextLine()) {
 				root.ajouter(sc.nextLine());
 			}

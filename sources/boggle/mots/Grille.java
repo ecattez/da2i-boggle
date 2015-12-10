@@ -242,7 +242,7 @@ public abstract class Grille extends Observable implements Observer {
 	 */
 	public synchronized boolean stockerMot() {
 		String mot = getLettresUtilisees();
-		return !mots.contains(mot) && mots.add(mot);
+		return !mots.contains(mot) && mot.length() >= tailleMinimale() && mots.add(mot);
 	}
 	
 	/**

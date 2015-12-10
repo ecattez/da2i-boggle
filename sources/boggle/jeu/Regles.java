@@ -19,16 +19,17 @@
 package boggle.jeu;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.Properties;
 
 import boggle.BoggleException;
-import boggle.mots.ArbreLexical;
-import boggle.mots.De;
 
 /**
  * L'objet Regles stocke en mémoire certaines règles de jeu administrable à une partie
@@ -38,107 +39,39 @@ public class Regles {
 	
 	public static final int DEFAULT_TAILLEMIN = 3;
 	public static final int DEFAULT_DUREESABLIER = 60;
-	public static final int DEFAULT_SCORECIBLE = 100;
+	public static final int DEFAULT_SCORECIBLE = 50;
 	public static final int DEFAULT_TOURMAX = 10;
 	public static final int[] DEFAULT_POINTS = { 1, 1, 2, 3, 5, 11 };
 	
-	private De[] des;
-	private ArbreLexical dictionnaire;
+	private String titre;
+	private Path fichierDes;
+	private Path fichierDico;
 	private int tailleMin;
 	private int[] points;
 	private int tourMax;
 	private int scoreCible;
 	private int dureeSablier;
 	
-	// Le constructeur avec l'utilisation d'un fichier
-	public Regles(String fichierRegles) {
-		Path regles = Paths.get("config", fichierRegles);
-		if (!Files.exists(regles)) {
-			throw new BoggleException("Le fichier " + fichierRegles + " n'existe pas");
-		}
-		Properties prop = new Properties();
-		try (BufferedReader in = Files.newBufferedReader(regles, Charset.forName("UTF-8"))) {
-			prop.load(in);
-		} catch (Exception e) {
-			throw new BoggleException("Une erreur s'est produite à l'ouverture du fichier " + fichierRegles + "\n" + e);
-		}
-		
-		String sTailleMin = prop.getProperty("taille-min");
-		String sTourMax = prop.getProperty("tour-max");
-		String sScoreCible = prop.getProperty("score-cible");
-		String sDureeSablier = prop.getProperty("duree-sablier");
-		String sDes = prop.getProperty("des");
-		String sDico = prop.getProperty("dictionnaire");
-		String sPoints = prop.getProperty("points");
-		
-		this.tailleMin =  (isInteger(sTailleMin) ? Integer.parseInt(sTailleMin) : DEFAULT_TAILLEMIN);
-		this.tourMax = (isInteger(sTourMax) ? Integer.parseInt(sTourMax) : DEFAULT_TOURMAX);
-		this.scoreCible = (isInteger(sScoreCible) ? Integer.parseInt(sScoreCible) : DEFAULT_SCORECIBLE);
-		this.dureeSablier = (isInteger(sDureeSablier) ? Integer.parseInt(sDureeSablier) : DEFAULT_DUREESABLIER);
-		
-		if (sPoints != null && sPoints.contains(",")) {
-			String[] pointsArray = sPoints.split(",");
-			points = new int[pointsArray.length];
-			for (int i=0; i < pointsArray.length; i++) {
-				points[i] = Integer.parseInt(pointsArray[i]);
-			}
-		}
-		
-		// Vérifie que les valeurs sont toutes correctes
-		check(tailleMin, points, tourMax, scoreCible, dureeSablier);
-		
-		this.des = De.creerDes(sDes);
-		this.dictionnaire = ArbreLexical.creerArbre(sDico);
-	}
-	
 	// Le constructeur avec chaque paramètre
-	public Regles(String fichierDes, String fichierDico, int tailleMin, int[] points, int tourMax, int scoreCible, int dureeSablier) {
-		check(tailleMin, points, tourMax, scoreCible, dureeSablier);
-		this.tailleMin = tailleMin;
-		this.tourMax = tourMax;
-		this.scoreCible = scoreCible;
-		this.dureeSablier = dureeSablier;
-		this.des = De.creerDes(fichierDes);
-		this.dictionnaire = ArbreLexical.creerArbre(fichierDico);
-		this.points = points;
-		
+	public Regles(String titre, Path fichierDes, Path fichierDico, int tailleMin, int[] points, int tourMax, int scoreCible, int dureeSablier) {
+		this.titre = titre;
+		setTailleMin(tailleMin);
+		setTourMax(tourMax);
+		setScoreCible(scoreCible);
+		setDureeSablier(dureeSablier);
+		setFichierDes(fichierDes);
+		setFichierDictionnaire(fichierDico);
+		setPoints(this.points = points);
 	}
 	
 	// Le constructeur de chaque paramètre simplifé avec les valeurs par défaut
-	public Regles(String fichierDes, String fichierDico, int tailleMin) {
-		this(fichierDes, fichierDico, tailleMin, DEFAULT_POINTS, DEFAULT_TOURMAX, DEFAULT_SCORECIBLE, DEFAULT_DUREESABLIER);
+	public Regles(String titre, Path fichierDes, Path fichierDico, int tailleMin) {
+		this(titre, fichierDes, fichierDico, tailleMin, DEFAULT_POINTS, DEFAULT_TOURMAX, DEFAULT_SCORECIBLE, DEFAULT_DUREESABLIER);
 	}
 	
-	/**
-	 * Vérifie certains paramètres nécessaires à la création d'une instance de Règles
-	 * 
-	 * @param	tailleMin
-	 * 			la taille minimale d'un mot
-	 * @param	points
-	 * 			les points à attribuer selon chaque mot
-	 * @param	tourMax
-	 * 			le tour maximal de la partie
-	 * @param	scoreCible
-	 * 			le score à atteindre lors d'une partie
-	 * @param	dureeSablier
-	 * 			la durée maximale du sablier
-	 * 
-	 * @return	<code>true</code> si toutes les vérifications se sont biens déroulés, une <code>BoggleException</code> sinon
-	 */
-	private boolean check(int tailleMin, int[] points, int tourMax, int scoreCible, int dureeSablier) {
-		if (tailleMin < 1) {
-			throw new BoggleException("La taille minimale d'un mot ne peut être < 0");
-		}
-		if (tourMax < 1 && scoreCible < 1) {
-			throw new BoggleException("Les règles doivent définir un tour maximal et/ou un score cible à atteindre");
-		}
-		if (points == null || points.length < 6) {
-			throw new BoggleException("Il manque des points à attribuer pour la taille des mots");
-		}
-		if (dureeSablier < 1) {
-			throw new BoggleException("Le sablier ne peut pas avoir une durée < 0");
-		}
-		return true;
+	// Le constructeur sans paramètres
+	public Regles() {
+		this("regles", Paths.get("des-4x4.csv"), Paths.get("dict-fr.txt"), DEFAULT_TAILLEMIN);
 	}
 	
 	/**
@@ -149,46 +82,76 @@ public class Regles {
 	 * 
 	 * @return	<code>true</code> si la chaîne représente un entier, <code>false</code> sinon
 	 */
-	private boolean isInteger(String str) {
+	private static boolean isInteger(String str) {
 		return str != null && str.matches("[+-]?\\d+(\\.\\d+)?");
 	}
-
+	
 	/**
-	 * Retourne les dés définis dans ces règles de jeu
+	 * Change le titre personnalisé des règles
 	 * 
-	 * @return	les dés (De[]) utilisés
+	 * @param	titre
+	 * 			le nouveau titre des règles
 	 */
-	public De[] getDes() {
-		return des;
+	public void setTitre(String titre) {
+		this.titre = titre;
 	}
-
+	
 	/**
-	 * Change les dés définis dans ces règles de jeu
+	 * Retourne le chemin (Path) du fichier de dés
 	 * 
-	 * @param	des
-	 * 			les nouveaux dés utilisés
+	 * @return	le chemin du fichier de dés
 	 */
-	public void setDes(De[] des) {
-		this.des = des;
+	public Path getFichierDes() {
+		return fichierDes;
 	}
-
+	
 	/**
-	 * Retourne le dictionnaire défini dans ces règles de jeu
+	 * Change le chemin (Path) du fichier de dés
 	 * 
-	 * @return	le dictionnaire (ArbreLexical) utilisé
+	 * @param	fichierDes
+	 * 			le nouveau chemin du fichier de dés
 	 */
-	public ArbreLexical getDictionnaire() {
-		return dictionnaire;
+	public void setFichierDes(Path fichierDes) {
+		this.fichierDes = fichierDes;
 	}
-
+	
 	/**
-	 * Change le dictionnaire défini dans ces règles de jeu
+	 * Change le chemin (Path) du fichier de dés
 	 * 
-	 * @param	dictionnaire
-	 * 			le nouveau dictionnaire utilisé
+	 * @param	fichierDes
+	 * 			le nouveau chemin du fichier de dés
 	 */
-	public void setDictionnaire(ArbreLexical dictionnaire) {
-		this.dictionnaire = dictionnaire;
+	public void setFichierDes(String fichierDes) {
+		setFichierDes(Paths.get(fichierDes));
+	}
+	
+	/**
+	 * Retourne le chemin (Path) du fichier dictionnaire
+	 * 
+	 * @return	le chemin du dictionnaire
+	 */
+	public Path getFichierDictionnaire() {
+		return fichierDico;
+	}
+	
+	/**
+	 * Change le chemin (Path) du fichier dictionnaire
+	 * 
+	 * @param	fichierDico
+	 * 			le nouveau chemin du fichier dictionnaire
+	 */
+	public void setFichierDictionnaire(Path fichierDico) {
+		this.fichierDico = fichierDico;
+	}
+	
+	/**
+	 * Change le chemin (Path) du fichier dictionnaire
+	 * 
+	 * @param	fichierDico
+	 * 			le nouveau chemin du fichier dictionnaire
+	 */
+	public void setFichierDictionnaire(String fichierDico) {
+		setFichierDictionnaire(Paths.get(fichierDico));
 	}
 
 	/**
@@ -207,6 +170,9 @@ public class Regles {
 	 * 			la nouvelle taille minimale des mots
 	 */
 	public void setTailleMin(int tailleMin) {
+		if (tailleMin < 1) {
+			throw new BoggleException("La taille minimale d'un mot ne peut être < 0");
+		}
 		this.tailleMin = tailleMin;
 	}
 
@@ -227,6 +193,9 @@ public class Regles {
 	 * 			les nouveaux points à attribuer à chaque mot
 	 */
 	public void setPoints(int[] points) {
+		if (points == null || points.length < 6) {
+			throw new BoggleException("Il manque des points à attribuer pour la taille des mots");
+		}
 		this.points = points;
 	}
 
@@ -246,6 +215,9 @@ public class Regles {
 	 * 			le nouveau tour maximal atteignable
 	 */
 	public void setTourMax(int tourMax) {
+		if (tourMax < 1 && scoreCible < 1) {
+			throw new BoggleException("Les règles doivent définir un tour maximal et/ou un score cible à atteindre");
+		}
 		this.tourMax = tourMax;
 	}
 	
@@ -265,6 +237,9 @@ public class Regles {
 	 * 			le nouveau score à atteindre
 	 */
 	public void setScoreCible(int scoreCible) {
+		if (tourMax < 1 && scoreCible < 1) {
+			throw new BoggleException("Les règles doivent définir un tour maximal et/ou un score cible à atteindre");
+		}
 		this.scoreCible = scoreCible;
 	}
 
@@ -284,15 +259,118 @@ public class Regles {
 	 * 			la nouvelle durée totale du sablier
 	 */
 	public void setDureeSablier(int dureeSablier) {
+		if (dureeSablier < 1) {
+			throw new BoggleException("Le sablier ne peut pas avoir une durée < 1 sec");
+		}
 		this.dureeSablier = dureeSablier;
+	}
+	
+	/**
+	 * Sauvegarde les règles dans un fichier
+	 * 
+	 * @param	path
+	 * 			le chemin du fichier
+	 */
+	public void sauvegarder(Path path) {
+		Properties prop = new Properties();
+		prop.setProperty("taille-min", String.valueOf(tailleMin));
+		prop.setProperty("tour-max", String.valueOf(tourMax));
+		prop.setProperty("score-cible", String.valueOf(scoreCible));
+		prop.setProperty("duree-sablier", String.valueOf(dureeSablier));
+		prop.setProperty("points", Arrays.toString(points).replace(" ", "").replace("[", "").replace("]", ""));
+		prop.setProperty("des", fichierDes.getFileName().toString());
+		prop.setProperty("dictionnaire", fichierDico.getFileName().toString());
+		try (BufferedWriter out = Files.newBufferedWriter(path, Charset.forName("UTF-8"), StandardOpenOption.CREATE)) {
+			prop.store(out, null);
+		} catch (IOException e) {
+			throw new BoggleException("Une erreur s'est produite à l'enregistrement du fichier " + path + "\n" + e);
+		}
+	}
+	
+	/**
+	 * Sauvegarde les règles dans un fichier
+	 * 
+	 * @param	fichier
+	 * 			le chemin du fichier
+	 */
+	public void sauvegarder(String fichier) {
+		sauvegarder(Paths.get(fichier));
 	}
 	
 	/**
 	 * Une représentation succinte d'une instance de Regles
 	 */
 	public String toString() {
-		return String.format("des: %s\ndictionnaire: %s\ntaille-min: %d\npoints: %s\ntour-max: %d\nscore-cible: %d\nduree-sablier: %d",
-				Arrays.toString(des), dictionnaire, tailleMin, Arrays.toString(points), tourMax, scoreCible, dureeSablier);
+		return titre;
+	}
+	
+	/**
+	 * Charge des règles à partir d'un fichier
+	 * 
+	 * @param	fichier
+	 * 			le chemin du fichier
+	 * 
+	 * @return	une instance de Regles si tout c'est bien passé, une <code>BoggleException</code> sinon
+	 */
+	public static Regles chargerRegles(Path fichier) {
+		if (!Files.exists(fichier)) {
+			throw new BoggleException("Le fichier " + fichier + " n'existe pas");
+		}
+		Properties prop = new Properties();
+		try (BufferedReader in = Files.newBufferedReader(fichier, Charset.forName("UTF-8"))) {
+			prop.load(in);
+		} catch (Exception e) {
+			throw new BoggleException("Une erreur s'est produite à l'ouverture du fichier " + fichier + "\n" + e);
+		}
+		
+		String sTailleMin = prop.getProperty("taille-min");
+		String sTourMax = prop.getProperty("tour-max");
+		String sScoreCible = prop.getProperty("score-cible");
+		String sDureeSablier = prop.getProperty("duree-sablier");
+		String sDes = prop.getProperty("des");
+		String sDico = prop.getProperty("dictionnaire");
+		String sPoints = prop.getProperty("points");
+		
+		String titre = fichier.getFileName().toString();
+		int tailleMin = (isInteger(sTailleMin) ? Integer.parseInt(sTailleMin) : DEFAULT_TAILLEMIN);
+		int tourMax = (isInteger(sTourMax) ? Integer.parseInt(sTourMax) : DEFAULT_TOURMAX);
+		int scoreCible = (isInteger(sScoreCible) ? Integer.parseInt(sScoreCible) : DEFAULT_SCORECIBLE);
+		int dureeSablier = (isInteger(sDureeSablier) ? Integer.parseInt(sDureeSablier) : DEFAULT_DUREESABLIER);
+		int[] points = Regles.DEFAULT_POINTS;
+		
+		if (sPoints != null && sPoints.contains(",")) {
+			String[] pointsArray = sPoints.split(",");
+			for (int i=0; i < pointsArray.length; i++) {
+				points[i] = Integer.parseInt(pointsArray[i]);
+			}
+		}
+		
+		Path fichierDes = Paths.get(sDes);
+		Path fichierDico = Paths.get(sDico);
+		
+		Path parent = fichier.getParent();
+		if (parent != null) {
+			if (fichierDes.getParent() == null) {
+				fichierDes = parent.resolve(fichierDes);
+			}
+			if (fichierDico.getParent() == null) {
+				fichierDico = parent.resolve(fichierDico);
+			}
+		}
+		
+		return new Regles(titre, fichierDes, fichierDico, tailleMin, points, tourMax, scoreCible, dureeSablier);
+	}
+	
+	/**
+	 * Charge des règles à partir d'un fichier
+	 * 
+	 * @param	fichier
+	 * 			le chemin du fichier
+	 * 
+	 * @return	une instance de Regles si tout c'est bien passé, une <code>BoggleException</code> sinon
+	 */
+	public static Regles chargerRegles(String regles) {
+		return chargerRegles(Paths.get(regles));
 	}
 	
 }

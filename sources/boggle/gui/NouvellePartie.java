@@ -6,9 +6,15 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.Scrollbar;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -16,23 +22,41 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
-import javax.swing.JTextArea;
-
 import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
+
+import boggle.jeu.Partie;
+import boggle.jeu.Regles;
+import boggle.jeu.joueur.Humain;
+import boggle.jeu.joueur.IAHardcore;
+import boggle.jeu.joueur.Joueur;
+import boggle.mots.ArbreLexical;
+import boggle.mots.De;
 
 public class NouvellePartie extends JPanel {
 
+	private JSpinner taille;
+	private JSpinner tour;
+	private JSpinner score;
+	private JSpinner time;
+	private JSpinner point;
+	private JSpinner point1;
+	private JSpinner point2;
+	private JSpinner point3;
+	private JSpinner point4;
+	private JSpinner point5;
+	private JComboBox<Path> des;
+	private JComboBox<Path> dic;
 	private JPanel ouest;
 	private JPanel centre;
-	
+	private Regles regles;
 	
 	public NouvellePartie(){
-		
 		super(new BorderLayout());
+		this.regles = Regles.chargerRegles("config/regles-4x4.config");
 		this.setBackground(Color.GRAY);
-		//this.setPreferredSize(new Dimension(500,500));
 		
 		this.ouest= new JPanel();
 	
@@ -47,18 +71,22 @@ public class NouvellePartie extends JPanel {
 		centre.add(new PartiePanel());
 		centre.setBorder(BorderFactory.createLineBorder(Color.CYAN));
 		
+		// ne fonctionne pas
+		JScrollPane scroll = new JScrollPane(ouest);
 		
 		
 		
-		
-		this.add(ouest,BorderLayout.WEST);
+		this.add(scroll,BorderLayout.WEST);
 		this.add(centre,BorderLayout.CENTER);
 	}
 	
 	
 
 	public class JoueurPanel extends JPanel {
-
+		
+		private JTextField zoneTexte;
+		private JComboBox typeJoueur;
+		
 		public JoueurPanel() {
 		
 		this.setBackground(Color.BLACK);
@@ -68,9 +96,10 @@ public class NouvellePartie extends JPanel {
 		JButton moins = new JButton("-");
 		choixListe.add(moins);
 		choixListe.add(plus);
-		choixListe.add(new JTextField("Joueur 1"));
+		zoneTexte = new JTextField("Joueur 1");
+		choixListe.add(zoneTexte);
 		String[] selection = {"humain" , "AI easy" , "AI hard"};
-		JComboBox typeJoueur = new JComboBox(selection);
+		typeJoueur = new JComboBox(selection);
 		choixListe.add(typeJoueur);
 
 		this.add(choixListe); 
@@ -94,10 +123,21 @@ public class NouvellePartie extends JPanel {
 			}
 		});
 		}
+		
+		public String recupText() {
+			return	zoneTexte.getText();
+		}
+		
+		public Object RecupTypeJoueur(){
+			return typeJoueur.getSelectedItem();
+		}
+		
+		
 	}
 	
 	public class PartiePanel extends JPanel {
 		
+	
 		
 		
 		public PartiePanel() {
@@ -114,19 +154,19 @@ public class NouvellePartie extends JPanel {
 			GridBagConstraints c = new GridBagConstraints();
 			centre.setBackground(Color.PINK);
 			
-			JLabel tailleMin = new JLabel("Taille Minimal de la grille");
+			JLabel tailleMin = new JLabel("Taille de la grille");
 			c.weightx = 5;
-			c.weighty = 10;
+			c.weighty = 5;
 			c.gridx = 0;
 			c.gridy = 0;
 			c.insets = new Insets(7, 15, 15, 0);
 			c.anchor = GridBagConstraints.BASELINE_LEADING;
 		
-			JSpinner taille = new JSpinner();
+			taille = new JSpinner(new SpinnerNumberModel(regles.getTailleMin(), 3, 10, 1));
 			GridBagConstraints t = new GridBagConstraints();
 			t.weightx = 5;
-			t.weighty = 10;
-			t.gridx = 1;
+			t.weighty = 5;
+			t.gridx = 4;
 			t.gridy = 0;
 			t.insets = new Insets(7, 15, 15, 0);
 			t.anchor = GridBagConstraints.BASELINE_LEADING;
@@ -136,20 +176,20 @@ public class NouvellePartie extends JPanel {
 			sud.setBackground(Color.CYAN);
 			
 			
-			JLabel tourMax = new JLabel("Nombre de tours maximum");
+			JLabel tourMax = new JLabel("Nombre de tours");
 			GridBagConstraints c1 = new GridBagConstraints();
 			c1.weightx = 5;
-			c1.weighty = 10;
+			c1.weighty = 5;
 			c1.gridx = 0;
 			c1.gridy = 1;
 			c1.insets = new Insets(7, 15, 15, 0);
 			c1.anchor = GridBagConstraints.BASELINE_LEADING;
 			
-			JSpinner tour = new JSpinner();
+			tour = new JSpinner(new SpinnerNumberModel(1, 1, regles.getTourMax(), 1));
 			GridBagConstraints t1 = new GridBagConstraints();
-			t1.weightx = 5;
-			t1.weighty = 10;
-			t1.gridx = 1;
+			t1.weightx = 0;
+			t1.weighty = 0;
+			t1.gridx = 4;
 			t1.gridy = 1;
 			t1.insets = new Insets(7, 15, 15, 0);
 			t1.anchor = GridBagConstraints.BASELINE_LEADING;
@@ -158,17 +198,18 @@ public class NouvellePartie extends JPanel {
 			JLabel scoreCible = new JLabel("Score Cible");
 			GridBagConstraints c2 = new GridBagConstraints();
 			c2.weightx = 5;
-			c2.weighty = 10;
+			c2.weighty = 5;
 			c2.gridx = 0;
 			c2.gridy = 2;
 			c2.insets = new Insets(7, 15, 15, 0);
 			c2.anchor = GridBagConstraints.BASELINE_LEADING;
 			
-			JSpinner score = new JSpinner();
+			// voir pour modifier le pas du spinner en fonction du nombre de point obtenu par le plus petit mot realisable
+			score = new JSpinner(new SpinnerNumberModel(0, 0, regles.getScoreCible(), 1));
 			GridBagConstraints s = new GridBagConstraints();
 			s.weightx = 5;
-			s.weighty = 10;
-			s.gridx = 2;
+			s.weighty = 5;
+			s.gridx = 4;
 			s.gridy = 2;
 			s.insets = new Insets(7, 15, 15, 0);
 			s.anchor = GridBagConstraints.BASELINE_LEADING;
@@ -177,17 +218,17 @@ public class NouvellePartie extends JPanel {
 			JLabel dureeSablier = new JLabel("Durée du sablier");
 			GridBagConstraints c3 = new GridBagConstraints();
 			c3.weightx = 5;
-			c3.weighty = 10;
+			c3.weighty = 5;
 			c3.gridx = 0;
 			c3.gridy = 3;
 			c3.insets = new Insets(7, 15, 15, 0);
 			c3.anchor = GridBagConstraints.BASELINE_LEADING;
 			
-			JSpinner time = new JSpinner();
+			time = new JSpinner();
 			GridBagConstraints t2 = new GridBagConstraints();
 			t2.weightx = 5;
-			t2.weighty = 10;
-			t2.gridx = 3;
+			t2.weighty = 5;
+			t2.gridx = 4;	 
 			t2.gridy = 3;
 			t2.insets = new Insets(7, 15, 15, 0);
 			t2.anchor = GridBagConstraints.BASELINE_LEADING;
@@ -195,35 +236,100 @@ public class NouvellePartie extends JPanel {
 			JLabel points = new JLabel("Points");
 			GridBagConstraints c4 = new GridBagConstraints();
 			c4.weightx = 5;
-			c4.weighty = 10;
+			c4.weighty = 5;
 			c4.gridx = 0;
 			c4.gridy = 4;
 			c4.insets = new Insets(7, 15, 15, 0);
 			c4.anchor = GridBagConstraints.BASELINE_LEADING;
 			
-			JSpinner point = new JSpinner();
+			point = new JSpinner();
 			GridBagConstraints p = new GridBagConstraints();
-			p.weightx = 5;
-			p.weighty = 10;
-			p.gridx = 4;
+			p.weightx = 0;
+			p.weighty = 0;
+			p.gridwidth = 1;
+			p.gridx = 1;
 			p.gridy = 4;
 			p.insets = new Insets(7, 15, 15, 0);
 			p.anchor = GridBagConstraints.BASELINE_LEADING;
 			
+
+			point1 = new JSpinner();
+			GridBagConstraints p1 = new GridBagConstraints();
+			p1.weightx = 0;
+			p1.weighty = 0;
+			p1.gridwidth = 1;
+			p1.gridx = 2;
+			p1.gridy = 4;
+			p1.insets = new Insets(7, 15, 15, 0);
+			p1.anchor = GridBagConstraints.BASELINE_LEADING;
+			
+
+			point2 = new JSpinner();
+			GridBagConstraints p2 = new GridBagConstraints();
+			p2.weightx = 0;
+			p2.weighty = 0;
+			p2.gridwidth = 1;
+			p2.gridx = 3;
+			p2.gridy = 4;
+			p2.insets = new Insets(7, 15, 15, 0);
+			p2.anchor = GridBagConstraints.BASELINE_LEADING;
+			
+			point3 = new JSpinner();
+			GridBagConstraints p3 = new GridBagConstraints();
+			p3.weightx = 0;
+			p3.weighty = 0;
+			p3.gridwidth = 1;
+			p3.gridx = 4;
+			p3.gridy = 4;
+			p3.insets = new Insets(7, 15, 15, 0);
+			p3.anchor = GridBagConstraints.BASELINE_LEADING;
+			
+			point4 = new JSpinner();
+			GridBagConstraints p4 = new GridBagConstraints();
+			p4.weightx = 0;
+			p4.weighty = 0;
+			p4.gridwidth = 1;
+			p4.gridx = 5;
+			p4.gridy = 4;
+			p4.insets = new Insets(7, 15, 15, 0);
+			p4.anchor = GridBagConstraints.BASELINE_LEADING;
+			
+			point5 = new JSpinner();
+			GridBagConstraints p5 = new GridBagConstraints();
+			p5.weightx = 0;
+			p5.weighty = 0;
+			p5.gridwidth = 1;
+			p5.gridx = 6;
+			p5.gridy = 4;
+			p5.insets = new Insets(7, 15, 15, 0);
+			p5.anchor = GridBagConstraints.BASELINE_LEADING;
+			
 			JLabel de = new JLabel("De");
 			GridBagConstraints c5 = new GridBagConstraints();
-			c5.weightx = 5;
-			c5.weighty = 10;
+			c5.weightx = 2;
+			c5.weighty = 5;
 			c5.gridx = 0;
 			c5.gridy = 5;
 			c5.insets = new Insets(7, 15, 15, 0);
 			c5.anchor = GridBagConstraints.BASELINE_LEADING;
 			
-			JSpinner des = new JSpinner();
+			des = new JComboBox<Path>();
+			try (DirectoryStream<Path> folder = Files.newDirectoryStream(Paths.get("config"))) {
+				Path fichier;
+				for (Path chemin : folder) {
+					fichier = chemin.getFileName();
+					if (fichier.toString().startsWith("des-")) {
+						des.addItem(chemin);
+					}
+				}
+			} catch (IOException e) {
+				// Erreur
+			}
+			
 			GridBagConstraints d = new GridBagConstraints();
 			d.weightx = 5;
-			d.weighty = 10;
-			d.gridx = 5;
+			d.weighty = 5;
+			d.gridx = 4;		
 			d.gridy = 5;
 			d.insets = new Insets(7, 15, 15, 0);
 			d.anchor = GridBagConstraints.BASELINE_LEADING;
@@ -231,17 +337,31 @@ public class NouvellePartie extends JPanel {
 			JLabel dictionnaire = new JLabel("Dictionnaire");
 			GridBagConstraints c6 = new GridBagConstraints();
 			c6.weightx = 5;
-			c6.weighty = 10;
+			c6.weighty = 5;
 			c6.gridx = 0;
 			c6.gridy = 6;
 			c6.insets = new Insets(7, 15, 15, 0);
 			c6.anchor = GridBagConstraints.BASELINE_LEADING;
 			
-			JSpinner dic = new JSpinner();
+			
+			dic = new JComboBox<Path>();
+			try (DirectoryStream<Path> folder = Files.newDirectoryStream(Paths.get("config"))) {
+				Path fichier;
+				for (Path chemin : folder) {
+					fichier = chemin.getFileName();
+					if (fichier.toString().startsWith("dict-")) {
+						dic.addItem(chemin);
+					}
+				}
+			} catch (IOException e) {
+				// Erreur
+			}
+		
+			//	new JFileChooser(Paths.get("config").toString());
 			GridBagConstraints d1 = new GridBagConstraints();
 			d1.weightx = 5;
-			d1.weighty = 10;
-			d1.gridx = 6;
+			d1.weighty = 5;
+			d1.gridx = 4;
 			d1.gridy = 6;
 			d1.insets = new Insets(7, 15, 15, 0);
 			d1.anchor = GridBagConstraints.BASELINE_LEADING;
@@ -249,15 +369,33 @@ public class NouvellePartie extends JPanel {
 	
 			
 			JButton boutonDemarrer = new JButton("Demarrer");
-			/**boutonDemarrer.addActionListener(new ActionListener(){
+			boutonDemarrer.addActionListener(new ActionListener(){
 
-				
 				public void actionPerformed(ActionEvent e) {
-					ConteneurPrincipal.card.show(conteneurCarte, ECRAN_JEU);
+					int size = ouest.getComponentCount();
+					Joueur[] joueurs = new Joueur[size];
+					for(int i = 0 ; i < size; i++){
+						JoueurPanel joueurPanel = (JoueurPanel)ouest.getComponent(i);
+						if(joueurPanel.RecupTypeJoueur() == "humain") {
+							joueurs[i] = new Humain(joueurPanel.recupText());
+						} 
+							joueurs[i] = new IAHardcore(joueurPanel.recupText());
+					}
+					
+					// A changer
+					regles.setDureeSablier(((int)taille.getValue()));
+					regles.setScoreCible(((int)point.getValue()));
+					regles.setTailleMin(((int)taille.getValue()));
+					regles.setTourMax(((int)tour.getValue()));
+					regles.setFichierDes((Path) dic.getSelectedItem());
+					regles.setFichierDictionnaire((Path) des.getSelectedItem());
+					
+					
+					Partie lancement = new Partie(null, joueurs);
 					
 				}
 				
-			});**/
+			});
 			JButton boutonSauvConfig = new JButton("Sauvegarder Configuration");
 			JButton boutonNomConfig = new JButton("Nom Configuration");
 			JButton boutonImport = new JButton("Importer");
@@ -267,6 +405,8 @@ public class NouvellePartie extends JPanel {
 			
 			sud.add(boutonDemarrer);
 			sud.add(boutonSauvConfig);
+			
+			
 			
 			centre.add(tailleMin,c);
 			centre.add(taille,t);
@@ -278,10 +418,20 @@ public class NouvellePartie extends JPanel {
 			centre.add(time,t2);
 			centre.add(points,c4);
 			centre.add(point,p);
+			centre.add(point1,p1);
+			centre.add(point2,p2);
+			centre.add(point3,p3);
+			centre.add(point4,p4);
+			centre.add(point5,p5);
 			centre.add(de,c5);
 			centre.add(des,d);
 			centre.add(dictionnaire,c6);
 			centre.add(dic,d1);
+	
+			
+			/*Path dir = Paths.get("config", "dictionnaires");
+			String[] dictionnaires = dir.toFile().list();*/
+			//dic.showOpenDialog(centre);
 			
 			this.add(nord, BorderLayout.NORTH);
 			this.add(sud, BorderLayout.SOUTH);

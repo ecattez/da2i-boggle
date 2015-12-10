@@ -18,7 +18,6 @@
  */
 package boggle.gui.classement;
 
-import java.util.Arrays;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -78,7 +77,6 @@ public class JClassement extends JScrollPane implements Observer {
 	
 	// Le classement a changé, on met à jour la JTable en triant les joueurs
 	public void update(Observable obs, Object o) {
-		Arrays.sort(classement.getJoueurs());
 		tableModel.fireTableDataChanged();
 	}
 
