@@ -19,15 +19,19 @@
 package boggle.gui.ecran;
 
 import java.awt.LayoutManager;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.swing.JPanel;
 
+import boggle.gui.Bucket;
 import boggle.gui.ConteneurPrincipal;
+import boggle.jeu.Partie;
 
 /**
  * Représentation d'un écran
  */
-public abstract class Ecran extends JPanel {
+public abstract class Ecran extends JPanel implements Observer {
 	
 	private static final long serialVersionUID = 4088889425334087954L;
 	
@@ -36,6 +40,7 @@ public abstract class Ecran extends JPanel {
 	public Ecran(ConteneurPrincipal mainPanel) {
 		super();
 		this.mainPanel = mainPanel;
+		Bucket.getInstance().addObserver(this);
 	}
 	
 	public Ecran(ConteneurPrincipal mainPanel, LayoutManager layout) {
@@ -50,6 +55,16 @@ public abstract class Ecran extends JPanel {
 		super.setVisible(visible);
 		if (visible) {
 			recharger();
+		}
+	}
+	
+	public void update(Observable obs, Object o) {
+		Bucket bucket = ((Bucket) obs);
+		Partie partie = bucket.getPartie();
+		
+		// Si l'écran est visible et qu'une partie est en cours, on la termine
+		if (isVisible() && partie != null && !partie.estTerminee()) {
+			partie.forcerArret();
 		}
 	}
 

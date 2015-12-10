@@ -35,11 +35,6 @@ import boggle.mots.GrilleLettres;
  */
 public class Partie extends Observable implements Iterable<Joueur>, Runnable {
 	
-	public static final int DEFAULT_CHRONO = 60;
-	public static final int DEFAULT_SCORECIBLE = 30;
-	public static final int DEFAULT_TOURMAX = 5;
-	public static final int[] DEFAULT_POINTS = { 1, 1, 2, 3, 5, 11 };
-	
 	private Regles regles;
 	private Grille grille;
 	private Sablier sablier;

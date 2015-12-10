@@ -18,6 +18,8 @@
  */
 package boggle.gui;
 
+import java.util.Observable;
+
 import boggle.jeu.Classement;
 import boggle.jeu.Partie;
 import boggle.jeu.Regles;
@@ -26,7 +28,7 @@ import boggle.jeu.joueur.Joueur;
 /**
  * 
  */
-public class Bucket {
+public class Bucket extends Observable {
 	
 	private static Bucket bucket;
 	
@@ -44,20 +46,30 @@ public class Bucket {
 	
 	private Bucket() {}
 	
+	// Notifie les observeurs que le bucket a changé
+	private void update() {
+		setChanged();
+		notifyObservers();
+	}
+	
 	public void push(Regles regles) {
 		this.regles = regles;
+		update();
 	}
 	
 	public void push(Partie partie) {
 		this.partie = partie;
+		update();
 	}
 	
 	public void push(Joueur[] joueurs) {
 		this.joueurs = joueurs;
+		update();
 	}
 	
 	public void push(Classement classement) {
 		this.classement = classement;
+		update();
 	}
 	
 	public Regles getRegles() {
