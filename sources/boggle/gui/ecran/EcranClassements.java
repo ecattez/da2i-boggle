@@ -19,24 +19,21 @@
 package boggle.gui.ecran;
 
 import boggle.gui.Bucket;
-import boggle.gui.ConteneurPrincipal;
 import boggle.gui.classement.JClassement;
+import boggle.gui.ecran.EcranManager.Bouton;
 import boggle.jeu.Classement;
 
-public class EcranClassements extends Ecran {
+public class EcranClassements extends AbstractEcran {
 	
 	private static final long serialVersionUID = 599000474435628090L;
 	
 	private Classement classement;
-
-	public EcranClassements(ConteneurPrincipal mainPanel) {
-		super(mainPanel);
-	}
+	
+	public EcranClassements() {}
 
 	public void recharger() {
-		mainPanel.cacherTout();
-		mainPanel.afficherBouton(mainPanel.BOUTON_MENU_PRINCIPAL);
-		mainPanel.afficherBouton(mainPanel.BOUTON_NOUVELLE_PARTIE);
+		cacherBoutons();
+		afficherBoutons(Bouton.MENU_PRINCIPAL, Bouton.NOUVELLE_PARTIE);
 		Classement classement = Bucket.getInstance().getClassement();
 		if (classement != null && classement != this.classement) {
 			this.removeAll();

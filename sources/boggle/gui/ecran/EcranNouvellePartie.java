@@ -19,26 +19,28 @@
 package boggle.gui.ecran;
 
 import boggle.gui.Bucket;
-import boggle.gui.ConteneurPrincipal;
 import boggle.gui.NouvellePartie;
+import boggle.gui.ecran.EcranManager.Bouton;
 import boggle.jeu.Partie;
 import boggle.jeu.Regles;
 import boggle.jeu.joueur.IAHardcore;
 import boggle.jeu.joueur.Joueur;
 
-public class EcranNouvellePartie extends Ecran {
+public class EcranNouvellePartie extends AbstractEcran {
 
 	private static final long serialVersionUID = 4790691387769043379L;
 
-	public EcranNouvellePartie(ConteneurPrincipal mainPanel) {
-		super(mainPanel);
+	public EcranNouvellePartie() {
 		this.add(new NouvellePartie());
 	}
 	
 	public void recharger() {
-		mainPanel.cacherTout();
-		mainPanel.afficherBouton(mainPanel.BOUTON_MENU_PRINCIPAL);
+		cacherBoutons();
+		afficherBoutons(Bouton.MENU_PRINCIPAL, Bouton.DEMARRER_PARTIE);
 		Partie partie = Bucket.getInstance().getPartie();
+		if (partie != null && !partie.estTerminee()) {
+			partie.forcerArret();
+		}
 		if (partie == null || partie.estTerminee()) {
 			Joueur[] joueurs = { new IAHardcore("Picault"), new IAHardcore("Beaufils") };
 			Regles regles = new Regles("regles-4x4.config");
@@ -50,9 +52,6 @@ public class EcranNouvellePartie extends Ecran {
 			
 			System.out.println(joueurs);
 			System.out.println(regles);
-		}
-		else if (partie != null && !partie.estTerminee()) {
-			partie.forcerArret();
 		}
 	}
 

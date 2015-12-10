@@ -18,39 +18,31 @@
  */
 package boggle.gui.ecran;
 
+import java.awt.FlowLayout;
 import java.awt.LayoutManager;
-import java.util.Observable;
-import java.util.Observer;
 
 import javax.swing.JPanel;
 
-import boggle.gui.Bucket;
-import boggle.gui.ConteneurPrincipal;
-import boggle.jeu.Partie;
+import boggle.gui.ecran.EcranManager.Bouton;
+import boggle.gui.ecran.EcranManager.Ecran;
 
 /**
  * Représentation d'un écran
  */
-public abstract class Ecran extends JPanel implements Observer {
+public abstract class AbstractEcran extends JPanel {
 	
 	private static final long serialVersionUID = 4088889425334087954L;
 	
-	protected ConteneurPrincipal mainPanel;
-	
-	public Ecran(ConteneurPrincipal mainPanel) {
-		super();
-		this.mainPanel = mainPanel;
-		Bucket.getInstance().addObserver(this);
+	public AbstractEcran() {
+		this(new FlowLayout());
 	}
 	
-	public Ecran(ConteneurPrincipal mainPanel, LayoutManager layout) {
-		super(layout);
-		this.mainPanel = mainPanel;
-		this.recharger();
+	public AbstractEcran(LayoutManager layoutManager) {
+		super(layoutManager);
 	}
 	
 	public abstract void recharger();
-
+	
 	public void setVisible(boolean visible)	{
 		super.setVisible(visible);
 		if (visible) {
@@ -58,14 +50,24 @@ public abstract class Ecran extends JPanel implements Observer {
 		}
 	}
 	
-	public void update(Observable obs, Object o) {
-		Bucket bucket = ((Bucket) obs);
-		Partie partie = bucket.getPartie();
-		
-		// Si l'écran est visible et qu'une partie est en cours, on la termine
-		if (isVisible() && partie != null && !partie.estTerminee()) {
-			partie.forcerArret();
-		}
+	public void cacherBoutons() {
+		EcranManager.getInstance().cacherBoutons();
+	}
+	
+	public void cacherBoutons(Bouton... boutons) {
+		EcranManager.getInstance().cacherBoutons(boutons);
+	}
+	
+	public void afficherBoutons() {
+		EcranManager.getInstance().afficherBoutons();
+	}
+	
+	public void afficherBoutons(Bouton... boutons) {
+		EcranManager.getInstance().afficherBoutons(boutons);
+	}
+	
+	public void switchTo(Ecran ecran) {
+		EcranManager.getInstance().show(ecran);
 	}
 
 }

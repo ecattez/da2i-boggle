@@ -11,9 +11,7 @@ import java.util.Observer;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
@@ -36,7 +34,7 @@ public class JPartie extends JPanel implements Observer {
 	private Partie partie;
 	private JGrille jGrille;
 	private JSablier jSablier;
-	private JList<String> jListeMots;
+	private JMots jMots;
 	private JClassement jClassement;
 	
 	private JLabel tourLabel;
@@ -54,7 +52,7 @@ public class JPartie extends JPanel implements Observer {
 		this.partie.addObserver(this);
 		this.jGrille = new JGrille(grille);
 		this.jSablier = new JSablier(partie.getSablier());
-		this.jListeMots = new JList<String>(new ListMotsModel(grille));
+		this.jMots = new JMots(grille);
 		this.jClassement = new JClassement(partie.etablirClassement());
 		this.tourLabel = new JLabel();
 		this.zoneSaisie = new JTextField();
@@ -113,12 +111,10 @@ public class JPartie extends JPanel implements Observer {
 		center.add(panelSaisie);
 		center.add(boutons);
 		
-		JScrollPane gauche = new JScrollPane(jListeMots);
-		
-		gauche.setPreferredSize(new Dimension(200,300));
+		jMots.setPreferredSize(new Dimension(200,300));
 		jClassement.setPreferredSize(new Dimension(200,300));
 		
-		this.add(gauche, BorderLayout.WEST);
+		this.add(jMots, BorderLayout.WEST);
 		this.add(center, BorderLayout.CENTER);
 		this.add(jClassement, BorderLayout.EAST);
 	}

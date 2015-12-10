@@ -26,7 +26,13 @@ import boggle.jeu.Regles;
 import boggle.jeu.joueur.Joueur;
 
 /**
+ * Le Bucket est un singleton qui collecte des informations à distribuer
+ * entre divers objets (contrôleurs, vues...).
  * 
+ * Cet objet est intéressant pour servir de passerelles entre des écrans complémentaires.
+ * Exemple: l'écran qui crée la partie, et celui qui l'affiche.
+ * - le créateur envoie la partie dans le Bucket
+ * - l'afficheur récupère la partie depuis le Bucket
  */
 public class Bucket extends Observable {
 	

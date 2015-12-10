@@ -9,15 +9,15 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import boggle.gui.Bucket;
-import boggle.gui.ConteneurPrincipal;
+import boggle.gui.ecran.EcranManager.Bouton;
 import boggle.jeu.Partie;
 
-public class EcranMenuPrincipal extends Ecran {
+public class EcranMenuPrincipal extends AbstractEcran {
 	
 	private static final long serialVersionUID = -6774404505867511769L;
-
-	public EcranMenuPrincipal(ConteneurPrincipal mainPanel) {
-		super(mainPanel, new BorderLayout());
+	
+	public EcranMenuPrincipal() {
+		super(new BorderLayout());
 		
 		JPanel centre = new JPanel();
 		JLabel titre = new JLabel("Boggle");
@@ -40,8 +40,8 @@ public class EcranMenuPrincipal extends Ecran {
 	}
 
 	public void recharger() {
-		mainPanel.cacherTout();
-		mainPanel.afficherBouton(mainPanel.BOUTON_JOUER, mainPanel.BOUTON_CLASSEMENTS);
+		cacherBoutons();
+		afficherBoutons(Bouton.JOUER, Bouton.CLASSEMENTS);
 		
 		// Si une partie est en cours, on la termine directement
 		Partie partie = Bucket.getInstance().getPartie();
