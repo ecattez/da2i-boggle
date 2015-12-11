@@ -143,7 +143,7 @@ public abstract class Grille extends Observable implements Observer {
 	 * @param	c
 	 * 			les coordonnées du dé dans la grille
 	 */
-	public void utiliserDe(Coordonnees c) {
+	public synchronized void utiliserDe(Coordonnees c) {
 		if (getDe(c).utiliser()) {
 			deck.push(c);
 		}
@@ -185,7 +185,7 @@ public abstract class Grille extends Observable implements Observer {
 	 * @param	c
 	 * 			les coordonnées du dé dans la grille
 	 */
-	public void rendreDe(Coordonnees c) {
+	public synchronized void rendreDe(Coordonnees c) {
 		if (getDe(c).rendre()) {
 			deck.remove(c);
 		}
@@ -194,7 +194,7 @@ public abstract class Grille extends Observable implements Observer {
 	/**
 	 * Rend disponible le dernier dé utilisé par le joueur
 	 */
-	public void rendreDernierDeUtilise() {
+	public synchronized void rendreDernierDeUtilise() {
 		if (deck.size() > 0) {
 			getDe(deck.pop()).rendre();
 		}
@@ -214,7 +214,7 @@ public abstract class Grille extends Observable implements Observer {
 	 * 
 	 * @return	les positions (en String) des lettres utilisées par le joueur dans leur ordre d'utilisation
 	 */
-	public String getPositionsUtilisees() {
+	public synchronized String getPositionsUtilisees() {
 		return deck.toString();
 	}
 	
@@ -223,7 +223,7 @@ public abstract class Grille extends Observable implements Observer {
 	 * 
 	 * @return	les lettres utilisée par l'utilisateur dans l'ordre d'utilisation
 	 */
-	public String getLettresUtilisees() {
+	public synchronized String getLettresUtilisees() {
 		if (deck.size() == 0) {
 			return "";
 		}
@@ -240,15 +240,15 @@ public abstract class Grille extends Observable implements Observer {
 	 * 
 	 * @return	<code>true</code> si le mot a bien été enregistré, <code>false</code> sinon
 	 */
-	public boolean stockerMot() {
+	public synchronized boolean stockerMot() {
 		String mot = getLettresUtilisees();
-		return !mots.contains(mot) && mots.add(mot);
+		return !mots.contains(mot) && mot.length() >= tailleMinimale() && mots.add(mot);
 	}
 	
 	/**
 	 * Vide la liste de tous les mots obtenus avec cette grille
 	 */
-	public void viderMotsStockes() {
+	public synchronized void viderMotsStockes() {
 		mots.clear();
 	}
 	
@@ -287,7 +287,7 @@ public abstract class Grille extends Observable implements Observer {
 	/**
 	 * Secoue la grille pour mélanger les dés
 	 */
-	public void secouer() {
+	public synchronized void secouer() {
 		int r = (int) (Math.random() * 500);
 		De d1, d2;
 		Coordonnees c1, c2;
@@ -413,22 +413,18 @@ public abstract class Grille extends Observable implements Observer {
 	 * @return	<code>true</code> si le mot est écrit à partir de la grille, <code>false</code> sinon
 	 */
 	public synchronized boolean ecrire(String mot) {
+		rendreTout();
 		if (mot.length() == 0) {
 			return true;
 		}
-		Coordonnees parent;
+		Coordonnees courant;
 		// On parcourt la grille pour trouver la première lettre du mot
 		for (int y=0; y < dimension; y++) {
 			for (int x=0; x < dimension; x++) {
-				parent = new CoordonneesCartesiennes(x, y);
-				// On marque le dé comme étant utilisé
-				utiliserDe(parent);
-				// Récursivement, on cherche les voisins qui répondent à la recherche
-				if (getFaceVisible(parent).equals(String.valueOf(mot.charAt(0))) && (mot.length() == 1 || ecrire(mot.substring(1), parent))) {
+				courant = new CoordonneesCartesiennes(x, y);
+				if (ecrire(mot, courant)) {
 					return true;
 				}
-				// On rend le dé s'il ne permet pas d'écrire le mot
-				rendreDe(parent);
 			}
 		}
 		return false;
@@ -440,25 +436,33 @@ public abstract class Grille extends Observable implements Observer {
 	 * 
 	 * @param	mot
 	 * 			le mot à chercher dans la grille
-	 * @param	parent
-	 * 			le couple de coordonnées du dé parent du prochain dé à trouver
+	 * @param	courant
+	 * 			le couple de coordonnées du dé courant
 	 * 
 	 * @return	<code>true</code> si le mot est écrit à partir de la grille, <code>false</code> sinon
 	 */
-	private boolean ecrire(String mot, Coordonnees parent) {
-		if (mot.length() == 0) {
-			return true;
+	private boolean ecrire(String mot, Coordonnees courant) {
+		String face = getFaceVisible(courant);
+		// Si la face visible du dé a plus de lettres que le mot (dé de syllabes par exemple)
+		// On retourne directement false
+		if (face.length() > mot.length()) {
+			return false;
 		}
-		// Comme cela, il n'apparaîtra pas dans les prochains voisins disponibles
-		for (Coordonnees c : positionsVoisinsDisponibles(parent)) {
-			// On marque le dé comme étant utilisé
-			// Récursivement, on cherche les voisins qui répondent à la recherche
-			utiliserDe(c);
-			if (getFaceVisible(c).equals(String.valueOf(mot.charAt(0))) && ecrire(mot.substring(1), c)) {
+		// Si on peut construire le mot avec la face
+		if (face.equals(mot.substring(0, face.length()))) {
+			utiliserDe(courant);
+			mot = mot.substring(face.length());
+			// Si le mot est vide, on a réussi à le fabriquer complétement avec la grille
+			if (mot.length() == 0) {
 				return true;
 			}
-			// On rend le dé s'il ne permet pas d'écrire le mot
-			rendreDe(c);
+			// Dans le cas contraire, on réitère récursivement la méthode avec les voisins disponibles du dé courant
+			for (Coordonnees voisin : positionsVoisinsDisponibles(courant)) {
+				if (ecrire(mot, voisin)) {
+					return true;
+				}
+			}
+			rendreDe(courant);
 		}
 		return false;
 	}

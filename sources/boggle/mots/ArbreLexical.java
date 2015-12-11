@@ -34,8 +34,10 @@ public class ArbreLexical {
 
 	public static final int TAILLE_ALPHABET = 26;
 	
-	private boolean estMot; // vrai si le noeud courant est la fin d'un mot valide
-	private ArbreLexical[] fils = new ArbreLexical[TAILLE_ALPHABET]; // les sous-arbres
+	// vrai si le noeud courant est la fin d'un mot valide
+	private boolean estMot;
+	// les sous-arbres
+	private ArbreLexical[] fils = new ArbreLexical[TAILLE_ALPHABET];
 
 	/**
 	 * Crée un arbre vide (sans aucun mot)
@@ -136,7 +138,18 @@ public class ArbreLexical {
 	 * @return	<code>true</code> si <code>resultat</code> a été modifié, <code>false</code> sinon.
 	 */
 	public boolean motsCommencantPar(String prefixe, List<String> resultat) {
-		return motsCommencantPar(prefixe, 0, resultat);
+		int niveau = 0;
+		ArbreLexical filsDuPrefixe = this;
+		// On avance de niveau en niveau jusqu'à être dans le fils de tout le préfixe
+		while (niveau < prefixe.length()) {
+			filsDuPrefixe = filsDuPrefixe.fils[indexOf(prefixe.charAt(niveau))];
+			if (filsDuPrefixe == null) {
+				return false;
+			}
+			niveau++;
+		}
+		// On effectue alors la recherche récursive à partir de ce fils
+		return filsDuPrefixe.motsCommencantPar(prefixe, niveau, resultat);
 	}
 
 	/**
@@ -152,26 +165,16 @@ public class ArbreLexical {
 	 * @return	<code>true</code> si <code>resultat</code> a été modifié, <code>false</code> sinon.
 	 */
 	private boolean motsCommencantPar(String prefixe, int niveau, List<String> resultat) {
-		if (niveau < prefixe.length()) {
-			ArbreLexical suivant = fils[indexOf(prefixe.charAt(niveau))];
-			if (suivant == null) {
-				return false;
-			}
-			if (suivant.estMot()) {
-				resultat.add(prefixe);
-			}
-			suivant.motsCommencantPar(prefixe, niveau + 1, resultat);
+		// Si c'est un mot, on l'ajoute à la liste
+		if (this.estMot()) {
+			resultat.add(prefixe);
 		}
-		else {
-			for (int i=0; i < fils.length; i++) {
-				if (fils[i] == null) {
-					continue;
-				}
-				if (fils[i].estMot()) {
-					resultat.add(prefixe + charAt(i));
-				}
-				fils[i].motsCommencantPar(prefixe + charAt(i), niveau + 1, resultat);
+		// On fait pareil pour chaque fils non null
+		for (int i=0; i < fils.length; i++) {
+			if (fils[i] == null) {
+				continue;
 			}
+			fils[i].motsCommencantPar(prefixe + charAt(i), niveau + 1, resultat);
 		}
 		return resultat.size() > 0;
 	}
@@ -180,12 +183,21 @@ public class ArbreLexical {
 	 * Crée un arbre lexical qui contient tous les mots du fichier spécifié.
 	 * 
 	 * @param	fichier
-	 * 			le nom du fichier à charger
+	 * 			le chemin du fichier à charger
 	 */
 	public static ArbreLexical creerArbre(String fichier) {
+		return creerArbre(Paths.get(fichier));
+	}
+	
+	/**
+	 * Crée un arbre lexical qui contient tous les mots du fichier spécifié.
+	 * 
+	 * @param	fichier
+	 * 			le chemin du fichier à charger
+	 */
+	public static ArbreLexical creerArbre(Path fichier) {
 		ArbreLexical root = new ArbreLexical();
-		Path path = Paths.get("config", fichier);
-		try (Scanner sc = new Scanner(path)) {
+		try (Scanner sc = new Scanner(fichier)) {
 			while (sc.hasNextLine()) {
 				root.ajouter(sc.nextLine());
 			}

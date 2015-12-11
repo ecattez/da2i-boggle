@@ -145,16 +145,27 @@ public class De extends Observable {
 	 * Crée des dés à partir d'un fichier de configuration
 	 *  
 	 * @param	fichier
-	 *			le fichier qui contient les différentes faces de chaque dé
+	 *			le chemin du fichier qui contient les différentes faces de chaque dé
 	 *
 	 * @return	un tableau de dés
 	 */
 	public static De[] creerDes(String fichier) {
+		return creerDes(Paths.get(fichier));
+	}
+	
+	/**
+	 * Crée des dés à partir d'un fichier de configuration
+	 *  
+	 * @param	fichier
+	 *			le chemin du fichier qui contient les différentes faces de chaque dé
+	 *
+	 * @return	un tableau de dés
+	 */
+	public static De[] creerDes(Path fichier) {
 		List<De> des = new ArrayList<De>();
-		Path path = Paths.get("config", fichier);
 		String[] faces;
 		
-		try (Scanner sc = new Scanner(path)) {
+		try (Scanner sc = new Scanner(fichier)) {
 			while(sc.hasNextLine()) {
 				faces = sc.nextLine().split(";");
 				if (faces.length == NB_FACES) {

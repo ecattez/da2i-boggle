@@ -21,8 +21,11 @@ package boggle.jeu;
 import java.util.Iterator;
 import java.util.Observable;
 
+import boggle.BoggleException;
+import boggle.jeu.Regles.Regle;
 import boggle.jeu.joueur.Joueur;
 import boggle.mots.ArbreLexical;
+import boggle.mots.De;
 import boggle.mots.Grille;
 import boggle.mots.GrilleLettres;
 
@@ -35,15 +38,12 @@ import boggle.mots.GrilleLettres;
  */
 public class Partie extends Observable implements Iterable<Joueur>, Runnable {
 	
-	public static final int DEFAULT_CHRONO = 60;
-	public static final int DEFAULT_SCORECIBLE = 30;
-	public static final int DEFAULT_TOURMAX = 5;
-	public static final int[] DEFAULT_POINTS = { 1, 1, 2, 3, 5, 11 };
-	
 	private Regles regles;
+	private ArbreLexical arbre;
 	private Grille grille;
 	private Sablier sablier;
 	private Joueur[] joueurs;
+	private Classement classement;
 	private boolean forcerArret;
 	private boolean gagnant;
 	private int tour;
@@ -52,13 +52,18 @@ public class Partie extends Observable implements Iterable<Joueur>, Runnable {
 	private Joueur joueur;
 	
 	public Partie(Regles regles, Joueur[] joueurs) {
+		if (regles.getInt(Regle.SCORE_CIBLE) == -1 && regles.getInt(Regle.TOUR_MAX) == -1) {
+			throw new BoggleException("Il n'est pas possible d'avoir à la fois un score cible et un tour maximal infinis");
+		}
 		this.regles = regles;
-		this.grille = new GrilleLettres(regles.getTailleMin() + 1, regles.getDes());
+		this.grille = new GrilleLettres(regles.getInt(Regle.TAILLE_MIN) + 1, De.creerDes(regles.getString(Regle.FICHIER_DES)));
+		this.arbre = ArbreLexical.creerArbre(regles.getString(Regle.FICHIER_DICO));
 		this.joueurs = joueurs;
 		this.gagnant = false;
 		this.forcerArret = false;
 		this.tour = 1;
-		this.sablier = new Sablier(regles.getDureeSablier());
+		this.sablier = new Sablier(regles.getInt(Regle.DUREE_SABLIER));
+		this.classement = new Classement("Grille " + grille.dimension() + "x" + grille.dimension(), joueurs);
 	}
 	
 	/**
@@ -76,7 +81,7 @@ public class Partie extends Observable implements Iterable<Joueur>, Runnable {
 	 * @return	le dictionnaire (ArbreLexical) utilisé pour cette partie
 	 */
 	public ArbreLexical getDictionnaire() {
-		return regles.getDictionnaire();
+		return arbre;
 	}
 	
 	/**
@@ -85,7 +90,7 @@ public class Partie extends Observable implements Iterable<Joueur>, Runnable {
 	 * @return	le tableau des points à attribuer aux mots du joueur
 	 */
 	public int[] getPoints() {
-		return regles.getPoints();
+		return regles.getIntArray(Regle.POINTS);
 	}
 	
 	/**
@@ -94,7 +99,7 @@ public class Partie extends Observable implements Iterable<Joueur>, Runnable {
 	 * @return	le score qu'un joueur doit atteindre pour gagner
 	 */
 	public int getScoreCible() {
-		return regles.getScoreCible();
+		return regles.getInt(Regle.SCORE_CIBLE);
 	}
 	
 	/**
@@ -103,7 +108,7 @@ public class Partie extends Observable implements Iterable<Joueur>, Runnable {
 	 * @return	le tour maximum
 	 */
 	public int getTourMax() {
-		return regles.getTourMax();
+		return regles.getInt(Regle.TOUR_MAX);
 	}
 	
 	/**
@@ -144,7 +149,7 @@ public class Partie extends Observable implements Iterable<Joueur>, Runnable {
 	 * @return <code>true</code> si la partie est terminée, <code>false</code> sinon
 	 */
 	public boolean estTerminee() {
-		return forcerArret || tour == getTourMax() || gagnant;
+		return forcerArret || tour == getTourMax() + 1 || gagnant;
 	}
 	
 	/**
@@ -187,7 +192,7 @@ public class Partie extends Observable implements Iterable<Joueur>, Runnable {
 	 * @return	<code>true</code> si le mot est dans l'arbre, <code>false</code> sinon
 	 */
 	public boolean verifierMot(String mot) {
-		return getDictionnaire().contient(mot);
+		return arbre.contient(mot);
 	}
 	
 	/**
@@ -220,8 +225,8 @@ public class Partie extends Observable implements Iterable<Joueur>, Runnable {
 	 * 
 	 * @return une nouvelle instance de Classement représentant les joueurs classés selon leur score
 	 */
-	public Classement etablirClassement() {
-		return new Classement(grille.dimension(), joueurs);
+	public Classement getClassement() {
+		return classement;
 	}
 	
 	/**
@@ -232,29 +237,29 @@ public class Partie extends Observable implements Iterable<Joueur>, Runnable {
 		Joueur meilleur = null;
 		
 		while (!estTerminee()) {
-			grille.secouer();
-			joueur = it.next();
-			// On notifie que la partie est passée à un nouveau tour de jeu
-			update();
-			joueur.joue(grille, getDictionnaire(), this);
-			// On démarre le compte à rebours
-			demarrerSablier();
-			// La fin du tour se produit à la fin du compte à rebours
-			// ou lorsque celui-ci est stoppé (appuyer sur Terminer)
-			terminerTour(joueur);
-			// On stocke le meilleur joueur courant de la partie
-			if (meilleur == null || meilleur.getScore() < joueur.getScore()) {
-				meilleur = joueur;
+			for (int i=0; !estTerminee() && i < joueurs.length; i++) {
+				grille.secouer();
+				joueur = it.next();
+				// On notifie que la partie est passée à un nouveau tour de jeu
+				update();
+				joueur.joue(grille, arbre, this);
+				// On démarre le compte à rebours
+				demarrerSablier();
+				// La fin du tour se produit à la fin du compte à rebours
+				// ou lorsque celui-ci est stoppé (appuyer sur Terminer)
+				terminerTour(joueur);
+				// On stocke le meilleur joueur courant de la partie
+				if (meilleur == null || meilleur.getScore() < joueur.getScore()) {
+					meilleur = joueur;
+				}
+				// Le joueur gagne la partie s'il y a un score cible à atteindre (donc > 0)
+				// et qu'il a atteint voire dépassé ce score
+				gagnant = (getScoreCible() > 0 && meilleur.getScore() >= getScoreCible());
 			}
-			// Le joueur gagne la partie s'il y a un score cible à atteindre (donc > 0)
-			// et qu'il a atteint voire dépassé ce score
-			gagnant = (getScoreCible() > 0 && meilleur.getScore() >= getScoreCible());
 			incTour();
 		}
 		// On notifie les observeurs que la partie est terminée
 		update();
-		System.out.println("Vainqueur: " + meilleur);
-		System.out.println(etablirClassement());
 	}
 	
 	/**
