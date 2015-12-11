@@ -22,10 +22,13 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Properties;
@@ -41,25 +44,23 @@ public class Classement extends Observable implements Observer {
 	
 	private static final String CLASSEMENT_FOLDER = "classement";
 
-	private int dimensionGrille;
+	private String title;
 	private Joueur[] joueurs;
 	
-	public Classement(int n, Joueur[] joueurs) {
-		Arrays.sort(joueurs);
-		this.dimensionGrille = n;
+	public Classement(String title, Joueur[] joueurs) {
+		this.title = title;
 		this.joueurs = joueurs;
 		for (int i = 0; i < joueurs.length; i++) {
 			joueurs[i].addObserver(this);
 		}
+		trier();
 	}
 	
 	/**
-	 * Retourne tous les joueurs du classement
-	 * 
-	 * @return	le tableau des joueurs classés
+	 * Trie les joueurs par ordre décroissant de leur score
 	 */
-	public Joueur[] getJoueurs() {
-		return this.joueurs;
+	public void trier() {
+		Arrays.sort(joueurs);
 	}
 	
 	/**
@@ -109,10 +110,18 @@ public class Classement extends Observable implements Observer {
 	}
 	
 	/**
+	 * Retourne le titre du classement sous la forme "Grille NxN"
+	 * 
+	 * @return	le titre du classement
+	 */
+	public String getTitle() {
+		return title;
+	}
+	
+	/**
 	 * Représentation textuelle du classement
 	 */
 	public String toString() {
-		Arrays.sort(joueurs);
 		return "Classement: " + Arrays.toString(joueurs);
 	}
 	
@@ -123,7 +132,7 @@ public class Classement extends Observable implements Observer {
 	 */
 	public void sauvegarderMeilleursScores() {
 		creerDossier();
-		Path classementPath = Paths.get(CLASSEMENT_FOLDER, "classement-" + dimensionGrille + ".txt");
+		Path classementPath = Paths.get(CLASSEMENT_FOLDER, "classement-" + title + ".txt");
 		Properties prop = charger(classementPath);
 		String nom;
 		String value;
@@ -144,40 +153,16 @@ public class Classement extends Observable implements Observer {
 					else {
 						prop.setProperty(nom, value);
 					}
-					System.out.println("2)" + value);
 				}
 			}
 		}
-		try (BufferedWriter out = Files.newBufferedWriter(classementPath, Charset.forName("UTF-8"))) {
-			prop.store(out, null);
-		} catch (IOException e) {
-			throw new BoggleException("Une erreur s'est produite lors de l'écriture du fichier " + classementPath + "\n" + e);
-		}
-	}
-	
-	/**
-	 * Charge le classement des meilleurs joueurs selon la dimension de la grille voulue
-	 * 
-	 * @param	n
-	 * 			la dimension de la grille
-	 * 
-	 * @return	une instance de Classement représentant les meilleurs scores par rapport à la dimension d'une grille
-	 */
-	public static Classement depuisDimension(int n) {
-		Properties prop = charger(Paths.get(CLASSEMENT_FOLDER, "classement-" + n + ".txt"));
-		Joueur[] joueurs = new Joueur[prop.size()];
-		String value;
-		int score;
-		int i = 0;
-		for (String key : prop.stringPropertyNames()) {
-			value = prop.getProperty(key);
-			score = 0;
-			if (value != null && value.matches("[0-9]+")) {
-				score = Integer.parseInt(value);
+		if (prop.size() > 0) {
+			try (BufferedWriter out = Files.newBufferedWriter(classementPath, Charset.forName("UTF-8"))) {
+				prop.store(out, null);
+			} catch (IOException e) {
+				throw new BoggleException("Une erreur s'est produite lors de l'écriture du fichier " + classementPath + "\n" + e);
 			}
-			joueurs[i++] = new Humain(key, score);
 		}
-		return new Classement(n, joueurs);
 	}
 	
 	/**
@@ -198,6 +183,56 @@ public class Classement extends Observable implements Observer {
 			}
 		}
 		return prop;
+	}
+	
+	/**
+	 * Charge le classement des meilleurs joueurs depuis un Properties
+	 * 
+	 * @param	path
+	 * 			le chemin qui mène au fichier properties
+	 * 
+	 * @return	une instance de Classement avec les meilleurs scores des joueurs
+	 */
+	public static Classement chargerClassement(Path path) {
+		// On récupère la dimension du classement dans le nom du fichier
+		String filename = path.getFileName().toString();
+		Properties prop = charger(path);
+		Joueur[] joueurs = new Joueur[prop.size()];
+		String value;
+		int score;
+		int i = 0;
+		for (String key : prop.stringPropertyNames()) {
+			value = prop.getProperty(key);
+			score = 0;
+			if (value != null && value.matches("[0-9]+")) {
+				score = Integer.parseInt(value);
+			}
+			joueurs[i++] = new Humain(key, score);
+		}
+		return new Classement(filename, joueurs);
+	}
+	
+	/**
+	 * Récupère tous les classements enregistrés
+	 * 
+	 * @return	les classements (List) enregistrés
+	 */
+	public static List<Classement> listerTous() {
+		creerDossier();
+		Path root = Paths.get(CLASSEMENT_FOLDER);
+		List<Classement> classements = new ArrayList<>();
+		Classement c;
+		try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(root)) {
+			for (Path path : directoryStream) {
+				c = chargerClassement(path);
+				if (c != null) {
+					classements.add(c);
+				}
+			}
+		} catch (IOException e) {
+			throw new BoggleException("Une erreur s'est produite à la lecture du dossier " + root + "\n" + e);
+		}
+		return classements;
 	}
 	
 	/**

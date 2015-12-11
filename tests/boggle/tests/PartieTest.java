@@ -15,7 +15,6 @@ import javax.swing.event.CaretListener;
 
 import boggle.jeu.Partie;
 import boggle.jeu.Regles;
-import boggle.jeu.joueur.Humain;
 import boggle.jeu.joueur.IAHardcore;
 import boggle.jeu.joueur.Joueur;
 import boggle.mots.Grille;
@@ -27,7 +26,7 @@ public class PartieTest {
 	 */
 	public static void main(String[] args) {
 		Joueur[] joueur = { new IAHardcore("Edouard"), new IAHardcore("Picault"), new IAHardcore("Beaufils") };
-		Regles regles = new Regles("regles-4x4.config");
+		Regles regles = new Regles();
 		System.out.println(regles);
 		
 		final Partie partie = new Partie(regles, joueur);

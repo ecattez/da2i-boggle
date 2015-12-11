@@ -34,8 +34,10 @@ public class ArbreLexical {
 
 	public static final int TAILLE_ALPHABET = 26;
 	
-	private boolean estMot; // vrai si le noeud courant est la fin d'un mot valide
-	private ArbreLexical[] fils = new ArbreLexical[TAILLE_ALPHABET]; // les sous-arbres
+	// vrai si le noeud courant est la fin d'un mot valide
+	private boolean estMot;
+	// les sous-arbres
+	private ArbreLexical[] fils = new ArbreLexical[TAILLE_ALPHABET];
 
 	/**
 	 * Crée un arbre vide (sans aucun mot)
@@ -157,8 +159,13 @@ public class ArbreLexical {
 			if (suivant == null) {
 				return false;
 			}
-			if (suivant.estMot()) {
-				resultat.add(prefixe);
+			// Si on a atteint la taille du prefixe et que c'est un mot,
+			// on l'ajoute à la liste. On ne prend donc pas en compte
+			// les prefixes inférieurs appartenant au prefixe global
+			// susceptibles d'être des mots
+			// Exemple: le préfixe est AMIII, on ne prend ni A, ni AMI
+			if (suivant.estMot() && (niveau + 1) == prefixe.length()) {
+				resultat.add(prefixe.substring(0, niveau + 1));
 			}
 			suivant.motsCommencantPar(prefixe, niveau + 1, resultat);
 		}
@@ -180,12 +187,21 @@ public class ArbreLexical {
 	 * Crée un arbre lexical qui contient tous les mots du fichier spécifié.
 	 * 
 	 * @param	fichier
-	 * 			le nom du fichier à charger
+	 * 			le chemin du fichier à charger
 	 */
 	public static ArbreLexical creerArbre(String fichier) {
+		return creerArbre(Paths.get(fichier));
+	}
+	
+	/**
+	 * Crée un arbre lexical qui contient tous les mots du fichier spécifié.
+	 * 
+	 * @param	fichier
+	 * 			le chemin du fichier à charger
+	 */
+	public static ArbreLexical creerArbre(Path fichier) {
 		ArbreLexical root = new ArbreLexical();
-		Path path = Paths.get("config", fichier);
-		try (Scanner sc = new Scanner(path)) {
+		try (Scanner sc = new Scanner(fichier)) {
 			while (sc.hasNextLine()) {
 				root.ajouter(sc.nextLine());
 			}

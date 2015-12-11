@@ -19,280 +19,386 @@
 package boggle.jeu;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Properties;
 
 import boggle.BoggleException;
-import boggle.mots.ArbreLexical;
-import boggle.mots.De;
 
-/**
- * L'objet Regles stocke en mémoire certaines règles de jeu administrable à une partie
- * via le constructeur de {@link Partie}
- */
-public class Regles {
+public class Regles implements Cloneable {
 	
-	public static final int DEFAULT_TAILLEMIN = 3;
-	public static final int DEFAULT_DUREESABLIER = 60;
-	public static final int DEFAULT_SCORECIBLE = 100;
-	public static final int DEFAULT_TOURMAX = 10;
-	public static final int[] DEFAULT_POINTS = { 1, 1, 2, 3, 5, 11 };
-	
-	private De[] des;
-	private ArbreLexical dictionnaire;
-	private int tailleMin;
-	private int[] points;
-	private int tourMax;
-	private int scoreCible;
-	private int dureeSablier;
-	
-	// Le constructeur avec l'utilisation d'un fichier
-	public Regles(String fichierRegles) {
-		Path regles = Paths.get("config", fichierRegles);
-		if (!Files.exists(regles)) {
-			throw new BoggleException("Le fichier " + fichierRegles + " n'existe pas");
+	/**
+	 * Cette énumération représente les différentes règles applicable à une partie de Boggle
+	 */
+	public enum Regle {
+		
+		TAILLE_MIN("tour-min") {
+			public boolean verifier(String value) {
+				return isInteger(value) && Integer.parseInt(value) >= 3;
+			}
+
+			public String getMessage() {
+				return "La taille minimale d'un mot doit être de " + getDefaultValue() + " minimum";
+			}
+			
+			public String getDefaultValue() {
+				return "3";
+			}
+		},
+		TOUR_MAX("tour-max") {
+			public boolean verifier(String value) {
+				return isInteger(value);
+			}
+
+			public String getMessage() {
+				return "Le tour maximal doit être un entier";
+			}
+			
+			public String getDefaultValue() {
+				return "10";
+			}
+		},
+		SCORE_CIBLE("score-cible") {
+			public boolean verifier(String value) {
+				return isInteger(value);
+			}
+
+			public String getMessage() {
+				return "Le score à atteindre doit être un entier";
+			}
+			
+			public String getDefaultValue() {
+				return "100";
+			}
+		},
+		DUREE_SABLIER("duree-cible") {
+			public boolean verifier(String value) {
+				return isInteger(value) && Integer.parseInt(value) >= 30;
+			}
+
+			public String getMessage() {
+				return "Le sablier ne peut pas avoir une durée < 30 sec";
+			}
+			
+			public String getDefaultValue() {
+				return "120";
+			}
+		},
+		POINTS("points") {
+			public boolean verifier(String value) {
+				return isIntArray(value) && value.split(",").length == 6;
+			}
+
+			public String getMessage() {
+				return "Les points doivent être un ensemble de 6 entiers";
+			}
+			
+			public String getDefaultValue() {
+				return "1,1,2,3,5,11";
+			}
+		},
+		FICHIER_DES("des") {
+			public boolean verifier(String value) {
+				return !isEmpty(value);
+			}
+
+			public String getMessage() {
+				return "Le fichier de des ne peut pas être null";
+			}
+			
+			public String getDefaultValue() {
+				return Paths.get("config", "des-4x4.csv").toString();
+			}
+		},
+		FICHIER_DICO("dictionnaire") {
+			public boolean verifier(String value) {
+				return !isEmpty(value);
+			}
+
+			public String getMessage() {
+				return "Le fichier dictionnaire ne peut pas être null";
+			}
+			
+			public String getDefaultValue() {
+				return Paths.get("config", "dict-fr.txt").toString();
+			}
+		};
+		
+		private final String key;
+		
+		private Regle(String key) {
+			this.key = key;
 		}
-		Properties prop = new Properties();
-		try (BufferedReader in = Files.newBufferedReader(regles, Charset.forName("UTF-8"))) {
-			prop.load(in);
-		} catch (Exception e) {
-			throw new BoggleException("Une erreur s'est produite à l'ouverture du fichier " + fichierRegles + "\n" + e);
+		
+		/**
+		 * Vérifie si la valeur est compatible avec la règle
+		 * 
+		 * @param	value
+		 * 			la valeur à vérifier
+		 * 
+		 * @return	<code>true</code> si la valeur est compatible, <code>false</code> sinon
+		 */
+		public abstract boolean verifier(String value);
+		
+		/**
+		 * Le message d'indication des valeurs que peuvent prendre la règle
+		 * @return
+		 */
+		public abstract String getMessage();
+		
+		/**
+		 * Retourne la valeur par défaut de la règle
+		 * 
+		 * @return	la valeur par défaut de la règle
+		 */
+		public abstract String getDefaultValue();
+		
+		/**
+		 * Retourne le nom de la règle
+		 * 
+		 * @return	le nom de la règle
+		 */
+		public String key() {
+			return key;
 		}
 		
-		String sTailleMin = prop.getProperty("taille-min");
-		String sTourMax = prop.getProperty("tour-max");
-		String sScoreCible = prop.getProperty("score-cible");
-		String sDureeSablier = prop.getProperty("duree-sablier");
-		String sDes = prop.getProperty("des");
-		String sDico = prop.getProperty("dictionnaire");
-		String sPoints = prop.getProperty("points");
+		/* Retire les espaces dans une chaîne de caractères */
+		private static String noBlank(String str) {
+			return str.replaceAll(" ", "");
+		}
 		
-		this.tailleMin =  (isInteger(sTailleMin) ? Integer.parseInt(sTailleMin) : DEFAULT_TAILLEMIN);
-		this.tourMax = (isInteger(sTourMax) ? Integer.parseInt(sTourMax) : DEFAULT_TOURMAX);
-		this.scoreCible = (isInteger(sScoreCible) ? Integer.parseInt(sScoreCible) : DEFAULT_SCORECIBLE);
-		this.dureeSablier = (isInteger(sDureeSablier) ? Integer.parseInt(sDureeSablier) : DEFAULT_DUREESABLIER);
+		/* Vérifie si une chaîne est un entier */
+		private static boolean isInteger(String str) {
+			return str != null && noBlank(str).matches("[+-]?\\d+(\\.\\d+)?");
+		}
 		
-		if (sPoints != null && sPoints.contains(",")) {
-			String[] pointsArray = sPoints.split(",");
-			points = new int[pointsArray.length];
-			for (int i=0; i < pointsArray.length; i++) {
-				points[i] = Integer.parseInt(pointsArray[i]);
+		/* Vérifie si une chaîne est un tableau d'entier */
+		private static boolean isIntArray(String str) {
+			return str != null && noBlank(str).matches("[0-9]+(,[0-9]+)*");
+		}
+		
+		/* Vérifie si une chaîne est vide */
+		private static boolean isEmpty(String str) {
+			return str != null && noBlank(str).length() == 0;
+		}
+		
+	}
+	
+	private String titre;
+	private Properties prop;
+	
+	public Regles() {
+		this("Nouvelle partie", new Properties());
+	}
+	
+	public Regles(String title, Properties prop) {
+		this.titre = title;
+		this.prop = new Properties();
+		String value;
+		for (Regle regle : Regle.values()) {
+			value = prop.getProperty(regle.key(), regle.getDefaultValue());
+			this.setRegle(regle, value);
+		}
+	}
+	
+	/**
+	 * Retourne le titre des règles
+	 * 
+	 * @return	le titre des règles
+	 */
+	public String getTitre() {
+		return titre;
+	}
+	
+	/**
+	 * Change le titre des règles
+	 * 
+	 * @param	titre
+	 * 			le nouveau titre des règles
+	 */
+	public void setTitre(String titre) {
+		this.titre = titre;
+	}
+	
+	/**
+	 * Change la valeur d'une règle par une chaîne de caractères
+	 * 
+	 * @param	regle
+	 * 			la règle à changer
+	 * @param	value
+	 * 			la nouvelle valeur de la règle
+	 */
+	public void setRegle(Regle regle, String value) {
+		if (regle.verifier(value)) {
+			prop.setProperty(regle.key(), value);
+		}
+		else {
+			throw new BoggleException(regle.getMessage());
+		}
+	}
+	
+	/**
+	 * Change la valeur d'une règle par un entier
+	 * 
+	 * @param	regle
+	 * 			la règle à changer
+	 * @param	value
+	 * 			la nouvelle valeur de la règle
+	 */
+	public void setRegle(Regle regle, int value) {
+		setRegle(regle, String.valueOf(value));
+	}
+	
+	/**
+	 * Change la valeur d'une règle par un tableau d'entier
+	 * 
+	 * @param	regle
+	 * 			la règle à changer
+	 * @param	values
+	 * 			les nouvelles valeurs de la règle
+	 */
+	public void setRegle(Regle regle, int[] values) {
+		String value = "";
+		for (int i=0; i < values.length; i++) {
+			value += values[i];
+			if (i < values.length - 1) {
+				value += ",";
 			}
 		}
-		
-		// Vérifie que les valeurs sont toutes correctes
-		check(tailleMin, points, tourMax, scoreCible, dureeSablier);
-		
-		this.des = De.creerDes(sDes);
-		this.dictionnaire = ArbreLexical.creerArbre(sDico);
-	}
-	
-	// Le constructeur avec chaque paramètre
-	public Regles(String fichierDes, String fichierDico, int tailleMin, int[] points, int tourMax, int scoreCible, int dureeSablier) {
-		check(tailleMin, points, tourMax, scoreCible, dureeSablier);
-		this.tailleMin = tailleMin;
-		this.tourMax = tourMax;
-		this.scoreCible = scoreCible;
-		this.dureeSablier = dureeSablier;
-		this.des = De.creerDes(fichierDes);
-		this.dictionnaire = ArbreLexical.creerArbre(fichierDico);
-		this.points = points;
-		
-	}
-	
-	// Le constructeur de chaque paramètre simplifé avec les valeurs par défaut
-	public Regles(String fichierDes, String fichierDico, int tailleMin) {
-		this(fichierDes, fichierDico, tailleMin, DEFAULT_POINTS, DEFAULT_TOURMAX, DEFAULT_SCORECIBLE, DEFAULT_DUREESABLIER);
+		setRegle(regle, value);
 	}
 	
 	/**
-	 * Vérifie certains paramètres nécessaires à la création d'une instance de Règles
+	 * Récupère la valeur textuelle d'une règle
 	 * 
-	 * @param	tailleMin
-	 * 			la taille minimale d'un mot
-	 * @param	points
-	 * 			les points à attribuer selon chaque mot
-	 * @param	tourMax
-	 * 			le tour maximal de la partie
-	 * @param	scoreCible
-	 * 			le score à atteindre lors d'une partie
-	 * @param	dureeSablier
-	 * 			la durée maximale du sablier
+	 * @param	regle
+	 * 			la règle pour laquelle il faut récupérer la valeur
 	 * 
-	 * @return	<code>true</code> si toutes les vérifications se sont biens déroulés, une <code>BoggleException</code> sinon
+	 * @return	une chaîne de caractères représentant les valeurs de la règle
 	 */
-	private boolean check(int tailleMin, int[] points, int tourMax, int scoreCible, int dureeSablier) {
-		if (tailleMin < 1) {
-			throw new BoggleException("La taille minimale d'un mot ne peut être < 0");
+	public String getString(Regle regle) {
+		String value = prop.getProperty(regle.key()).replaceAll(" ", "");
+		if (regle.verifier(value)) {
+			return value;
 		}
-		if (tourMax < 1 && scoreCible < 1) {
-			throw new BoggleException("Les règles doivent définir un tour maximal et/ou un score cible à atteindre");
-		}
-		if (points == null || points.length < 6) {
-			throw new BoggleException("Il manque des points à attribuer pour la taille des mots");
-		}
-		if (dureeSablier < 1) {
-			throw new BoggleException("Le sablier ne peut pas avoir une durée < 0");
-		}
-		return true;
+		throw new BoggleException(regle.getMessage());
 	}
 	
 	/**
-	 * Vérifie si la chaîne passée en paramètre est un entier (positif ou négatif)
+	 * Récupère la valeur entière d'une règle
 	 * 
-	 * @param	str
-	 * 			la chaîne à vérifier
+	 * @param	regle
+	 * 			la règle pour laquelle il faut récupérer la valeur
 	 * 
-	 * @return	<code>true</code> si la chaîne représente un entier, <code>false</code> sinon
+	 * @return	un entier représentant la valeur de la règle
 	 */
-	private boolean isInteger(String str) {
-		return str != null && str.matches("[+-]?\\d+(\\.\\d+)?");
-	}
-
-	/**
-	 * Retourne les dés définis dans ces règles de jeu
-	 * 
-	 * @return	les dés (De[]) utilisés
-	 */
-	public De[] getDes() {
-		return des;
-	}
-
-	/**
-	 * Change les dés définis dans ces règles de jeu
-	 * 
-	 * @param	des
-	 * 			les nouveaux dés utilisés
-	 */
-	public void setDes(De[] des) {
-		this.des = des;
-	}
-
-	/**
-	 * Retourne le dictionnaire défini dans ces règles de jeu
-	 * 
-	 * @return	le dictionnaire (ArbreLexical) utilisé
-	 */
-	public ArbreLexical getDictionnaire() {
-		return dictionnaire;
-	}
-
-	/**
-	 * Change le dictionnaire défini dans ces règles de jeu
-	 * 
-	 * @param	dictionnaire
-	 * 			le nouveau dictionnaire utilisé
-	 */
-	public void setDictionnaire(ArbreLexical dictionnaire) {
-		this.dictionnaire = dictionnaire;
-	}
-
-	/**
-	 * Retourne la taille minimale des mots défini dans ces règles de jeu
-	 * 
-	 * @return	la taille minimale des mots
-	 */
-	public int getTailleMin() {
-		return tailleMin;
-	}
-
-	/**
-	 * Change la taille minimale des mots définie dans ces règles de jeu
-	 * 
-	 * @param	tailleMin
-	 * 			la nouvelle taille minimale des mots
-	 */
-	public void setTailleMin(int tailleMin) {
-		this.tailleMin = tailleMin;
-	}
-
-	/**
-	 * Retourne les points attribués à chaque mot définis dans ces règles de jeu.
-	 * Les points sont attribués à partir de la taille minimale jusqu'à la taille minimale + 4
-	 * 
-	 * @return	les points (int[]) attribués à chaque mot
-	 */
-	public int[] getPoints() {
-		return points;
-	}
-
-	/**
-	 * Change les points attribués à chaque mot définis dans ces règles de jeu
-	 * 
-	 * @param	points
-	 * 			les nouveaux points à attribuer à chaque mot
-	 */
-	public void setPoints(int[] points) {
-		this.points = points;
-	}
-
-	/**
-	 * Retourne le tour maximal atteignable défini dans ces règles de jeu
-	 * 
-	 * @return	le tour maximal atteignable
-	 */
-	public int getTourMax() {
-		return tourMax;
-	}
-
-	/**
-	 * Change le tour maximal atteignable défini dans ces règles de jeu
-	 * 
-	 * @param	tourMax
-	 * 			le nouveau tour maximal atteignable
-	 */
-	public void setTourMax(int tourMax) {
-		this.tourMax = tourMax;
+	public int getInt(Regle regle) {
+		String value = getString(regle);
+		if (regle.verifier(value)) {
+			return Integer.parseInt(value);
+		}
+		throw new BoggleException(regle.getMessage());
 	}
 	
 	/**
-	 * Retourne le score à atteindre pour gagner défini dans ces règles de jeu
+	 * Récupère les valeurs d'une règle sous la forme d'un tableau d'entier
 	 * 
-	 * @return	le score à atteindre pour gagner
-	 */
-	public int getScoreCible() {
-		return scoreCible;
-	}
-
-	/**
-	 * Change le score à atteindre pour gagner défini dans ces règles de jeu
+	 * @param	regle
+	 * 			la règle pour laquelle il faut récupérer les valeurs
 	 * 
-	 * @param	scoreCible
-	 * 			le nouveau score à atteindre
+	 * @return	un tableau d'entier représentant les valeurs de la règle
 	 */
-	public void setScoreCible(int scoreCible) {
-		this.scoreCible = scoreCible;
-	}
-
-	/**
-	 * Retourne la durée totale du sablier définie dans ces règles de jeu
-	 * 
-	 * @return	la durée totale du sablier
-	 */
-	public int getDureeSablier() {
-		return dureeSablier;
-	}
-
-	/**
-	 * Change la durée totale du sablier définie dans ces règles de jeu
-	 * 
-	 * @param	dureeSablier
-	 * 			la nouvelle durée totale du sablier
-	 */
-	public void setDureeSablier(int dureeSablier) {
-		this.dureeSablier = dureeSablier;
+	public int[] getIntArray(Regle regle) {
+		String value = getString(regle);
+		if (regle.verifier(value)) {
+			String[] array = value.split(",");
+			int[] values = new int[array.length];
+			for (int i=0; i < values.length; i++) {
+				values[i] = Integer.parseInt(array[i]);
+			}
+			return values;
+		}
+		throw new BoggleException(regle.getMessage());
 	}
 	
 	/**
-	 * Une représentation succinte d'une instance de Regles
+	 * Sauvegarde les règles au format "titre.config"
 	 */
+	public void sauvegarder() {
+		Path path = Paths.get(titre);
+		if (path.getParent() == null) {
+			path = Paths.get("config").resolve(path);
+		}
+		try (BufferedWriter out = Files.newBufferedWriter(path, Charset.forName("UTF-8"))) {
+			prop.store(out, null);
+		} catch (IOException e) {
+			throw new BoggleException("Une erreur s'est produite à l'écriture du fichier " + path + "\n" + e);
+		}
+	}
+
 	public String toString() {
-		return String.format("des: %s\ndictionnaire: %s\ntaille-min: %d\npoints: %s\ntour-max: %d\nscore-cible: %d\nduree-sablier: %d",
-				Arrays.toString(des), dictionnaire, tailleMin, Arrays.toString(points), tourMax, scoreCible, dureeSablier);
+		return titre;
 	}
 	
+	/**
+	 * Représentation textuelle des règles
+	 */
+	public String describe() {
+		return prop.toString();
+	}
+	
+	/**
+	 * Crée une instance de Regles à partir de l'instance courante
+	 */
+	public Regles clone() {
+		Regles regles = new Regles();
+		for (Regle regle : Regle.values()) {
+			regles.setRegle(regle, this.getString(regle));
+		}
+		return regles;
+	}
+	
+	/**
+	 * Charge des règles à partir d'un fichier
+	 * 
+	 * @param	fichier
+	 * 			le chemin du fichier
+	 * 
+	 * @return	une instance de Regles si tout c'est bien passé, une <code>BoggleException</code> sinon
+	 */
+	public static Regles chargerRegles(Path fichier) {
+		Properties prop = new Properties();
+		try (BufferedReader in = Files.newBufferedReader(fichier, Charset.forName("UTF-8"))) {
+			prop.load(in);
+		} catch (IOException e) {
+			throw new BoggleException("Une erreur s'est produite à l'ouverture du fichier " + fichier + "\n" + e);
+		}
+		return new Regles(fichier.getFileName().toString(), prop);
+	}
+	
+	/**
+	 * Charge des règles à partir d'un fichier
+	 * 
+	 * @param	fichier
+	 * 			le chemin du fichier
+	 * 
+	 * @return	une instance de Regles si tout c'est bien passé, une <code>BoggleException</code> sinon
+	 */
+	public static Regles chargerRegles(String fichier) {
+		return chargerRegles(Paths.get(fichier));
+	}
+	
+	public static void main(String[] args) {
+		Regles regles = new Regles();
+		System.out.println(regles);
+		regles.setRegle(Regle.TOUR_MAX, -1);
+		System.out.println(regles);
+		regles.setRegle(Regle.SCORE_CIBLE, -1);
+		System.out.println(regles);
+	}
+
 }
