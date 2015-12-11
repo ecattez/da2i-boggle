@@ -61,6 +61,8 @@ public class Classement extends Observable implements Observer {
 	 */
 	public void trier() {
 		Arrays.sort(joueurs);
+		this.setChanged();
+		this.notifyObservers();
 	}
 	
 	/**

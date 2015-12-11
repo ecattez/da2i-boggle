@@ -31,12 +31,14 @@ import boggle.BoggleException;
 
 public class Regles implements Cloneable {
 	
+	public static final Path CONFIG_FOLDER = Paths.get("config");
+	
 	/**
 	 * Cette énumération représente les différentes règles applicable à une partie de Boggle
 	 */
 	public enum Regle {
 		
-		TAILLE_MIN("tour-min") {
+		TAILLE_MIN("taille-min") {
 			public boolean verifier(String value) {
 				return isInteger(value) && Integer.parseInt(value) >= 3;
 			}
@@ -203,6 +205,15 @@ public class Regles implements Cloneable {
 			value = prop.getProperty(regle.key(), regle.getDefaultValue());
 			this.setRegle(regle, value);
 		}
+		
+		Path file = Paths.get(getString(Regle.FICHIER_DES));
+		if (!file.startsWith(CONFIG_FOLDER)) {
+			setRegle(Regle.FICHIER_DES, CONFIG_FOLDER.resolve(file));
+		}
+		file = Paths.get(getString(Regle.FICHIER_DICO));
+		if (!file.startsWith(CONFIG_FOLDER)) {
+			setRegle(Regle.FICHIER_DICO, CONFIG_FOLDER.resolve(file));
+		}
 	}
 	
 	/**
@@ -239,6 +250,18 @@ public class Regles implements Cloneable {
 		else {
 			throw new BoggleException(regle.getMessage());
 		}
+	}
+	
+	/**
+	 * Change la valeur d'une règle par un chemin de fichier
+	 * 
+	 * @param	regle
+	 * 			la règle à changer
+	 * @param	value
+	 * 			la nouvelle valeur de la règle
+	 */
+	public void setRegle(Regle regle, Path path) {
+		setRegle(regle, path.toString());
 	}
 	
 	/**
@@ -392,13 +415,4 @@ public class Regles implements Cloneable {
 		return chargerRegles(Paths.get(fichier));
 	}
 	
-	public static void main(String[] args) {
-		Regles regles = new Regles();
-		System.out.println(regles);
-		regles.setRegle(Regle.TOUR_MAX, -1);
-		System.out.println(regles);
-		regles.setRegle(Regle.SCORE_CIBLE, -1);
-		System.out.println(regles);
-	}
-
 }

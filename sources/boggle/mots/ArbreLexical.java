@@ -138,7 +138,18 @@ public class ArbreLexical {
 	 * @return	<code>true</code> si <code>resultat</code> a été modifié, <code>false</code> sinon.
 	 */
 	public boolean motsCommencantPar(String prefixe, List<String> resultat) {
-		return motsCommencantPar(prefixe, 0, resultat);
+		int niveau = 0;
+		ArbreLexical filsDuPrefixe = this;
+		// On avance de niveau en niveau jusqu'à être dans le fils de tout le préfixe
+		while (niveau < prefixe.length()) {
+			filsDuPrefixe = filsDuPrefixe.fils[indexOf(prefixe.charAt(niveau))];
+			if (filsDuPrefixe == null) {
+				return false;
+			}
+			niveau++;
+		}
+		// On effectue alors la recherche récursive à partir de ce fils
+		return filsDuPrefixe.motsCommencantPar(prefixe, niveau, resultat);
 	}
 
 	/**
@@ -154,31 +165,16 @@ public class ArbreLexical {
 	 * @return	<code>true</code> si <code>resultat</code> a été modifié, <code>false</code> sinon.
 	 */
 	private boolean motsCommencantPar(String prefixe, int niveau, List<String> resultat) {
-		if (niveau < prefixe.length()) {
-			ArbreLexical suivant = fils[indexOf(prefixe.charAt(niveau))];
-			if (suivant == null) {
-				return false;
-			}
-			// Si on a atteint la taille du prefixe et que c'est un mot,
-			// on l'ajoute à la liste. On ne prend donc pas en compte
-			// les prefixes inférieurs appartenant au prefixe global
-			// susceptibles d'être des mots
-			// Exemple: le préfixe est AMIII, on ne prend ni A, ni AMI
-			if (suivant.estMot() && (niveau + 1) == prefixe.length()) {
-				resultat.add(prefixe.substring(0, niveau + 1));
-			}
-			suivant.motsCommencantPar(prefixe, niveau + 1, resultat);
+		// Si c'est un mot, on l'ajoute à la liste
+		if (this.estMot()) {
+			resultat.add(prefixe);
 		}
-		else {
-			for (int i=0; i < fils.length; i++) {
-				if (fils[i] == null) {
-					continue;
-				}
-				if (fils[i].estMot()) {
-					resultat.add(prefixe + charAt(i));
-				}
-				fils[i].motsCommencantPar(prefixe + charAt(i), niveau + 1, resultat);
+		// On fait pareil pour chaque fils non null
+		for (int i=0; i < fils.length; i++) {
+			if (fils[i] == null) {
+				continue;
 			}
+			fils[i].motsCommencantPar(prefixe + charAt(i), niveau + 1, resultat);
 		}
 		return resultat.size() > 0;
 	}

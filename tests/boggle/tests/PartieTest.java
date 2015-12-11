@@ -15,10 +15,8 @@ public class PartieTest {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Joueur[] joueur = { new IAHardcore("Picault"), new IAHardcore("Beaufils") };
-		Regles regles = Regles.chargerRegles("regles-4x4.config");
-		System.out.println(regles);
-		
+		Joueur[] joueur = { new IAHardcore("Edouard") };
+		Regles regles = Regles.chargerRegles("config/regles-5x5.config");
 		final Partie partie = new Partie(regles, joueur);
 		JPanel container = new JPartie(partie);
 		

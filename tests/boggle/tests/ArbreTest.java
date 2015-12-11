@@ -13,7 +13,7 @@ public class ArbreTest {
 	public static void main(String[] args) {
 		ArbreLexical root = ArbreLexical.creerArbre("config/dict-fr.txt");
 		List<String> mots = new ArrayList<String>();
-		root.motsCommencantPar("AMI", mots);
+		root.motsCommencantPar("AMIII", mots);
 		System.out.println(mots);
 	}
 

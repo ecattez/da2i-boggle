@@ -149,7 +149,7 @@ public class Partie extends Observable implements Iterable<Joueur>, Runnable {
 	 * @return <code>true</code> si la partie est terminée, <code>false</code> sinon
 	 */
 	public boolean estTerminee() {
-		return forcerArret || tour > getTourMax() || gagnant;
+		return forcerArret || tour == getTourMax() + 1 || gagnant;
 	}
 	
 	/**

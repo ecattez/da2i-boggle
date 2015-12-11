@@ -68,7 +68,6 @@ public class JPartie extends JPanel implements Observer {
 		zoneSaisie.addCaretListener(new CaretListener() {
 
 			public void caretUpdate(CaretEvent e) {
-				grille.rendreTout();
 				grille.ecrire(zoneSaisie.getText().toUpperCase());
 			}
 			

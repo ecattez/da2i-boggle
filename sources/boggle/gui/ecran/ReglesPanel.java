@@ -52,9 +52,9 @@ public class ReglesPanel extends JPanel {
 	private GridBagConstraints c;
 	
 	private Regles regles = new Regles();
-	private JSpinner spinnerTailleMin = new JSpinner(new SpinnerNumberModel(3, 3, 10, 1));;
-	private JSpinner spinnerTourMax = new JSpinner(new SpinnerNumberModel(10, -1, 100, 1));;
-	private JSpinner spinnerScoreCible = new JSpinner(new SpinnerNumberModel(50, -1, 100, 1));;
+	private JSpinner spinnerTailleMin = new JSpinner(new SpinnerNumberModel(3, 3, 10, 1));
+	private JSpinner spinnerTourMax = new JSpinner(new SpinnerNumberModel(10, 1, 100, 1));
+	private JSpinner spinnerScoreCible = new JSpinner(new SpinnerNumberModel(50, 1, 10000, 1));
 	private JSpinner spinnerDureeSablier = new JSpinner(new SpinnerNumberModel(60, 30, 60 * 5, 1));
 	private JSpinner[] spinnerPoints;
 	private JComboBox<Path> comboDes;
