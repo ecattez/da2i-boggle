@@ -1,4 +1,5 @@
-#Fri Dec 11 14:54:23 CET 2015
+#Fri Dec 11 15:07:31 CET 2015
 Bonjour=11
+Juju=12
 Yayaya=0
 Nom\ du\ joueur=0
