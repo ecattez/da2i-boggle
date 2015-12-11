@@ -39,7 +39,7 @@ public final class Ascii {
 	 * @return	la chaîne normalisée au format ASCII
 	 */
 	public static String normalize(String str) {
-		return Normalizer.normalize(str, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
+		return Normalizer.normalize(str, Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
 	}
 	
 	/**
