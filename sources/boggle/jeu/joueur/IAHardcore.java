@@ -36,11 +36,11 @@ public class IAHardcore extends IA {
 			if (arbre.motsCommencantPar(String.valueOf(c), mots)) {
 				for (String mot : mots) {
 					if (mot.length() >= grille.tailleMinimale() && grille.ecrire(mot)) {
-						try {
-							Thread.sleep(1000);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
+//						try {
+//							Thread.sleep(1000);
+//						} catch (InterruptedException e) {
+//							e.printStackTrace();
+//						}
 						// Si le tour s'est fini plus tôt que prévu (sablier terminé)
 						// on arrête tous les traitements
 						if (forcerArret()) {

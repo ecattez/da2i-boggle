@@ -55,7 +55,7 @@ public class ReglesPanel extends JPanel {
 	private JSpinner spinnerTailleMin = new JSpinner(new SpinnerNumberModel(3, 3, 10, 1));;
 	private JSpinner spinnerTourMax = new JSpinner(new SpinnerNumberModel(10, -1, 100, 1));;
 	private JSpinner spinnerScoreCible = new JSpinner(new SpinnerNumberModel(50, -1, 100, 1));;
-	private JSpinner spinnerDureeSablier = new JSpinner(new SpinnerNumberModel(60, 10, 60 * 5, 1));
+	private JSpinner spinnerDureeSablier = new JSpinner(new SpinnerNumberModel(60, 30, 60 * 5, 1));
 	private JSpinner[] spinnerPoints;
 	private JComboBox<Path> comboDes;
 	private JComboBox<Path> comboDico;
@@ -199,7 +199,7 @@ public class ReglesPanel extends JPanel {
 			}
 			else {
 				String fichier = "regles-" + input;
-				if (!fichier.endsWith(".[.]+")) {
+				if (!fichier.endsWith(".config")) {
 					fichier += ".config";
 				}
 				regles = construireRegles();

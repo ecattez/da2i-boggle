@@ -44,6 +44,7 @@ public class JGrille extends JPanel implements Observer {
 				this.add(new JDe(new CoordonneesCartesiennes(x, y)));
 			}
 		}
+		this.setPreferredSize(new Dimension(n * 64, n * 64));
 	}
 	
 	public void update(Observable obs, Object o) {
@@ -69,8 +70,7 @@ public class JGrille extends JPanel implements Observer {
 		
 		public JDe(final Coordonnees coord) {
 			this.coord = coord;
-			this.setPreferredSize(new Dimension(64, 64));
-			this.setFont(new Font("Arial", Font.PLAIN, 25));
+			this.setFont(new Font("Arial", Font.PLAIN, 15));
 			this.addActionListener(new ActionListener() {
 				
 				public void actionPerformed(ActionEvent e) {

@@ -44,6 +44,8 @@ public class JPartie extends JPanel implements Observer {
 	private JButton vider;
 	private JButton terminer;
 	
+	private JLabel infoLabel;
+	
 	public JPartie(final Partie partie) {
 		super(new BorderLayout(10,10));
 		
@@ -59,6 +61,7 @@ public class JPartie extends JPanel implements Observer {
 		this.ajouter = new DecorateurBoutonPlat(new JButton("Ajouter"));
 		this.vider = new DecorateurBoutonPlat(new JButton("Vider"));
 		this.terminer = new DecorateurBoutonPlat(new JButton("Terminer"));
+		this.infoLabel = new JLabel();
 		
 		zoneSaisie.setPreferredSize(new Dimension(200,20));
 		
@@ -117,6 +120,7 @@ public class JPartie extends JPanel implements Observer {
 		this.add(jMots, BorderLayout.WEST);
 		this.add(center, BorderLayout.CENTER);
 		this.add(jClassement, BorderLayout.EAST);
+		this.add(infoLabel, BorderLayout.SOUTH);
 	}
 
 	public void update(Observable obs, Object o) {
@@ -125,8 +129,7 @@ public class JPartie extends JPanel implements Observer {
 			classement.sauvegarderMeilleursScores();
 			classement.trier();
 			Bucket.getInstance().push(classement);
-			this.add(new JLabel(partie.getJoueurs()[0] + " a gagné cette partie."), BorderLayout.SOUTH);
-			this.validate();
+			infoLabel.setText(partie.getJoueurs()[0] + " a gagné cette partie.");
 		}
 		else {
 			Joueur joueur = partie.getJoueurCourant();
@@ -139,6 +142,7 @@ public class JPartie extends JPanel implements Observer {
 			vider.setEnabled(enabled);
 			terminer.setEnabled(enabled);
 			jGrille.setEnabled(enabled);
+			infoLabel.setText("Tour actuel : " + partie.tour());
 		}
 	}
 	

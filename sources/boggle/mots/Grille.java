@@ -417,14 +417,21 @@ public abstract class Grille extends Observable implements Observer {
 			return true;
 		}
 		Coordonnees parent;
+		String face;
 		// On parcourt la grille pour trouver la première lettre du mot
 		for (int y=0; y < dimension; y++) {
 			for (int x=0; x < dimension; x++) {
 				parent = new CoordonneesCartesiennes(x, y);
+				// Si la face visible est plus grande que le mot, on retourne false directement
+				// Ce cas peut se produire si on a des syllabe dans les dés
+				face = getFaceVisible(parent);
+				if (face.length() > mot.length()) {
+					return false;
+				}
 				// On marque le dé comme étant utilisé
 				utiliserDe(parent);
 				// Récursivement, on cherche les voisins qui répondent à la recherche
-				if (getFaceVisible(parent).equals(String.valueOf(mot.charAt(0))) && (mot.length() == 1 || ecrire(mot.substring(1), parent))) {
+				if (face.equals(mot.substring(0, face.length())) && ecrire(mot.substring(face.length()), parent)) {
 					return true;
 				}
 				// On rend le dé s'il ne permet pas d'écrire le mot
@@ -449,12 +456,19 @@ public abstract class Grille extends Observable implements Observer {
 		if (mot.length() == 0) {
 			return true;
 		}
+		String face;
 		// Comme cela, il n'apparaîtra pas dans les prochains voisins disponibles
 		for (Coordonnees c : positionsVoisinsDisponibles(parent)) {
+			// Si la face visible est plus grande que le mot, on retourne false directement
+			// Ce cas peut se produire si on a des syllabe dans les dés
+			face = getFaceVisible(c);
+			if (face.length() > mot.length() && mot.length() == 1) {
+				return false;
+			}
 			// On marque le dé comme étant utilisé
 			// Récursivement, on cherche les voisins qui répondent à la recherche
 			utiliserDe(c);
-			if (getFaceVisible(c).equals(String.valueOf(mot.charAt(0))) && ecrire(mot.substring(1), c)) {
+			if (face.equals(mot.substring(0, face.length())) && ecrire(mot.substring(face.length()), c)) {
 				return true;
 			}
 			// On rend le dé s'il ne permet pas d'écrire le mot

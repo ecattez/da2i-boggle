@@ -149,7 +149,7 @@ public class Partie extends Observable implements Iterable<Joueur>, Runnable {
 	 * @return <code>true</code> si la partie est terminée, <code>false</code> sinon
 	 */
 	public boolean estTerminee() {
-		return forcerArret || tour == getTourMax() || gagnant;
+		return forcerArret || tour > getTourMax() || gagnant;
 	}
 	
 	/**
@@ -237,8 +237,8 @@ public class Partie extends Observable implements Iterable<Joueur>, Runnable {
 		Joueur meilleur = null;
 		
 		while (!estTerminee()) {
-			grille.secouer();
 			for (int i=0; !estTerminee() && i < joueurs.length; i++) {
+				grille.secouer();
 				joueur = it.next();
 				// On notifie que la partie est passée à un nouveau tour de jeu
 				update();
