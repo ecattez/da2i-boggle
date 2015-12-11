@@ -19,9 +19,7 @@
 package boggle.gui.decorateur;
 
 import java.awt.Color;
-import java.awt.Dimension;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 
 /**
@@ -33,10 +31,8 @@ public class DecorateurBoutonMenu extends DecorateurBouton {
 
 	public DecorateurBoutonMenu(JButton bouton) {
 		super(bouton);
-		this.setBorder(BorderFactory.createLineBorder(new Color(206,42,13)));
-		this.setPreferredSize(new Dimension(100, 30));
 		this.setBackground(Color.WHITE);
-		this.setForeground(Color.BLACK);
+		this.setForeground(Color.DARK_GRAY);
 	}
 
 }

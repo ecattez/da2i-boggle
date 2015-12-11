@@ -1,4 +1,4 @@
-package boggle.gui.partie;
+package boggle.gui.ecran;
 
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
@@ -16,7 +16,6 @@ import java.nio.file.Paths;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -24,26 +23,30 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
 import boggle.BoggleException;
+import boggle.gui.decorateur.DecorateurBoutonMenu;
 import boggle.jeu.Regles;
+import boggle.jeu.Regles.Regle;
 
-public class CreationPanel extends JPanel {
+public class ReglesPanel extends JPanel {
 	
+	private static final long serialVersionUID = 8335947767765664236L;
+
 	private GridBagConstraints c;
 	
 	private Regles regles = new Regles();
-	private JSpinner spinnerTailleMin = new JSpinner(new SpinnerNumberModel(regles.getTailleMin(), 3, 10, 1));;
-	private JSpinner spinnerTourMax = new JSpinner(new SpinnerNumberModel(regles.getTourMax(), -1, 100, 1));;
-	private JSpinner spinnerScoreCible = new JSpinner(new SpinnerNumberModel(regles.getScoreCible(), -1, 100, 1));;
-	private JSpinner spinnerDureeSablier = new JSpinner(new SpinnerNumberModel(regles.getDureeSablier(), 1, 60 * 5, 1));;
+	private JSpinner spinnerTailleMin = new JSpinner(new SpinnerNumberModel(3, 3, 10, 1));;
+	private JSpinner spinnerTourMax = new JSpinner(new SpinnerNumberModel(10, -1, 100, 1));;
+	private JSpinner spinnerScoreCible = new JSpinner(new SpinnerNumberModel(50, -1, 100, 1));;
+	private JSpinner spinnerDureeSablier = new JSpinner(new SpinnerNumberModel(60, 10, 60 * 5, 1));
 	private JSpinner[] spinnerPoints;
 	private JComboBox<Path> comboDes;
 	private JComboBox<Path> comboDico;
 	
 	private JComboBox<Regles> charger = new JComboBox<>();
-	private JButton sauvegarder = new JButton("Sauvegarder règles");
-	private JButton demarrer = new JButton("Démarrer partie");
+	private JButton sauvegarder = new DecorateurBoutonMenu(new JButton("Sauvegarder règles"));
+	private JButton demarrer = new DecorateurBoutonMenu(new JButton("Démarrer partie"));
 
-	public CreationPanel() {
+	public ReglesPanel(final EcranNouvellePartie ecran) {
 		super(new GridBagLayout());
 		int colv = 2;
 		
@@ -71,7 +74,8 @@ public class CreationPanel extends JPanel {
 		this.add(comboDes, contraintes(colv, 6));
 		this.add(new JLabel("Dictionnaire"), contraintes(0, 7));
 		this.add(comboDico, contraintes(colv, 7));
-		this.add(demarrer, contraintes(0, 8, 2, 1));
+		this.add(demarrer, contraintes(2, 8, 2, 1));
+		
 		charger.addItemListener(new ItemListener() {
 
 			public void itemStateChanged(ItemEvent e) {
@@ -87,31 +91,37 @@ public class CreationPanel extends JPanel {
 			}
 			
 		});
+		demarrer.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				ecran.demarrer();
+			}
+			
+		});
 	}
 	
-	public Regles getRegles() {
-		try {
-			regles.setTailleMin(getValue(spinnerTailleMin));
-			regles.setTourMax(getValue(spinnerTourMax));
-			regles.setScoreCible(getValue(spinnerScoreCible));
-			regles.setDureeSablier(getValue(spinnerDureeSablier));
-			regles.setFichierDes((Path) comboDes.getSelectedItem());
-			regles.setFichierDictionnaire((Path) comboDico.getSelectedItem());
-			int[] pts = regles.getPoints();
-			for (int i=0; i < pts.length; i++) {
-				pts[i] = getValue(spinnerPoints[i]);
-			}
-			regles.setPoints(pts);
-			return regles;
-		} catch (BoggleException e) {
-			JOptionPane.showMessageDialog(this, e.getMessage(), "Erreur", JOptionPane.INFORMATION_MESSAGE);
+	public Regles getReglesCourantes() {
+		return regles = construireRegles();
+	}
+	
+	public Regles construireRegles() {
+		Regles clone = regles.clone();
+		clone.setRegle(Regle.TAILLE_MIN, getValue(spinnerTailleMin));
+		clone.setRegle(Regle.TOUR_MAX, getValue(spinnerTourMax));
+		clone.setRegle(Regle.SCORE_CIBLE, getValue(spinnerScoreCible));
+		clone.setRegle(Regle.DUREE_SABLIER, getValue(spinnerDureeSablier));
+		clone.setRegle(Regle.FICHIER_DES, comboDes.getSelectedItem().toString());
+		clone.setRegle(Regle.FICHIER_DICO, comboDico.getSelectedItem().toString());
+		int[] pts = clone.getIntArray(Regle.POINTS);
+		for (int i=0; i < pts.length; i++) {
+			pts[i] = getValue(spinnerPoints[i]);
 		}
-		return null;
+		clone.setRegle(Regle.POINTS, pts);
+		return clone;
 	}
 	
 	private void initialiser() {
 		Path root = Paths.get("config");
-		charger.removeAllItems();
 		try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(root)) {
 			for (Path path : directoryStream) {
 				if (path.getFileName().toString().startsWith("regles-")) {
@@ -124,56 +134,11 @@ public class CreationPanel extends JPanel {
 		charger();
 	}
 	
-	private void charger() {
-		spinnerTailleMin.setValue(regles.getTailleMin());
-		spinnerTourMax.setValue(regles.getTourMax());
-		spinnerScoreCible.setValue(regles.getScoreCible());
-		spinnerDureeSablier.setValue(regles.getDureeSablier());
-		initCombo();
-		initPoints();
-	}
-	
-	public void sauvegarder() {
-		String input = JOptionPane.showInputDialog("Nom du fichier: (regles-");
-		if (input != null) {
-			if (input.trim().length() == 0) {
-				JOptionPane.showMessageDialog(this, input + " n'est pas un nom de fichier correct.", "Erreur", JOptionPane.INFORMATION_MESSAGE);
-			}
-			else {
-				String fichier = "regles-" + input;
-				if (!fichier.endsWith(".[.]+")) {
-					fichier += ".config";
-				}
-				Regles regles = getRegles();
-				regles.setTitre(fichier);
-				regles.sauvegarder(Paths.get("config", fichier));
-				charger.addItem(regles);
-			}
-		}
-	}
-	
-	public GridBagConstraints contraintes(int gridx, int gridy) {
-		return contraintes(gridx, gridy, 1, 1);
-	}
-	
-	public GridBagConstraints contraintes(int gridx, int gridy, int gridwidth, int gridheight) {
-		c.gridx = gridx;
-		c.gridy = gridy;
-		c.gridwidth = gridwidth;
-		c.gridheight = gridheight;
-		c.insets = new Insets(7, 15, 15, 0);
-		c.anchor = GridBagConstraints.BASELINE_LEADING;
-		return c;
-	}
-	
-	private int getValue(JSpinner s) {
-		return (int) s.getValue();
-	}
-	
 	private void initPoints() {
-		spinnerPoints = new JSpinner[Regles.DEFAULT_POINTS.length];
+		int[] values = regles.getIntArray(Regle.POINTS);
+		spinnerPoints = new JSpinner[values.length];
 		for (int i=0; i < spinnerPoints.length; i++) {
-			spinnerPoints[i] = new JSpinner(new SpinnerNumberModel(regles.getPoints()[i], 1, 42, 1));
+			spinnerPoints[i] = new JSpinner(new SpinnerNumberModel(values[i], 1, 42, 1));
 		}
 	}
 	
@@ -195,18 +160,55 @@ public class CreationPanel extends JPanel {
 		} catch (IOException e) {
 			throw new BoggleException("Une erreur s'est produite à la lecture du dossier " + root + "\n" + e);
 		}
-		comboDes.setSelectedItem(regles.getFichierDes());
-		comboDico.setSelectedItem(regles.getFichierDictionnaire());
+		regles.setRegle(Regle.FICHIER_DES, comboDes.getSelectedItem().toString());
+		regles.setRegle(Regle.FICHIER_DICO, comboDico.getSelectedItem().toString());
 	}
 	
-	public static void main(String[] args) {
-		JFrame f = new JFrame();
-		CreationPanel c = new CreationPanel();
-		f.setContentPane(c);
-		f.pack();
-		f.setLocationRelativeTo(null);
-		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		f.setVisible(true);
+	private void charger() {
+		spinnerTailleMin.setValue(regles.getInt(Regle.TAILLE_MIN));
+		spinnerTourMax.setValue(regles.getInt(Regle.TOUR_MAX));
+		spinnerScoreCible.setValue(regles.getInt(Regle.SCORE_CIBLE));
+		spinnerDureeSablier.setValue(regles.getInt(Regle.DUREE_SABLIER));
+		initCombo();
+		initPoints();
+	}
+	
+	public void sauvegarder() {
+		String input = JOptionPane.showInputDialog("Nom du fichier: (regles-");
+		if (input != null) {
+			if (input.trim().length() == 0) {
+				JOptionPane.showMessageDialog(this, input + " n'est pas un nom de fichier correct.", "Erreur", JOptionPane.INFORMATION_MESSAGE);
+			}
+			else {
+				String fichier = "regles-" + input;
+				if (!fichier.endsWith(".[.]+")) {
+					fichier += ".config";
+				}
+				regles = construireRegles();
+				regles.setTitre(fichier);
+				regles.sauvegarder();
+				charger.addItem(regles);
+				charger.setSelectedItem(regles);
+			}
+		}
+	}
+	
+	public GridBagConstraints contraintes(int gridx, int gridy) {
+		return contraintes(gridx, gridy, 1, 1);
+	}
+	
+	public GridBagConstraints contraintes(int gridx, int gridy, int gridwidth, int gridheight) {
+		c.gridx = gridx;
+		c.gridy = gridy;
+		c.gridwidth = gridwidth;
+		c.gridheight = gridheight;
+		c.insets = new Insets(7, 15, 15, 0);
+		c.anchor = GridBagConstraints.BASELINE_LEADING;
+		return c;
+	}
+	
+	private int getValue(JSpinner s) {
+		return (int) s.getValue();
 	}
 
 }
