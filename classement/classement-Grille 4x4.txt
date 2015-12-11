@@ -1,9 +1,9 @@
-#Fri Dec 11 16:34:31 CET 2015
-Joujou=0
+#Fri Dec 11 18:01:29 CET 2015
 Tata=0
+Joujou=0
 Bonjour=11
-Tony=1
 Toto=0
-Juju=12
+Tony=1
 Yayaya=0
+Juju=12
 Nom\ du\ joueur=2

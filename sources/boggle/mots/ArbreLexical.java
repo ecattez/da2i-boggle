@@ -159,8 +159,13 @@ public class ArbreLexical {
 			if (suivant == null) {
 				return false;
 			}
-			if (suivant.estMot()) {
-				resultat.add(prefixe);
+			// Si on a atteint la taille du prefixe et que c'est un mot,
+			// on l'ajoute à la liste. On ne prend donc pas en compte
+			// les prefixes inférieurs appartenant au prefixe global
+			// susceptibles d'être des mots
+			// Exemple: le préfixe est AMIII, on ne prend ni A, ni AMI
+			if (suivant.estMot() && (niveau + 1) == prefixe.length()) {
+				resultat.add(prefixe.substring(0, niveau + 1));
 			}
 			suivant.motsCommencantPar(prefixe, niveau + 1, resultat);
 		}

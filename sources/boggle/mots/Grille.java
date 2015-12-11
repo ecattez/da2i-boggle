@@ -422,11 +422,11 @@ public abstract class Grille extends Observable implements Observer {
 		for (int y=0; y < dimension; y++) {
 			for (int x=0; x < dimension; x++) {
 				parent = new CoordonneesCartesiennes(x, y);
-				// Si la face visible est plus grande que le mot, on retourne false directement
+				// Si la face visible est plus grande que le mot, on passe directement au dé suivant
 				// Ce cas peut se produire si on a des syllabe dans les dés
 				face = getFaceVisible(parent);
 				if (face.length() > mot.length()) {
-					return false;
+					continue;
 				}
 				// On marque le dé comme étant utilisé
 				utiliserDe(parent);
@@ -459,11 +459,11 @@ public abstract class Grille extends Observable implements Observer {
 		String face;
 		// Comme cela, il n'apparaîtra pas dans les prochains voisins disponibles
 		for (Coordonnees c : positionsVoisinsDisponibles(parent)) {
-			// Si la face visible est plus grande que le mot, on retourne false directement
+			// Si la face visible est plus grande que le mot, on passe directement au dé suivant
 			// Ce cas peut se produire si on a des syllabe dans les dés
 			face = getFaceVisible(c);
-			if (face.length() > mot.length() && mot.length() == 1) {
-				return false;
+			if (face.length() > mot.length()) {
+				continue;
 			}
 			// On marque le dé comme étant utilisé
 			// Récursivement, on cherche les voisins qui répondent à la recherche
