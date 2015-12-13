@@ -16,23 +16,32 @@
  * 
  * @author Edouard CATTEZ <edouard.cattez@sfr.fr> (La 7 Production)
  */
-package boggle.gui.decorateur;
+package boggle.gui.regles;
 
-import java.awt.Color;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
-import javax.swing.JButton;
+import boggle.jeu.Regles;
+import boggle.jeu.Regles.Regle;
 
 /**
- * Définition d'un bouton plat type Material Design.
+ * 
  */
-public class DecorateurBoutonMenu extends DecorateurBouton {
+public class JRegleSpinner extends JSpinner {
 
-	private static final long serialVersionUID = 8813538990842453141L;
+	private static final long serialVersionUID = -1321115021038002758L;
+	
+	public JRegleSpinner(Regles regles, Regle regle, int min, int max) {
+		super(new SpinnerNumberModel(regles.getInt(regle), min, max, 1));
+		this.addChangeListener(new ChangeListener() {
 
-	public DecorateurBoutonMenu(JButton bouton) {
-		super(bouton);
-		this.setBackground(Color.WHITE);
-		this.setForeground(Color.DARK_GRAY);
+			public void stateChanged(ChangeEvent e) {
+				regles.setRegle(regle, (int) JRegleSpinner.this.getValue());
+			}
+			
+		});
 	}
 
 }

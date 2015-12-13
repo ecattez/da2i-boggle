@@ -25,14 +25,15 @@ import javax.swing.JButton;
 /**
  * Définition d'un bouton plat type Material Design.
  */
-public class DecorateurBoutonPlat extends DecorateurBouton {
+public class BoutonPlat extends DecorateurBouton {
 
 	private static final long serialVersionUID = 8813538990842453141L;
 
-	public DecorateurBoutonPlat(JButton bouton) {
+	public BoutonPlat(JButton bouton) {
 		super(bouton);
 		this.setBackground(Color.WHITE);
 		this.setForeground(Color.BLACK);
+		this.setFocusable(false);
 	}
 
 }

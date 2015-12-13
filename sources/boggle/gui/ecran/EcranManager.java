@@ -9,7 +9,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import boggle.gui.decorateur.DecorateurBoutonMenu;
+import boggle.gui.decorateur.BoutonMenu;
 
 /**
  * Conteneur principal de tous les écrans.
@@ -33,7 +33,7 @@ public class EcranManager extends JPanel {
 		
 		private Bouton(String name, final Ecran ecran) {
 			this.name = name;
-			this.bouton = new DecorateurBoutonMenu(new JButton(name));
+			this.bouton = new BoutonMenu(new JButton(name));
 			this.bouton.addActionListener(new ActionListener() {
 
 				public void actionPerformed(ActionEvent e) {
@@ -61,6 +61,9 @@ public class EcranManager extends JPanel {
 		
 	}
 	
+	/**
+	 * 
+	 */
 	public enum Ecran {
 		
 		MENU_PRINCIPAL(new EcranMenuPrincipal()),
@@ -84,7 +87,7 @@ public class EcranManager extends JPanel {
 	
 	public static EcranManager getInstance() {
 		if (ecranManager == null) {
-			ecranManager = new EcranManager(new CardLayout());
+			ecranManager = new EcranManager();
 			ecranManager.first();
 		}
 		return ecranManager;
@@ -94,9 +97,9 @@ public class EcranManager extends JPanel {
 	private JPanel conteneurPrincipal;
 	private JPanel conteneurBoutons;
 	
-	private EcranManager(CardLayout cardLayout) {
+	private EcranManager() {
 		super(new BorderLayout());
-		this.cardLayout = cardLayout;
+		this.cardLayout = new CardLayout();
 		this.conteneurPrincipal = new JPanel(cardLayout);
 		this.conteneurBoutons = new JPanel();
 		for (Bouton bouton : Bouton.values()) {

@@ -71,6 +71,7 @@ public class JGrille extends JPanel implements Observer {
 		public JDe(final Coordonnees coord) {
 			this.coord = coord;
 			this.setFont(new Font("Arial", Font.PLAIN, 15));
+			this.setFocusable(false);
 			this.addActionListener(new ActionListener() {
 				
 				public void actionPerformed(ActionEvent e) {

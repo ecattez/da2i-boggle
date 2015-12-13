@@ -18,7 +18,7 @@ import javax.swing.event.CaretListener;
 
 import boggle.gui.Bucket;
 import boggle.gui.classement.JClassement;
-import boggle.gui.decorateur.DecorateurBoutonPlat;
+import boggle.gui.decorateur.BoutonPlat;
 import boggle.jeu.Classement;
 import boggle.jeu.Partie;
 import boggle.jeu.joueur.Joueur;
@@ -58,9 +58,9 @@ public class JPartie extends JPanel implements Observer {
 		this.jClassement = new JClassement(partie.getClassement());
 		this.tourLabel = new JLabel();
 		this.zoneSaisie = new JTextField();
-		this.ajouter = new DecorateurBoutonPlat(new JButton("Ajouter"));
-		this.vider = new DecorateurBoutonPlat(new JButton("Vider"));
-		this.terminer = new DecorateurBoutonPlat(new JButton("Terminer"));
+		this.ajouter = new BoutonPlat(new JButton("Ajouter"));
+		this.vider = new BoutonPlat(new JButton("Vider"));
+		this.terminer = new BoutonPlat(new JButton("Terminer"));
 		this.infoLabel = new JLabel();
 		
 		zoneSaisie.setPreferredSize(new Dimension(200,20));
@@ -133,6 +133,7 @@ public class JPartie extends JPanel implements Observer {
 		else {
 			Joueur joueur = partie.getJoueurCourant();
 			boolean enabled = joueur.estHumain();
+			int tourMax = partie.getTourMax();
 			tourLabel.setText("Tour de " + joueur.getNom());
 			zoneSaisie.setText("");
 			zoneSaisie.setEnabled(enabled);
@@ -141,7 +142,12 @@ public class JPartie extends JPanel implements Observer {
 			vider.setEnabled(enabled);
 			terminer.setEnabled(enabled);
 			jGrille.setEnabled(enabled);
-			infoLabel.setText("Tour actuel : " + partie.tour());
+			if (tourMax < 1) {
+				infoLabel.setText("Tour actuel : " + partie.tour());
+			}
+			else {
+				infoLabel.setText("Tour actuel : " + partie.tour() + "/" + tourMax);
+			}
 		}
 	}
 	

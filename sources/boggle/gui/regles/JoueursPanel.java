@@ -1,4 +1,4 @@
-package boggle.gui.ecran;
+package boggle.gui.regles;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
-import boggle.gui.decorateur.DecorateurBoutonPlat;
+import boggle.gui.decorateur.BoutonPlat;
 import boggle.jeu.joueur.Humain;
 import boggle.jeu.joueur.IAHardcore;
 import boggle.jeu.joueur.Joueur;
@@ -72,8 +72,8 @@ public class JoueursPanel extends JScrollPane {
 		
 		public SimpleJoueurPanel() {
 			super();
-			JButton moins = new DecorateurBoutonPlat(new JButton("-"));
-			JButton plus = new DecorateurBoutonPlat(new JButton("+"));
+			JButton moins = new BoutonPlat(new JButton("-"));
+			JButton plus = new BoutonPlat(new JButton("+"));
 			textField = new JTextField("Nom du joueur");
 			comboBox = new JComboBox<String>();
 			for (String str : type) {

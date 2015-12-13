@@ -32,6 +32,9 @@ import boggle.BoggleException;
 public class Regles implements Cloneable {
 	
 	public static final Path CONFIG_FOLDER = Paths.get("config");
+	public static final int DEFAULT_TAILLE_MIN = 3;
+	public static final int DEFAULT_DUREE_SABLIER_MIN = 30;
+	public static final int DEFAULT_NOMBRE_POINTS = 6;
 	
 	/**
 	 * Cette énumération représente les différentes règles applicable à une partie de Boggle
@@ -79,11 +82,11 @@ public class Regles implements Cloneable {
 		},
 		DUREE_SABLIER("duree-cible") {
 			public boolean verifier(String value) {
-				return isInteger(value) && Integer.parseInt(value) >= 30;
+				return isInteger(value) && Integer.parseInt(value) >= DEFAULT_DUREE_SABLIER_MIN;
 			}
 
 			public String getMessage() {
-				return "Le sablier ne peut pas avoir une durée < 30 sec";
+				return "Le sablier ne peut pas avoir une durée < " + DEFAULT_DUREE_SABLIER_MIN + " sec";
 			}
 			
 			public String getDefaultValue() {
@@ -92,11 +95,11 @@ public class Regles implements Cloneable {
 		},
 		POINTS("points") {
 			public boolean verifier(String value) {
-				return isIntArray(value) && value.split(",").length == 6;
+				return isIntArray(value) && value.split(",").length == DEFAULT_NOMBRE_POINTS;
 			}
 
 			public String getMessage() {
-				return "Les points doivent être un ensemble de 6 entiers";
+				return "Les points doivent être un ensemble de " + DEFAULT_NOMBRE_POINTS + " entiers";
 			}
 			
 			public String getDefaultValue() {
@@ -204,15 +207,6 @@ public class Regles implements Cloneable {
 		for (Regle regle : Regle.values()) {
 			value = prop.getProperty(regle.key(), regle.getDefaultValue());
 			this.setRegle(regle, value);
-		}
-		
-		Path file = Paths.get(getString(Regle.FICHIER_DES));
-		if (!file.startsWith(CONFIG_FOLDER)) {
-			setRegle(Regle.FICHIER_DES, CONFIG_FOLDER.resolve(file));
-		}
-		file = Paths.get(getString(Regle.FICHIER_DICO));
-		if (!file.startsWith(CONFIG_FOLDER)) {
-			setRegle(Regle.FICHIER_DICO, CONFIG_FOLDER.resolve(file));
 		}
 	}
 	
@@ -354,7 +348,7 @@ public class Regles implements Cloneable {
 	public void sauvegarder() {
 		Path path = Paths.get(titre);
 		if (path.getParent() == null) {
-			path = Paths.get("config").resolve(path);
+			path = CONFIG_FOLDER.resolve(path);
 		}
 		try (BufferedWriter out = Files.newBufferedWriter(path, Charset.forName("UTF-8"))) {
 			prop.store(out, null);
@@ -379,6 +373,7 @@ public class Regles implements Cloneable {
 	 */
 	public Regles clone() {
 		Regles regles = new Regles();
+		regles.setTitre(titre);
 		for (Regle regle : Regle.values()) {
 			regles.setRegle(regle, this.getString(regle));
 		}

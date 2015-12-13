@@ -26,6 +26,8 @@ import boggle.BoggleException;
 import boggle.gui.Bucket;
 import boggle.gui.ecran.EcranManager.Bouton;
 import boggle.gui.ecran.EcranManager.Ecran;
+import boggle.gui.regles.JoueursPanel;
+import boggle.gui.regles.ReglesPanel;
 import boggle.jeu.Partie;
 
 public class EcranNouvellePartie extends AbstractEcran {
