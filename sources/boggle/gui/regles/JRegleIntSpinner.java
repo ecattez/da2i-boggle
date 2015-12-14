@@ -29,16 +29,16 @@ import boggle.jeu.Regles.Regle;
 /**
  * 
  */
-public class JRegleSpinner extends JSpinner {
+public class JRegleIntSpinner extends JSpinner {
 
 	private static final long serialVersionUID = -1321115021038002758L;
 	
-	public JRegleSpinner(Regles regles, Regle regle, int min, int max) {
+	public JRegleIntSpinner(final Regles regles, final Regle regle, int min, int max) {
 		super(new SpinnerNumberModel(regles.getInt(regle), min, max, 1));
 		this.addChangeListener(new ChangeListener() {
 
 			public void stateChanged(ChangeEvent e) {
-				regles.setRegle(regle, (int) JRegleSpinner.this.getValue());
+				regles.setRegle(regle, (int) JRegleIntSpinner.this.getValue());
 			}
 			
 		});

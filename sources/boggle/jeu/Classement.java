@@ -134,7 +134,7 @@ public class Classement extends Observable implements Observer {
 	 */
 	public void sauvegarderMeilleursScores() {
 		creerDossier();
-		Path classementPath = Paths.get(CLASSEMENT_FOLDER, "classement-" + title + ".txt");
+		Path classementPath = Paths.get(CLASSEMENT_FOLDER, title + ".txt");
 		Properties prop = charger(classementPath);
 		String nom;
 		String value;

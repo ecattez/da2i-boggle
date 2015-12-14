@@ -64,7 +64,7 @@ public class JReglePoints extends JPanel {
 
 		private static final long serialVersionUID = 7237564411378262819L;
 		
-		public JReglePointsSpinner(final Regles regles, int idxPoint) {
+		public JReglePointsSpinner(final Regles regles, final int idxPoint) {
 			super(new SpinnerNumberModel(1, 1, 20, 1));
 			this.addChangeListener(new ChangeListener() {
 

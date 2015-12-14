@@ -1,3 +1,21 @@
+/**
+ * This file is part of da2i-boggle.
+ *
+ * da2i-boggle is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * da2i-boggle is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.				 
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with da2i-boggle.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * @author Edouard CATTEZ <edouard.cattez@sfr.fr> (La 7 Production)
+ */
 package boggle.gui.partie;
 
 import java.awt.BorderLayout;
@@ -45,6 +63,7 @@ public class JPartie extends JPanel implements Observer {
 	private JButton terminer;
 	
 	private JLabel infoLabel;
+	private JLabel scoreCibleLabel;
 	
 	public JPartie(final Partie partie) {
 		super(new BorderLayout(10,10));
@@ -62,6 +81,7 @@ public class JPartie extends JPanel implements Observer {
 		this.vider = new BoutonPlat(new JButton("Vider"));
 		this.terminer = new BoutonPlat(new JButton("Terminer"));
 		this.infoLabel = new JLabel();
+		this.scoreCibleLabel = new JLabel("Score cible : " + partie.getScoreCible());
 		
 		zoneSaisie.setPreferredSize(new Dimension(200,20));
 		
@@ -106,20 +126,26 @@ public class JPartie extends JPanel implements Observer {
 		JPanel panelSaisie = new JPanel();
 		panelSaisie.add(zoneSaisie);
 		
-		JPanel center = new JPanel();
-		center.setLayout(new BoxLayout(center, BoxLayout.PAGE_AXIS));
-		center.add(haut);
-		center.add(jGrille);
-		center.add(panelSaisie);
-		center.add(boutons);
+		JPanel centre = new JPanel();
+		centre.setLayout(new BoxLayout(centre, BoxLayout.PAGE_AXIS));
+		centre.add(haut);
+		centre.add(jGrille);
+		centre.add(panelSaisie);
+		centre.add(boutons);
 		
-		jMots.setPreferredSize(new Dimension(200,300));
-		jClassement.setPreferredSize(new Dimension(200,300));
+		jMots.setPreferredSize(new Dimension(200, 300));
+		jClassement.setPreferredSize(jMots.getPreferredSize());
 		
+		JPanel bas = new JPanel();
+		bas.setLayout(new BoxLayout(bas, BoxLayout.Y_AXIS));
+		bas.add(infoLabel);
+		if (partie.getScoreCible() > 0) {
+			bas.add(scoreCibleLabel);
+		}
 		this.add(jMots, BorderLayout.WEST);
-		this.add(center, BorderLayout.CENTER);
+		this.add(centre, BorderLayout.CENTER);
 		this.add(jClassement, BorderLayout.EAST);
-		this.add(infoLabel, BorderLayout.SOUTH);
+		this.add(bas, BorderLayout.SOUTH);
 	}
 
 	public void update(Observable obs, Object o) {

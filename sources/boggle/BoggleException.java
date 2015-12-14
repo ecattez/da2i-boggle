@@ -23,6 +23,8 @@ package boggle;
  */
 public class BoggleException extends RuntimeException {
 	
+	private static final long serialVersionUID = -1133934975116361373L;
+
 	public BoggleException(String message) {
 		super(message);
 	}

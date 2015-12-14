@@ -26,6 +26,7 @@ import java.awt.event.ActionListener;
 import java.nio.file.Paths;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -43,39 +44,46 @@ public class ReglesPanel extends JPanel {
 	private GridBagConstraints cstr;
 	
 	private Regles regles;
-	private JRegleSpinner spTailleMin, spTourMax, spScoreCible, spDureeSablier;
+	private JRegleIntSpinner spTailleMin, spTourMax, spScoreCible, spDureeSablier;
 	private JReglePoints pPoints;
 	private JReglesComboPath comboDes;
 	private JReglesComboPath comboDico;
 	
 	private JReglesComboRegles charger;
+	private JCheckBox tourIllimite, scoreIllimite;
 	private JButton sauvegarder;
 	private JButton demarrer;
 
 	public ReglesPanel(final EcranNouvellePartie ecran) {
 		super(new GridBagLayout());
 		regles = new Regles();
-		spTailleMin = new JRegleSpinner(regles, Regle.TAILLE_MIN, Regles.DEFAULT_TAILLE_MIN, 10);
-		spTourMax = new JRegleSpinner(regles, Regle.TOUR_MAX, 1, 10);
-		spScoreCible = new JRegleSpinner(regles, Regle.SCORE_CIBLE, 10, 30000000);
-		spDureeSablier = new JRegleSpinner(regles, Regle.DUREE_SABLIER, Regles.DEFAULT_DUREE_SABLIER_MIN, 60 * 5);
+		spTailleMin = new JRegleIntSpinner(regles, Regle.TAILLE_MIN, Regles.DEFAULT_TAILLE_MIN, 10);
+		spTourMax = new JRegleIntSpinner(regles, Regle.TOUR_MAX, 1, 10);
+		spScoreCible = new JRegleIntSpinner(regles, Regle.SCORE_CIBLE, 10, 500);
+		spDureeSablier = new JRegleIntSpinner(regles, Regle.DUREE_SABLIER, Regles.DEFAULT_DUREE_SABLIER_MIN, 60 * 5);
 		pPoints = new JReglePoints(regles);
 		comboDes = new JReglesComboPath(regles, Regle.FICHIER_DES, "des-");
 		comboDico = new JReglesComboPath(regles, Regle.FICHIER_DICO, "dict-");
 		charger = new JReglesComboRegles(this);
+		tourIllimite = new JCheckBox();
+		scoreIllimite = new JCheckBox();
 		sauvegarder = new BoutonMenu(new JButton("Sauvegarder règles"));
 		demarrer = new BoutonMenu(new JButton("Démarrer partie"));
 		cstr = new GridBagConstraints();
 		
-		int colv = 2;
+		int colv = 1;
 		this.add(charger, contraintes(0, 0, 2, 1));
 		this.add(sauvegarder, contraintes(1, 0, 2, 1));
 		this.add(new JLabel("Taille minimale des mots"), contraintes(0, 1));
 		this.add(spTailleMin, contraintes(colv, 1));
 		this.add(new JLabel("Nombre de tours"), contraintes(0, 2));
 		this.add(spTourMax, contraintes(colv, 2));
+		this.add(tourIllimite, contraintes(colv + 1, 2));
+		this.add(new JLabel("Tour illimité"), contraintes(colv + 2, 2));
 		this.add(new JLabel("Score cible"), contraintes(0, 3));
 		this.add(spScoreCible, contraintes(colv, 3));
+		this.add(scoreIllimite, contraintes(colv + 1, 3));
+		this.add(new JLabel("Score illimité"), contraintes(colv + 2, 3));
 		this.add(new JLabel("Durée du sablier"), contraintes(0, 4));
 		this.add(spDureeSablier, contraintes(colv, 4));
 		this.add(new JLabel("Points"), contraintes(0, 5));
@@ -84,7 +92,43 @@ public class ReglesPanel extends JPanel {
 		this.add(comboDes, contraintes(colv, 6));
 		this.add(new JLabel("Dictionnaire"), contraintes(0, 7));
 		this.add(comboDico, contraintes(colv, 7));
-		this.add(demarrer, contraintes(2, 8, 2, 1));
+		this.add(demarrer, contraintes(colv, 8, 2, 1));
+		
+		tourIllimite.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				if (scoreIllimite.isSelected()) {
+					tourIllimite.setSelected(false);
+				}
+				else {
+					spTourMax.setEnabled(!tourIllimite.isSelected());
+					int value = -1;
+					if (spTourMax.isEnabled()) {
+						value =  (int) spTourMax.getValue();
+					}
+					regles.setRegle(Regle.TOUR_MAX, value);
+				}
+			}
+			
+		});
+		
+		scoreIllimite.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				if (tourIllimite.isSelected()) {
+					scoreIllimite.setSelected(false);
+				}
+				else {
+					spScoreCible.setEnabled(!scoreIllimite.isSelected());
+					int value = -1;
+					if (spScoreCible.isEnabled()) {
+						value =  (int) spScoreCible.getValue();
+					}
+					regles.setRegle(Regle.SCORE_CIBLE, value);
+				}
+			}
+			
+		});
 		
 		sauvegarder.addActionListener(new ActionListener() {
 
@@ -96,7 +140,7 @@ public class ReglesPanel extends JPanel {
 		demarrer.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				String initialText = demarrer.getText();
+				final String initialText = demarrer.getText();
 				demarrer.setText("Chargement...");
 				SwingUtilities.invokeLater(new Runnable()  {
 
@@ -110,6 +154,10 @@ public class ReglesPanel extends JPanel {
 			}
 			
 		});
+		
+		if (charger.getItemCount() > 0) {
+			changerReglesPar(charger.getItemAt(0));
+		}
 	}
 	
 	public Regles getReglesCourantes() {
