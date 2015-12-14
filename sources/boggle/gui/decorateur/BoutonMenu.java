@@ -33,7 +33,6 @@ public class BoutonMenu extends DecorateurBouton {
 		super(bouton);
 		this.setBackground(Color.WHITE);
 		this.setForeground(Color.DARK_GRAY);
-		this.setFocusable(false);
 	}
 
 }

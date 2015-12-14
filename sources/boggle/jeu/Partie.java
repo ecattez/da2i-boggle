@@ -261,6 +261,8 @@ public class Partie extends Observable implements Iterable<Joueur>, Runnable {
 			}
 			incTour();
 		}
+		// On vide la grille
+		grille.rendreTout();
 		// On notifie les observeurs que la partie est terminée
 		update();
 	}

@@ -222,7 +222,7 @@ public class Classement extends Observable implements Observer {
 	public static List<Classement> listerTous() {
 		creerDossier();
 		Path root = Paths.get(CLASSEMENT_FOLDER);
-		List<Classement> classements = new ArrayList<>();
+		List<Classement> classements = new ArrayList<Classement>();
 		Classement c;
 		try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(root)) {
 			for (Path path : directoryStream) {

@@ -44,7 +44,7 @@ public class JReglePoints extends JPanel {
 	public JReglePoints(Regles regles) {
 		super(new FlowLayout(FlowLayout.LEADING));
 		this.points = new int[Regles.DEFAULT_NOMBRE_POINTS];
-		this.spinners = new ArrayList<>();
+		this.spinners = new ArrayList<JReglePointsSpinner>();
 		
 		JReglePointsSpinner sp;
 		for (int i=0; i < points.length; i++) {

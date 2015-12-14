@@ -32,7 +32,7 @@ public class IAHardcore extends IA {
 
 	public void run() {
 		List<String> mots = new ArrayList<String>();
-		for (char c = 'A'; !forcerArret() && c <= 'Z'; c++) {
+		for (char c = 'A'; c <= 'Z'; c++) {
 			if (arbre.motsCommencantPar(String.valueOf(c), mots)) {
 				for (String mot : mots) {
 					if (mot.length() >= grille.tailleMinimale() && grille.ecrire(mot)) {
@@ -44,7 +44,6 @@ public class IAHardcore extends IA {
 						// Si le tour s'est fini plus tôt que prévu (sablier terminé)
 						// on arrête tous les traitements
 						if (forcerArret()) {
-							grille.rendreTout();
 							return;
 						}
 						grille.stockerMot();

@@ -150,7 +150,6 @@ public class ReglesPanel extends JPanel {
 					}
 					
 				});
-				
 			}
 			
 		});

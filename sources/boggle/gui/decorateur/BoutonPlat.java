@@ -33,7 +33,6 @@ public class BoutonPlat extends DecorateurBouton {
 		super(bouton);
 		this.setBackground(Color.WHITE);
 		this.setForeground(Color.BLACK);
-		this.setFocusable(false);
 	}
 
 }
