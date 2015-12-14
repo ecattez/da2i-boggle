@@ -137,10 +137,10 @@ public class JPartie extends JPanel implements Observer {
 		jClassement.setPreferredSize(jMots.getPreferredSize());
 		
 		JPanel bas = new JPanel();
-		bas.setLayout(new BoxLayout(bas, BoxLayout.Y_AXIS));
-		bas.add(infoLabel);
+		bas.setLayout(new BorderLayout());
+		bas.add(infoLabel, BorderLayout.WEST);
 		if (partie.getScoreCible() > 0) {
-			bas.add(scoreCibleLabel);
+			bas.add(scoreCibleLabel, BorderLayout.EAST);
 		}
 		this.add(jMots, BorderLayout.WEST);
 		this.add(centre, BorderLayout.CENTER);

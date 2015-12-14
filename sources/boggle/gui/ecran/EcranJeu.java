@@ -38,6 +38,7 @@ public class EcranJeu extends AbstractEcran {
 			partie = Bucket.getInstance().getPartie();
 			this.removeAll();
 			this.add(new JPartie(partie));
+			this.repack();
 			new Thread(partie).start();
 		}
 	}

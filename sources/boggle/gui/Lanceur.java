@@ -32,11 +32,12 @@ import boggle.gui.ecran.EcranManager;
  */
 public class Lanceur {
 	
+	public static JFrame f;
+	
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable()  {
 			public void run() {
-				final JFrame f = new JFrame("Boggle - Edouard CATTEZ & Alexandre VASTRA");
-				f.setContentPane(EcranManager.getInstance());
+				JFrame f = EcranManager.getInstance();
 				f.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 				f.pack();
 				f.setLocationRelativeTo(null);

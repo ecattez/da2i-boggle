@@ -25,6 +25,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import boggle.gui.decorateur.BoutonMenu;
@@ -32,7 +33,7 @@ import boggle.gui.decorateur.BoutonMenu;
 /**
  * Conteneur principal de tous les écrans.
  */
-public class EcranManager extends JPanel {
+public class EcranManager extends JFrame {
 	
 	private static final long serialVersionUID = -5451190123766703896L;
 
@@ -116,7 +117,7 @@ public class EcranManager extends JPanel {
 	private JPanel conteneurBoutons;
 	
 	private EcranManager() {
-		super(new BorderLayout());
+		super("Boggle - Edouard CATTEZ & Alexandre VASTRA");
 		this.cardLayout = new CardLayout();
 		this.conteneurPrincipal = new JPanel(cardLayout);
 		this.conteneurBoutons = new JPanel();
@@ -173,6 +174,11 @@ public class EcranManager extends JPanel {
 		for (Bouton b : boutons) {
 			b.afficher();
 		}
+	}
+	
+	public void repack() {
+		this.pack();
+		this.setLocationRelativeTo(null);
 	}
 	
 }

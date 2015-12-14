@@ -69,5 +69,9 @@ public abstract class AbstractEcran extends JPanel {
 	public void switchTo(Ecran ecran) {
 		EcranManager.getInstance().show(ecran);
 	}
+	
+	public void repack() {
+		EcranManager.getInstance().repack();
+	}
 
 }
