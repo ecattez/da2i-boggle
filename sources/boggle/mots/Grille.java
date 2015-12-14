@@ -55,8 +55,8 @@ public abstract class Grille extends Observable implements Observer {
 			throw new BoggleException("La dimension minimale d'une grille est " + DIMENSION_MIN);
 		}
 		this.dimension = dimension;
-		this.mots = new ArrayList<>();
-		this.deck = new ArrayDeque<>();
+		this.mots = new ArrayList<String>();
+		this.deck = new ArrayDeque<Coordonnees>();
 	}
 	
 	/**
@@ -143,7 +143,7 @@ public abstract class Grille extends Observable implements Observer {
 	 * @param	c
 	 * 			les coordonnées du dé dans la grille
 	 */
-	public synchronized void utiliserDe(Coordonnees c) {
+	public void utiliserDe(Coordonnees c) {
 		if (getDe(c).utiliser()) {
 			deck.push(c);
 		}
@@ -185,7 +185,7 @@ public abstract class Grille extends Observable implements Observer {
 	 * @param	c
 	 * 			les coordonnées du dé dans la grille
 	 */
-	public synchronized void rendreDe(Coordonnees c) {
+	public void rendreDe(Coordonnees c) {
 		if (getDe(c).rendre()) {
 			deck.remove(c);
 		}
@@ -194,7 +194,7 @@ public abstract class Grille extends Observable implements Observer {
 	/**
 	 * Rend disponible le dernier dé utilisé par le joueur
 	 */
-	public synchronized void rendreDernierDeUtilise() {
+	public void rendreDernierDeUtilise() {
 		if (deck.size() > 0) {
 			getDe(deck.pop()).rendre();
 		}
@@ -203,19 +203,10 @@ public abstract class Grille extends Observable implements Observer {
 	/**
 	 * Rend disponible tous les dés de la grille
 	 */
-	public synchronized void rendreTout() {
+	public void rendreTout() {
 		while (!deck.isEmpty()) {
 			getDe(deck.pop()).rendre();
 		}
-	}
-	
-	/**
-	 * Retourne une représentation des positions des lettres utilisées par le joueur dans leur ordre d'utilisation
-	 * 
-	 * @return	les positions (en String) des lettres utilisées par le joueur dans leur ordre d'utilisation
-	 */
-	public synchronized String getPositionsUtilisees() {
-		return deck.toString();
 	}
 	
 	/**
@@ -223,7 +214,7 @@ public abstract class Grille extends Observable implements Observer {
 	 * 
 	 * @return	les lettres utilisée par l'utilisateur dans l'ordre d'utilisation
 	 */
-	public synchronized String getLettresUtilisees() {
+	public String getLettresUtilisees() {
 		if (deck.size() == 0) {
 			return "";
 		}
@@ -240,7 +231,7 @@ public abstract class Grille extends Observable implements Observer {
 	 * 
 	 * @return	<code>true</code> si le mot a bien été enregistré, <code>false</code> sinon
 	 */
-	public synchronized boolean stockerMot() {
+	public boolean stockerMot() {
 		String mot = getLettresUtilisees();
 		return !mots.contains(mot) && mot.length() >= tailleMinimale() && mots.add(mot);
 	}
@@ -248,7 +239,7 @@ public abstract class Grille extends Observable implements Observer {
 	/**
 	 * Vide la liste de tous les mots obtenus avec cette grille
 	 */
-	public synchronized void viderMotsStockes() {
+	public void viderMotsStockes() {
 		mots.clear();
 	}
 	
@@ -287,7 +278,7 @@ public abstract class Grille extends Observable implements Observer {
 	/**
 	 * Secoue la grille pour mélanger les dés
 	 */
-	public synchronized void secouer() {
+	public void secouer() {
 		int r = (int) (Math.random() * 500);
 		De d1, d2;
 		Coordonnees c1, c2;
@@ -324,46 +315,6 @@ public abstract class Grille extends Observable implements Observer {
 	}
 	
 	/**
-	 * Récupère la liste des voisins d'un dé dans la grille à partir de ses coordonnées passé en paramètre
-	 * 
-	 * @param	c
-	 * 			le couple de coordonnées du dé pour lequel il faut trouver les voisins
-	 * 
-	 * @return	la liste des voisins d'un dé de la grille
-	 */
-	public List<De> voisins(Coordonnees c) {
-		List<De> des = new ArrayList<>();
-		Coordonnees tmp;
-		for (Coordonnees points : PointCardinal.values()) {
-			tmp = c.ajoute(points);
-			if (contient(tmp)) {
-				des.add(getDe(tmp));
-			}
-		}
-		return des;
-	}
-	
-	/**
-	 * Récupère la liste des voisins non utilisés d'un dé dans la grille à partir de ses coordonnées passé en paramètre
-	 * 
-	 * @param	c
-	 * 			le couple de coordonnées du dé pour lequel il faut trouver les voisins
-	 * 
-	 * @return	la liste des voisins d'un dé de la grille
-	 */
-	public List<De> voisinsDisponibles(Coordonnees c) {
-		List<De> des = new ArrayList<>();
-		Coordonnees tmp;
-		for (Coordonnees points : PointCardinal.values()) {
-			tmp = c.ajoute(points);
-			if (contient(tmp) && !estUtilise(tmp)) {
-				des.add(getDe(tmp));
-			}
-		}
-		return des;
-	}
-	
-	/**
 	 * Récupère la liste des positions des voisins d'un dé dans la grille
 	 * 
 	 * @param	c
@@ -371,8 +322,8 @@ public abstract class Grille extends Observable implements Observer {
 	 * 
 	 * @return	la liste des positions voisines d'un dé de la grille
 	 */
-	public List<Coordonnees> positionsVoisins(Coordonnees c) {
-		List<Coordonnees> coords = new ArrayList<>();
+	public List<Coordonnees> voisins(Coordonnees c) {
+		List<Coordonnees> coords = new ArrayList<Coordonnees>();
 		Coordonnees tmp;
 		for (Coordonnees points : PointCardinal.values()) {
 			tmp = c.ajoute(points);
@@ -391,8 +342,8 @@ public abstract class Grille extends Observable implements Observer {
 	 * 
 	 * @return	la liste des positions voisines d'un dé de la grille
 	 */
-	public List<Coordonnees> positionsVoisinsDisponibles(Coordonnees c) {
-		List<Coordonnees> coords = new ArrayList<>();
+	public List<Coordonnees> voisinsDisponibles(Coordonnees c) {
+		List<Coordonnees> coords = new ArrayList<Coordonnees>();
 		Coordonnees tmp;
 		for (Coordonnees points : PointCardinal.values()) {
 			tmp = c.ajoute(points);
@@ -457,7 +408,7 @@ public abstract class Grille extends Observable implements Observer {
 				return true;
 			}
 			// Dans le cas contraire, on réitère récursivement la méthode avec les voisins disponibles du dé courant
-			for (Coordonnees voisin : positionsVoisinsDisponibles(courant)) {
+			for (Coordonnees voisin : voisinsDisponibles(courant)) {
 				if (ecrire(mot, voisin)) {
 					return true;
 				}

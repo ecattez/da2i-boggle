@@ -18,6 +18,7 @@
  */
 package boggle.jeu;
 
+import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.Observable;
 
@@ -55,9 +56,11 @@ public class Partie extends Observable implements Iterable<Joueur>, Runnable {
 		if (regles.getInt(Regle.SCORE_CIBLE) == -1 && regles.getInt(Regle.TOUR_MAX) == -1) {
 			throw new BoggleException("Il n'est pas possible d'avoir à la fois un score cible et un tour maximal infinis");
 		}
+		Path cheminDes = Regles.CONFIG_FOLDER.resolve(regles.getString(Regle.FICHIER_DES));
+		Path cheminDico = Regles.CONFIG_FOLDER.resolve(regles.getString(Regle.FICHIER_DICO));
 		this.regles = regles;
-		this.grille = new GrilleLettres(regles.getInt(Regle.TAILLE_MIN) + 1, De.creerDes(regles.getString(Regle.FICHIER_DES)));
-		this.arbre = ArbreLexical.creerArbre(regles.getString(Regle.FICHIER_DICO));
+		this.grille = new GrilleLettres(regles.getInt(Regle.TAILLE_MIN) + 1, De.creerDes(cheminDes));
+		this.arbre = ArbreLexical.creerArbre(cheminDico);
 		this.joueurs = joueurs;
 		this.gagnant = false;
 		this.forcerArret = false;
@@ -258,6 +261,8 @@ public class Partie extends Observable implements Iterable<Joueur>, Runnable {
 			}
 			incTour();
 		}
+		// On vide la grille
+		grille.rendreTout();
 		// On notifie les observeurs que la partie est terminée
 		update();
 	}
