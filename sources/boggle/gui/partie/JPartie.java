@@ -34,7 +34,6 @@ import javax.swing.JTextField;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 
-import boggle.gui.Bucket;
 import boggle.gui.classement.JClassement;
 import boggle.gui.decorateur.BoutonPlat;
 import boggle.jeu.Classement;
@@ -153,7 +152,6 @@ public class JPartie extends JPanel implements Observer {
 			Classement classement = partie.getClassement();
 			classement.sauvegarderMeilleursScores();
 			classement.trier();
-			Bucket.getInstance().push(classement);
 			infoLabel.setText(partie.getJoueurs()[0] + " a gagné cette partie.");
 		}
 		else {

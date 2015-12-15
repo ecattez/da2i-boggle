@@ -1,29 +1,68 @@
 # Boggle - Projet de Génie Logiciel (Licence DA2I)
 
-## Authors
+## Auteurs
 - Edouard CATTEZ
 - Alexandre VASTRA
 
-### Fonctionnalités
+## Table des Matières
+
+- Fonctionnalités
+- Installation
+- Manuel utilisateur
+- Manuel programmeur
+
+##Fonctionnalités
 - [x] Multijoueur avec joueurs Humain et IA
-- [ ] Différentes IA
-- - [x] IA difficile
-- - [ ] IA moyenne
-- - [ ] IA simpliste
+- [x] Intelligence Artificielle
 - [x] Partie avec score maximal à atteindre
 - [x] Partie avec tour de jeu maximal
-- [x] Choix d'une partie soit avec un score max soit un tour max (définit par les règles avec score < 0 ou tourMax < 0)
+- [x] Score et tour max avec possibilité de rendre illimité soit le score, soit le tour
 - [x] Sablier pour le tour d'un joueur
 - [x] Changement d'état des dés (utilisé ou non)
 - [x] Ecrire un mot et vérifier son existence dans la grille en temps réel
-- [ ] Aide contextuelle pour la recherche de mots valides dans la grille
-- [x] Mémoriser les 10 meilleurs scores
+- [x] Mémoriser les meilleurs scores par taille de grille
 - [x] Utiliser des fichier de dés
 - [x] Utiliser des fichiers de dictionnaire
 - [x] Utiliser un fichier de configuration pour choisir la taille de la grille, le dictionnaire, les dés, les points etc...
+- [ ] Aide contextuelle pour la recherche de mots valides dans la grille
 
-## Guide utilisateur
-- [ ] To do
+## Installation
 
-## Fonctionnement du programme
-- [ ] To do
+Téléchargez le répertoire git
+
+```
+git clone https://github.com/ecattez/da2i-boggle.git
+```
+
+ou veuillez extraire l'archive .jar
+
+```
+tar -zxvf catteze-vastra-da2i-boggle.tar.gz
+```
+
+Assurez-vous que vous avez les droits d'exécution sur les scripts compiler.sh et run.sh
+
+Pour compiler les sources, exécutez le script suivant :
+
+```
+./compiler.sh
+```
+
+Pour exécuter le programme à partir de sources, exécutez le script suivant :
+
+```
+./run.sh
+```
+
+Pour exécuter le programme depuis l'archive exécutable da2i-boggle.jar, exécuter la commande suivante :
+
+```
+java -jar da2i-boggle.jar
+```
+
+
+## Manuel utilisateur
+
+
+## Manuel programmeur
+

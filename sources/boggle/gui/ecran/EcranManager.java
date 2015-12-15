@@ -100,6 +100,14 @@ public class EcranManager extends JFrame {
 			return name();
 		}
 		
+		public void envoyer(Object o, Ecran e) {
+			ecranReel.envoyer(o, e);
+		}
+		
+		public void recevoir(Object o) {
+			ecranReel.recevoir(o);
+		}
+		
 	}
 	
 	public static EcranManager ecranManager;
@@ -134,22 +142,27 @@ public class EcranManager extends JFrame {
 	
 	public void first() {
 		cardLayout.first(conteneurPrincipal);
+		repack();
 	}
 	
 	public void last() {
 		cardLayout.last(conteneurPrincipal);
+		repack();
 	}
 	
 	public void next() {
 		cardLayout.next(conteneurPrincipal);
+		repack();
 	}
 	
 	public void previous() {
 		cardLayout.previous(conteneurPrincipal);
+		repack();
 	}
 	
 	public void show(Ecran ecran) {
 		cardLayout.show(conteneurPrincipal, ecran.getLabel());
+		repack();
 	}
 	
 	public void cacherBoutons() {
@@ -178,7 +191,6 @@ public class EcranManager extends JFrame {
 	
 	public void repack() {
 		this.pack();
-		this.setLocationRelativeTo(null);
 	}
 	
 }

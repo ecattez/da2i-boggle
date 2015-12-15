@@ -18,7 +18,6 @@
  */
 package boggle.gui.ecran;
 
-import boggle.gui.Bucket;
 import boggle.gui.ecran.EcranManager.Bouton;
 import boggle.gui.partie.JPartie;
 import boggle.jeu.Partie;
@@ -31,16 +30,24 @@ public class EcranJeu extends AbstractEcran {
 
 	public EcranJeu() {}
 
+	public void recevoir(Object o) {
+		partie = (Partie) o;
+	}
+	
 	public void recharger() {
 		cacherBoutons();
 		afficherBoutons(Bouton.MENU_PRINCIPAL, Bouton.NOUVELLE_PARTIE);
-		if (partie == null || partie.estTerminee()) {
-			partie = Bucket.getInstance().getPartie();
-			this.removeAll();
-			this.add(new JPartie(partie));
-			this.repack();
-			new Thread(partie).start();
+		this.add(new JPartie(partie));
+		new Thread(partie).start();
+	}
+	
+	public void nettoyer() {
+		// Si on quitte l'écran avant la fin de la partie,
+		// on arrête la partie
+		if (partie != null && !partie.estTerminee()) {
+			partie.forcerArret();
 		}
+		this.removeAll();
 	}
 
 }

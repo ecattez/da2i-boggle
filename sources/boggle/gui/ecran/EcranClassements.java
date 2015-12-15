@@ -18,6 +18,7 @@
  */
 package boggle.gui.ecran;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -39,6 +40,7 @@ public class EcranClassements extends AbstractEcran {
 	public EcranClassements() {
 		this.classements = new ArrayList<Classement>();
 		this.afficherClassements();
+		this.setBackground(new Color(31,71,126));
 	}
 
 	public void recharger() {
@@ -66,6 +68,14 @@ public class EcranClassements extends AbstractEcran {
 			aucunClassement.add(new JLabel("Il n'y a actuellement aucun classement sauvegardé"));
 			this.add(aucunClassement);
 		}
+	}
+
+	public void nettoyer() {
+		// Rien à faire
+	}
+	
+	public void recevoir(Object o) {
+		// Rien à faire
 	}
 
 }

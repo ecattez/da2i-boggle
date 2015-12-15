@@ -49,6 +49,7 @@ public class JoueursPanel extends JPanel {
 		for (int i=0; i < 2; i++) {
 			ajouter();
 		}
+		this.setBackground(new Color(255,215,0));
 	}
 	
 	public int nbJoueurs() {
@@ -125,6 +126,7 @@ public class JoueursPanel extends JPanel {
 			this.add(plus);
 			this.add(textField);
 			this.add(comboBox);
+			this.setBackground(null);
 		}
 		
 		public boolean estHumain() {

@@ -26,9 +26,7 @@ import java.awt.Font;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import boggle.gui.Bucket;
 import boggle.gui.ecran.EcranManager.Bouton;
-import boggle.jeu.Partie;
 
 public class EcranMenuPrincipal extends AbstractEcran {
 	
@@ -60,12 +58,14 @@ public class EcranMenuPrincipal extends AbstractEcran {
 	public void recharger() {
 		cacherBoutons();
 		afficherBoutons(Bouton.JOUER, Bouton.CLASSEMENTS);
-		
-		// Si une partie est en cours, on la termine directement
-		Partie partie = Bucket.getInstance().getPartie();
-		if (partie != null && !partie.estTerminee()) {
-			partie.forcerArret();
-		}
+	}
+	
+	public void nettoyer() {
+		// Rien à faire
+	}
+	
+	public void recevoir(Object o) {
+		// Rien à faire
 	}
 
 

@@ -23,7 +23,6 @@ import java.awt.BorderLayout;
 import javax.swing.JOptionPane;
 
 import boggle.BoggleException;
-import boggle.gui.Bucket;
 import boggle.gui.ecran.EcranManager.Bouton;
 import boggle.gui.ecran.EcranManager.Ecran;
 import boggle.gui.regles.JoueursPanel;
@@ -45,20 +44,23 @@ public class EcranNouvellePartie extends AbstractEcran {
 		this.add(reglesPanel, BorderLayout.CENTER);
 	}
 	
+	public void recevoir(Object o) {
+		// Rien à faire
+	}
+	
 	public void recharger() {
 		cacherBoutons();
 		afficherBoutons(Bouton.MENU_PRINCIPAL);
-		Partie partie = Bucket.getInstance().getPartie();
-		if (partie != null && !partie.estTerminee()) {
-			partie.forcerArret();
-		}
+	}
+	
+	public void nettoyer() {
+		// Rien à faire
 	}
 	
 	public void demarrer() {
 		try {
 			Partie partie = new Partie(reglesPanel.getReglesCourantes(), joueursPanel.getTousLesJoueurs());
-			Bucket.getInstance().push(partie);
-			switchTo(Ecran.JEU);
+			switchTo(Ecran.JEU, partie);
 		} catch (BoggleException e) {
 			JOptionPane.showMessageDialog(this, e.getMessage(), "Erreur", JOptionPane.INFORMATION_MESSAGE);
 		}

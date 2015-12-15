@@ -41,35 +41,95 @@ public abstract class AbstractEcran extends JPanel {
 		super(layoutManager);
 	}
 	
+	/**
+	 * 
+	 */
 	public abstract void recharger();
 	
+	/**
+	 * 
+	 */
+	public abstract void nettoyer();
+	
+	/**
+	 * 
+	 * @param o
+	 */
+	public abstract void recevoir(Object o);
+	
+	/**
+	 * 
+	 * @param o
+	 * @param e
+	 */
+	public void envoyer(Object o, Ecran e) {
+		e.recevoir(o);
+	}
+	
+	/**
+	 * 
+	 */
 	public void setVisible(boolean visible)	{
 		super.setVisible(visible);
 		if (visible) {
 			recharger();
 		}
+		else {
+			nettoyer();
+		}
 	}
 	
+	/**
+	 * 
+	 */
 	public void cacherBoutons() {
 		EcranManager.getInstance().cacherBoutons();
 	}
 	
+	/**
+	 * 
+	 * @param boutons
+	 */
 	public void cacherBoutons(Bouton... boutons) {
 		EcranManager.getInstance().cacherBoutons(boutons);
 	}
 	
+	/**
+	 * 
+	 */
 	public void afficherBoutons() {
 		EcranManager.getInstance().afficherBoutons();
 	}
 	
+	/**
+	 * 
+	 * @param boutons
+	 */
 	public void afficherBoutons(Bouton... boutons) {
 		EcranManager.getInstance().afficherBoutons(boutons);
 	}
 	
+	/**
+	 * 
+	 * @param ecran
+	 */
 	public void switchTo(Ecran ecran) {
 		EcranManager.getInstance().show(ecran);
 	}
 	
+	/**
+	 * 
+	 * @param ecran
+	 * @param o
+	 */
+	public void switchTo(Ecran ecran, Object o) {
+		ecran.envoyer(o, ecran);
+		switchTo(ecran);
+	}
+	
+	/**
+	 * 
+	 */
 	public void repack() {
 		EcranManager.getInstance().repack();
 	}

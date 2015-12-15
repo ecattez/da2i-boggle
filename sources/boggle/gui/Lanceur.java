@@ -37,7 +37,7 @@ public class Lanceur {
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable()  {
 			public void run() {
-				JFrame f = EcranManager.getInstance();
+				final JFrame f = EcranManager.getInstance();
 				f.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 				f.pack();
 				f.setLocationRelativeTo(null);
