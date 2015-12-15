@@ -26,7 +26,6 @@
 - Utiliser des fichier de dés
 - Utiliser des fichiers de dictionnaire
 - Utiliser un fichier de configuration pour choisir la taille de la grille, le dictionnaire, les dés, les points etc...
-- Aide contextuelle pour la recherche de mots valides dans la grille
 
 ## Installation
 
