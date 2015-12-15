@@ -57,7 +57,7 @@ public class JClassement extends JScrollPane implements Observer {
 	/**
 	 * Modèle de JTable pour la représentation graphique des instances de Classement
 	 */
-	class TableClassementModel extends DefaultTableModel {
+	private class TableClassementModel extends DefaultTableModel {
 		
 		private static final long serialVersionUID = -5742429842171045372L;
 

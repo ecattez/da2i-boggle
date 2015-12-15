@@ -70,6 +70,8 @@ public class ArbreLexical {
 
 	/**
 	 * Indique si le noeud courante est situé à l'extrémité d'un mot valide
+	 * 
+	 * @return <code>true</code> si le noeud avec ou sans ses parents forment un mot, <code>false</code> sinon
 	 */
 	public boolean estMot() {
 		return estMot ;
@@ -128,14 +130,14 @@ public class ArbreLexical {
 	}
 	
 	/**
-	 * Ajoute à la liste <code>resultat<code> tous les mots de l'arbre commençant par le préfixe spécifié.
+	 * Ajoute à la liste resultat tous les mots de l'arbre commençant par le préfixe spécifié.
 	 * 
 	 * @param	prefixe
 	 * 			le préfixe du mot
 	 * @param	resultat
 	 * 			la liste des mots qui commence par le préfixe
 	 *  
-	 * @return	<code>true</code> si <code>resultat</code> a été modifié, <code>false</code> sinon.
+	 * @return	<code>true</code> si resultat a été modifié, <code>false</code> sinon.
 	 */
 	public boolean motsCommencantPar(String prefixe, List<String> resultat) {
 		int niveau = 0;
@@ -162,7 +164,7 @@ public class ArbreLexical {
 	 * @param	resultat
 	 * 			la liste des mots qui commence par le préfixe
 	 *  
-	 * @return	<code>true</code> si <code>resultat</code> a été modifié, <code>false</code> sinon.
+	 * @return	<code>true</code> si resultat a été modifié, <code>false</code> sinon.
 	 */
 	private boolean motsCommencantPar(String prefixe, int niveau, List<String> resultat) {
 		// Si c'est un mot, on l'ajoute à la liste
@@ -184,6 +186,8 @@ public class ArbreLexical {
 	 * 
 	 * @param	fichier
 	 * 			le chemin du fichier à charger
+	 * 
+	 * @return	une nouvelle instance d'ArbreLexical chargée avec des mots du dictionnaire
 	 */
 	public static ArbreLexical creerArbre(String fichier) {
 		return creerArbre(Paths.get(fichier));
@@ -194,6 +198,8 @@ public class ArbreLexical {
 	 * 
 	 * @param	fichier
 	 * 			le chemin du fichier à charger
+	 * 
+	 * @return	une nouvelle instance d'ArbreLexical chargée avec des mots du dictionnaire
 	 */
 	public static ArbreLexical creerArbre(Path fichier) {
 		ArbreLexical root = new ArbreLexical();

@@ -151,7 +151,8 @@ public class Regles implements Cloneable {
 		
 		/**
 		 * Le message d'indication des valeurs que peuvent prendre la règle
-		 * @return
+		 * 
+		 * @return	le message d'indication
 		 */
 		public abstract String getMessage();
 		
@@ -254,8 +255,8 @@ public class Regles implements Cloneable {
 	 * @param	value
 	 * 			la nouvelle valeur de la règle
 	 */
-	public void setRegle(Regle regle, Path path) {
-		setRegle(regle, path.toString());
+	public void setRegle(Regle regle, Path value) {
+		setRegle(regle, value.toString());
 	}
 	
 	/**
@@ -366,6 +367,8 @@ public class Regles implements Cloneable {
 	
 	/**
 	 * Représentation textuelle des règles
+	 * 
+	 * @return	la description des règles d'une instance de Regles
 	 */
 	public String describe() {
 		return prop.toString();

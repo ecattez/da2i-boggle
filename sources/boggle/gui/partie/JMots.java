@@ -48,7 +48,7 @@ public class JMots extends JScrollPane implements Observer {
 	/**
 	 * Redéfinition d'un TableModel pour le composant JMots
 	 */
-	class TableMotsModel extends DefaultTableModel {
+	private class TableMotsModel extends DefaultTableModel {
 	
 		private static final long serialVersionUID = -4104833440035573086L;
 		
@@ -60,10 +60,6 @@ public class JMots extends JScrollPane implements Observer {
 		
 		public Object getValueAt(int row, int col) {
 			return row >= 0 && row < mots.size() ? mots.get(row) : null;
-		}
-	
-		public int getSize() {
-			return mots.size();
 		}
 		
 	}

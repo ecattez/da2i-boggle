@@ -114,8 +114,6 @@ public abstract class Grille extends Observable implements Observer {
 	/**
 	 * Vérifie si l'emplacement (x,y) contient un dé
 	 * 
-	 * @param	d
-	 * 			le dé à placer dans la grille
 	 * @param	c
 	 * 			les coordonnées du dé dans la grille
 	 * 
@@ -131,7 +129,7 @@ public abstract class Grille extends Observable implements Observer {
 	 * @param	c
 	 * 			les coordonnées du dé dans la grille
 	 * 
-	 * @return	<code>true</code> si le dé est déjà utilisé, <false> sinon
+	 * @return	<code>true</code> si le dé est déjà utilisé, <code>false</code> sinon
 	 */
 	public boolean estUtilise(Coordonnees c) {
 		return getDe(c).estUtilise();
@@ -155,7 +153,7 @@ public abstract class Grille extends Observable implements Observer {
 	 * @param	c
 	 * 			les coordonnées du dernier dé utilisé dans la grille
 	 * 
-	 * @return	<code>true</code> si le dé est le dernier utilisé, <false> sinon
+	 * @return	<code>true</code> si le dé est le dernier utilisé, <code>false</code> sinon
 	 */
 	public boolean estDernierUtilise(Coordonnees c) {
 		return c.equals(deck.peek());

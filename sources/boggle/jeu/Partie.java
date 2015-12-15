@@ -34,8 +34,8 @@ import boggle.mots.GrilleLettres;
  * Représentation d'une partie générique de Boggle entre plusieurs joueurs.
  * 
  * Note :
- * - si le score à atteindre est <= 0, la partie s'arrête quand le dernier tour est passé
- * - si le tour maximal atteignable est <= 0, la partie s'arrête quand le score à atteindre est passé
+ * - si le score à atteindre est inférieur ou égal à 0, la partie s'arrête quand le dernier tour est passé
+ * - si le tour maximal atteignable est inférieur ou égal 0, la partie s'arrête quand le score à atteindre est passé
  */
 public class Partie extends Observable implements Iterable<Joueur>, Runnable {
 	
@@ -174,6 +174,8 @@ public class Partie extends Observable implements Iterable<Joueur>, Runnable {
 	
 	/**
 	 * Retourne tous les joueurs de la partie
+	 * 
+	 * @return	les joueurs de la partie sous la forme d'un tableau d'instances de Joueur
 	 */
 	public Joueur[] getJoueurs() {
 		return joueurs;

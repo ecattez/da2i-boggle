@@ -1,4 +1,4 @@
-#Tue Dec 15 17:52:30 CET 2015
+#Tue Dec 15 20:15:08 CET 2015
 Toto=20
 Pipou=4
-Nom\ du\ joueur=0
+Nom\ du\ joueur=2

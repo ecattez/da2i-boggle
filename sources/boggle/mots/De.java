@@ -59,6 +59,8 @@ public class De extends Observable {
 	
 	/**
 	 * Informe que l'on utilise le dé
+	 * 
+	 * @return <code>true</code> si le dé s'utilise, <code>false</code> s'il est déjà utilisé
 	 */
 	public boolean utiliser() {
 		if (!utilise) {
@@ -71,6 +73,8 @@ public class De extends Observable {
 	
 	/**
 	 * Informe que l'on a fini d'utiliser le dé
+	 * 
+	 * @return <code>true</code> si le dé à été rendu, <code>false</code> sinon
 	 */
 	public boolean rendre() {
 		if (utilise) {
