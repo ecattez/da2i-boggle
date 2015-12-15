@@ -1,0 +1,10 @@
+boggle
+boggle.gui
+boggle.gui.classement
+boggle.gui.decorateur
+boggle.gui.ecran
+boggle.gui.partie
+boggle.gui.regles
+boggle.jeu
+boggle.jeu.joueur
+boggle.mots
