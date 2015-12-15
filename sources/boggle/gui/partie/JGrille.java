@@ -78,7 +78,7 @@ public class JGrille extends JPanel implements Observer {
 	}
 	
 	/**
-	 * Représente en interne un dé
+	 * Classe interne pour la représentation d'un dé
 	 */
 	class JDe extends JButton {
 		

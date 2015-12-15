@@ -32,7 +32,7 @@ import boggle.jeu.Regles;
 import boggle.jeu.Regles.Regle;
 
 /**
- * 
+ * Composant permettant de saisir les points associés à la taille de chaque mot.
  */
 public class JReglePoints extends JPanel {
 	
@@ -60,6 +60,9 @@ public class JReglePoints extends JPanel {
 		}
 	}
 	
+	/**
+	 * Chaque point est définit via un spinner personnalisé
+	 */
 	class JReglePointsSpinner extends JSpinner {
 
 		private static final long serialVersionUID = 7237564411378262819L;

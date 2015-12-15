@@ -18,10 +18,14 @@
  */
 package boggle.gui.ecran;
 
+import boggle.BoggleException;
 import boggle.gui.ecran.EcranManager.Bouton;
 import boggle.gui.partie.JPartie;
 import boggle.jeu.Partie;
 
+/**
+ * Ecran qui gère le jeu (la partie courante)
+ */
 public class EcranJeu extends AbstractEcran {
 	
 	private static final long serialVersionUID = -2902887394692862062L;
@@ -30,10 +34,17 @@ public class EcranJeu extends AbstractEcran {
 
 	public EcranJeu() {}
 
+	// L'écran attend de recevoir une partie
 	public void recevoir(Object o) {
-		partie = (Partie) o;
+		if (o instanceof Partie) {
+			partie = (Partie) o;
+		}
+		else {
+			throw new BoggleException("L'écran de jeu ne peut recevoir que des objets de type Partie");
+		}
 	}
 	
+	// Au rechargement, on crée l'objet JPartie qu'on ajoute à l'écran
 	public void recharger() {
 		cacherBoutons();
 		afficherBoutons(Bouton.MENU_PRINCIPAL, Bouton.NOUVELLE_PARTIE);
@@ -41,9 +52,8 @@ public class EcranJeu extends AbstractEcran {
 		new Thread(partie).start();
 	}
 	
+	// Si on quitte l'écran avant la fin de la partie, on arrête celle-ci
 	public void nettoyer() {
-		// Si on quitte l'écran avant la fin de la partie,
-		// on arrête la partie
 		if (partie != null && !partie.estTerminee()) {
 			partie.forcerArret();
 		}

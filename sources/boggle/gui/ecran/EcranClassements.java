@@ -31,6 +31,9 @@ import boggle.gui.classement.JClassement;
 import boggle.gui.ecran.EcranManager.Bouton;
 import boggle.jeu.Classement;
 
+/**
+ * L'écran qui affiche les différents classements selon la dimension de chaque grille
+ */
 public class EcranClassements extends AbstractEcran {
 	
 	private static final long serialVersionUID = 599000474435628090L;
@@ -49,6 +52,9 @@ public class EcranClassements extends AbstractEcran {
 		afficherClassements();
 	}
 	
+	/**
+	 * Affiche tous les classements disponibles dans le dossier Classement.CLASSEMENT_FOLDER
+	 */
 	public void afficherClassements() {
 		classements.clear();
 		classements.addAll(Classement.listerTous());

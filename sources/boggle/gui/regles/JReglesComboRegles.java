@@ -31,7 +31,7 @@ import boggle.BoggleException;
 import boggle.jeu.Regles;
 
 /**
- *
+ * Menu déroulant qui liste les Regles sauvegardées dans le dossier Regles.CONFIG_FOLDER.
  */
 public class JReglesComboRegles extends JComboBox<Regles> {
 
@@ -49,15 +49,14 @@ public class JReglesComboRegles extends JComboBox<Regles> {
 		recharger();
 	}
 	
-	public boolean contains(String titre) {
-		for (int i = 0; i < getItemCount(); i++) {
-			if (getItemAt(i).getTitre().equals(titre)) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
+	/**
+	 * Retourne l'indice d'une instance de Regles par rapport à son titre
+	 * 
+	 * @param	titre
+	 * 			le titre de l'instance de Regles à trouver
+	 * 
+	 * @return	l'indice d'une instance de Regles, -1 si elle n'a pas été trouvée
+	 */
 	public int indexOf(String titre) {
 		for (int i = 0; i < getItemCount(); i++) {
 			if (getItemAt(i).getTitre().equals(titre)) {
@@ -67,7 +66,10 @@ public class JReglesComboRegles extends JComboBox<Regles> {
 		return -1;
 	}
 	
-	public void recharger() {
+	/**
+	 * Recharge le menu déroulant
+	 */
+	private void recharger() {
 		this.removeAllItems();
 		Path root = Regles.CONFIG_FOLDER;
 		try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(root)) {

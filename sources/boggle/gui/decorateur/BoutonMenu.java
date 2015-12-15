@@ -23,7 +23,7 @@ import java.awt.Color;
 import javax.swing.JButton;
 
 /**
- * Définition d'un bouton plat type Material Design.
+ * Définition d'un bouton plat type Material Design pour le menu.
  */
 public class BoutonMenu extends DecorateurBouton {
 

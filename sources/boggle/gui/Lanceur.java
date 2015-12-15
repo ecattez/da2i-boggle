@@ -28,7 +28,7 @@ import javax.swing.SwingUtilities;
 import boggle.gui.ecran.EcranManager;
 
 /**
- * 
+ * Classe contenant la méthode main qui exécute tout le programme
  */
 public class Lanceur {
 	

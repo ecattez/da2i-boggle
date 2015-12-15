@@ -35,6 +35,12 @@ public abstract class IA extends Joueur implements Runnable {
 		super(name);
 	}
 	
+	/**
+	 * Force l'arrêt de l'IA si jamais ce n'est plus son tour de jeu
+	 * mais qu'elle est tout de même en train de jouer
+	 * 
+	 * @return <code>true</code> si on force l'arrêt de l'IA, <code>false</code> sinon
+	 */
 	protected boolean forcerArret() {
 		return !this.equals(partie.getJoueurCourant()) || partie.estTerminee();
 	}

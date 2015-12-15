@@ -21,7 +21,7 @@ package boggle.gui.decorateur;
 import javax.swing.JButton;
 
 /**
- * Implémente le pattern Decorateur sur les JButtons.
+ * Ajoute une décoration sur un JButton.
  */
 public class DecorateurBouton extends JButton {
 	

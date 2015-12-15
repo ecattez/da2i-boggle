@@ -19,7 +19,6 @@
 package boggle.gui.regles;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -35,7 +34,7 @@ import boggle.jeu.joueur.IAHardcore;
 import boggle.jeu.joueur.Joueur;
 
 /**
- * 
+ * Panel qui définit l'ensemble des joueurs d'une partie
  */
 public class JoueursPanel extends JPanel {
 	
@@ -52,10 +51,18 @@ public class JoueursPanel extends JPanel {
 		this.setBackground(new Color(255,215,0));
 	}
 	
+	/**
+	 * Retourne le nombre de joueurs actuellement définis
+	 * 
+	 * @return	le nombre de joueurs courant
+	 */
 	public int nbJoueurs() {
 		return this.getComponentCount();
 	}
 	
+	/**
+	 * Ajoute un nouveau joueur dans le panel
+	 */
 	public void ajouter() {
 		if (nbJoueurs() < JOUEUR_MAX) {
 			this.add(new SimpleJoueurPanel());
@@ -63,14 +70,26 @@ public class JoueursPanel extends JPanel {
 		}
 	}
 	
-	public void supprimer(Component component) {
+	/**
+	 * Supprime un joueur du panel global
+	 * 
+	 * @param	joueurPanel
+	 * 			le panel du joueur à supprimer
+	 * 			
+	 */
+	public void supprimer(SimpleJoueurPanel joueurPanel) {
 		if (nbJoueurs() > 1) {
-			this.remove(component);
+			this.remove(joueurPanel);
 			this.validate();
 			this.repaint();
 		}
 	}
 	
+	/**
+	 * Crée l'ensemble des joueurs à partir du panel représentant chaque joueur
+	 * 
+	 * @return	un tableau d'instances de Joueur (les joueurs de la partie)
+	 */
 	public Joueur[] getTousLesJoueurs() {
 		int size = nbJoueurs();
 		Joueur[] joueurs = new Joueur[size];
@@ -86,6 +105,9 @@ public class JoueursPanel extends JPanel {
 		return joueurs;
 	}
 	
+	/**
+	 * Panel des informations relatives à un joueur
+	 */
 	class SimpleJoueurPanel extends JPanel {
 	
 		private static final long serialVersionUID = -8236754317603170769L;
@@ -129,14 +151,29 @@ public class JoueursPanel extends JPanel {
 			this.setBackground(null);
 		}
 		
+		/**
+		 * Vérifie si le joueur à créer est humain
+		 * 
+		 * @return	<code>true</code> si le joueur à créer est humain, <code>false</code> sinon
+		 */
 		public boolean estHumain() {
 			return getType().equals("Humain");
 		}
 		
+		/**
+		 * Retourne le nom du joueur stocké dans le textfield du panel
+		 * 
+		 * @return	le nom du joueur
+		 */
 		public String getNomJoueur() {
 			return textField.getText();
 		}
 		
+		/**
+		 * Retourne le type du joueur à créer (Humain ou IA)
+		 * 
+		 * @return	le type du joueur
+		 */
 		public String getType() {
 			return (String) comboBox.getSelectedItem();
 		}

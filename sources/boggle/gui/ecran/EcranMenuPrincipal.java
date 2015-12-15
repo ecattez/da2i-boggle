@@ -28,6 +28,9 @@ import javax.swing.JPanel;
 
 import boggle.gui.ecran.EcranManager.Bouton;
 
+/**
+ * L'écran qui affiche le menu principal
+ */
 public class EcranMenuPrincipal extends AbstractEcran {
 	
 	private static final long serialVersionUID = -6774404505867511769L;

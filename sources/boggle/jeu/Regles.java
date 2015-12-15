@@ -357,6 +357,9 @@ public class Regles implements Cloneable {
 		}
 	}
 
+	/**
+	 * Retourne le titre des règles
+	 */
 	public String toString() {
 		return titre;
 	}

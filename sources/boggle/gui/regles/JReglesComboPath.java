@@ -32,7 +32,7 @@ import boggle.jeu.Regles;
 import boggle.jeu.Regles.Regle;
 
 /**
- *
+ * Menu déroulant qui liste des fichiers à partir du dossier Regles.CONFIG_FOLDER.
  */
 public class JReglesComboPath extends JComboBox<Path> {
 
@@ -53,7 +53,10 @@ public class JReglesComboPath extends JComboBox<Path> {
 		recharger();
 	}
 	
-	public void recharger() {
+	/**
+	 * Recharge le menu déroulant
+	 */
+	private void recharger() {
 		this.removeAllItems();
 		Path root = Regles.CONFIG_FOLDER;
 		Path chemin;

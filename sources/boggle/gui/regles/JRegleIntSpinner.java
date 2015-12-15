@@ -27,7 +27,9 @@ import boggle.jeu.Regles;
 import boggle.jeu.Regles.Regle;
 
 /**
+ * Représentation d'un JSpinner numérique pour les règles d'une nouvelle partie.
  * 
+ * Les instances de cette classe sont associées à des règles d'une instance de Regles, dont la valeur est un entier.
  */
 public class JRegleIntSpinner extends JSpinner {
 

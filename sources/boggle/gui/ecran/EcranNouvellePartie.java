@@ -29,6 +29,11 @@ import boggle.gui.regles.JoueursPanel;
 import boggle.gui.regles.ReglesPanel;
 import boggle.jeu.Partie;
 
+/**
+ * L'écran qui gère la création d'une nouvelle partie.
+ * 
+ * Dans celui-ci, on définit les joueurs et les règles de la partie
+ */
 public class EcranNouvellePartie extends AbstractEcran {
 
 	private static final long serialVersionUID = 4790691387769043379L;
@@ -57,6 +62,9 @@ public class EcranNouvellePartie extends AbstractEcran {
 		// Rien à faire
 	}
 	
+	/**
+	 * Crée une instance de partie et l'envoie à l'écran de jeu
+	 */
 	public void demarrer() {
 		try {
 			Partie partie = new Partie(reglesPanel.getReglesCourantes(), joueursPanel.getTousLesJoueurs());

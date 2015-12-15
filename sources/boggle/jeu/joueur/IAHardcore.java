@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * IA difficile
+ * Implémentation d'une IA difficile à battre
  */
 public class IAHardcore extends IA {
 	
@@ -36,6 +36,7 @@ public class IAHardcore extends IA {
 			if (arbre.motsCommencantPar(String.valueOf(c), mots)) {
 				for (String mot : mots) {
 					if (mot.length() >= grille.tailleMinimale() && grille.ecrire(mot)) {
+						// On fait attendre l'IA une seconde pour qu'elle ne soit pas trop rapide à jouer
 						try {
 							Thread.sleep(1000);
 						} catch (InterruptedException e) {

@@ -45,7 +45,10 @@ public class JMots extends JScrollPane implements Observer {
 		this.setViewportView(new JTable(tableModel));
 	}
 	
-	public class TableMotsModel extends DefaultTableModel {
+	/**
+	 * Redéfinition d'un TableModel pour le composant JMots
+	 */
+	class TableMotsModel extends DefaultTableModel {
 	
 		private static final long serialVersionUID = -4104833440035573086L;
 		

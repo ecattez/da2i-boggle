@@ -37,6 +37,9 @@ import boggle.gui.ecran.EcranNouvellePartie;
 import boggle.jeu.Regles;
 import boggle.jeu.Regles.Regle;
 
+/**
+ * Panel qui permet de définir chaque règle d'une partie
+ */
 public class ReglesPanel extends JPanel {
 	
 	private static final long serialVersionUID = 8335947767765664236L;
@@ -159,10 +162,18 @@ public class ReglesPanel extends JPanel {
 		}
 	}
 	
+	/**
+	 * Retourne l'instance de Regles modifiée par la vue
+	 * 
+	 * @return	l'instance de Regles courante
+	 */
 	public Regles getReglesCourantes() {
 		return regles;
 	}
 	
+	/**
+	 * Sauvegarde les règles définies par l'utilisateur
+	 */
 	public void sauvegarder() {
 		String input = JOptionPane.showInputDialog(null, "Nom du fichier: (regles-", "NouvellesRegles");
 		if (input != null) {
@@ -197,11 +208,13 @@ public class ReglesPanel extends JPanel {
 		}
 	}
 	
-	public GridBagConstraints contraintes(int gridx, int gridy) {
+	// Définit des contraintes d'affichage
+	private GridBagConstraints contraintes(int gridx, int gridy) {
 		return contraintes(gridx, gridy, 1, 1);
 	}
 	
-	public GridBagConstraints contraintes(int gridx, int gridy, int gridwidth, int gridheight) {
+	// Définit des contraintes d'affichage
+	private GridBagConstraints contraintes(int gridx, int gridy, int gridwidth, int gridheight) {
 		cstr.gridx = gridx;
 		cstr.gridy = gridy;
 		cstr.gridwidth = gridwidth;
@@ -212,7 +225,11 @@ public class ReglesPanel extends JPanel {
 	}
 
 	/**
-	 * @param item
+	 * Change les valeurs des règles courante par d'autres
+	 * en définissant les valeurs des différents composants du panel
+	 * 
+	 * @param	item
+	 * 			les nouvelles règles à appliquer
 	 */
 	public void changerReglesPar(Regles item) {
 		spTailleMin.setValue(item.getInt(Regle.TAILLE_MIN));
