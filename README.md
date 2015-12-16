@@ -41,7 +41,11 @@ ou veuillez extraire l'archive .tar.gz
 tar -zxvf catteze-vastra-da2i-boggle.tar.gz
 ```
 
-Assurez-vous que vous avez les droits d'exécution sur les scripts compiler.sh et run.sh
+Assurez-vous que vous avez les droits d'exécution sur les scripts **compiler.sh** et **run.sh**
+
+```
+chmod +x compiler.sh run.sh
+```
 
 Pour compiler les sources, exécutez le script suivant :
 
@@ -55,7 +59,7 @@ Pour exécuter le programme à partir de sources, exécutez le script suivant :
 ./run.sh
 ```
 
-Pour exécuter le programme depuis l'archive exécutable da2i-boggle.jar, exécuter la commande suivante :
+Pour exécuter le programme depuis l'archive exécutable da2i-boggle.jar, exécutez la commande suivante :
 
 ```
 java -jar da2i-boggle.jar
