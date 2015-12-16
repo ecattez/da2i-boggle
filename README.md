@@ -67,11 +67,17 @@ Afin de décrire au mieux l'ensemble des possibilitées offertes par le programm
 
 Voici Tony, un joueur passionné de boggle depuis de nombreuses années. C'est pourquoi nous avons décidé de lui proposé de tester notre version du jeu en avant première. Lors du premier lancement de l'application, et l'apparition de l'écran principal du jeu, le visage de Tony resta impassible, nullement impressionné par la première image du jeu, ou encore son ergonomie. Puisqu'en effet Tony c'est naturellement et rapidement dirigé vers les boutons situés en bas de l'écran, à savoir "Jouer" et "Classements". Il cliqua sur "Jouer". Nous imaginons que n'ayant pas d'intérêt compétitif dans ce test, le classement n'intéressait pas (encore) ce grand champion boggelien qu'est Tony.
 
+![Menu Principal](https://cloud.githubusercontent.com/assets/10498113/11850272/95c2e488-a42c-11e5-8eff-37fa29696dc0.png)
+
 L'arrivée sur le second écran, celui de la création de la partie, parvient a détendre le visage de Tony. En effet, nous pouvons voir les prémisses d'un sourire naitre à la commissure de ses lèvres. La définition du nombre de joueurs (humain ou non) par exemple ou encore les nombreuses possibilitées de réglages selon lesquelles la partie va se dérouler, le nombre de tour de la partie, le temps accordé pour chaque joueur et bien plus encore; ont fait écho quelque part dans l'âme de ce compétiteur acharné, toujours à la recherche de challenges. Un bon point pour le jeu.
+
+![Création de Partie](https://cloud.githubusercontent.com/assets/10498113/11850273/95c54818-a42c-11e5-8455-9b065496c889.png)
 
 Plusieurs minutes plus tard, notre testeur décide ainsi de se frotter à notre intelligence artificielle, Samantha, et ce, sans échauffement préalable. Intelligence artificielle qui a été pensée en partie pour offrir une farouche opposition à n'importe quel joueur, allant du novice au champion.
 
 La partie se lance, la première grille n'est pas à l'avantage du champion. En effet, les faces visibles de chaque dé, misent en communs, ne sont pas des plus évidentes.
+
+![Partie de jeu](https://cloud.githubusercontent.com/assets/10498113/11850274/95c9c0a0-a42c-11e5-9430-3dbd9f796c4d.png)
 
 Cependant contre toutes attentes, Tony parvient à écrire manuellement un nombre impressionnant de mots, allant du simple 3 lettres jusqu'à certains mots inconnus des membres de notre équipe de développement. Il pousse même le vice a obtenir plus de points que Samantha lors de ce premier tour de jeu, qui n'a duré que 40s. Nous restons sans voix devant tant de maîtrise de la langue et la rapidité d'éxecution via le champ de saisie qui lui permet d'écrire les mots plus vite que s'il cliquait sur les dés de la grille.
 
@@ -79,5 +85,4 @@ Le deuxième tour commence et à la surprise de tous, Tony empoigne la souris et
 
 Cette échange acharné durera de longues minutes, jusqu'à la dernière seconde et à l'ajout du mot "bière" de Samantha. Ce dernier mot qui lui assura la victoire sur le fil. Le score de 1000 à 999 en faveur de Samantha aurait pu achever la détermination de n'importe quel autre personne. Mais un champion n'est pas n'importe quelle personne. C'est ainsi que Tony se leva de sa chaise et quitta la salle de TP avec le même sourire qu'un enfant qui découvre un nouveau jeu et en murmurant suffisament bas, pour que nous soyons les seuls à l'entendre : " Good Job ".
 
-
-
+![Classements Généraux](https://cloud.githubusercontent.com/assets/10498113/11850275/95cb2972-a42c-11e5-9b33-cc4c8af2bddb.png)
