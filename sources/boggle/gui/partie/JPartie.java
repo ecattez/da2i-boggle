@@ -35,7 +35,7 @@ import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 
 import boggle.gui.classement.JClassement;
-import boggle.gui.decorateur.BoutonPlat;
+import boggle.gui.decorateur.BoutonPlatSansFocus;
 import boggle.jeu.Classement;
 import boggle.jeu.Partie;
 import boggle.jeu.joueur.Joueur;
@@ -76,9 +76,9 @@ public class JPartie extends JPanel implements Observer {
 		this.jClassement = new JClassement(partie.getClassement());
 		this.tourLabel = new JLabel();
 		this.zoneSaisie = new JTextField();
-		this.ajouter = new BoutonPlat(new JButton("Ajouter"));
-		this.vider = new BoutonPlat(new JButton("Vider"));
-		this.terminer = new BoutonPlat(new JButton("Terminer"));
+		this.ajouter = new BoutonPlatSansFocus(new JButton("Ajouter"));
+		this.vider = new BoutonPlatSansFocus(new JButton("Vider"));
+		this.terminer = new BoutonPlatSansFocus(new JButton("Terminer"));
 		this.infoLabel = new JLabel();
 		this.scoreCibleLabel = new JLabel("Score cible : " + partie.getScoreCible());
 		
