@@ -29,6 +29,11 @@ import java.util.Properties;
 
 import boggle.BoggleException;
 
+/**
+ * Les Regles définissent la manière de jouer au Boggle.
+ * 
+ * Une instance de Partie est instanciée via une instance de Regles.
+ */
 public class Regles implements Cloneable {
 	
 	public static final Path CONFIG_FOLDER = Paths.get("config");
