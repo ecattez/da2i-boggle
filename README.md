@@ -35,7 +35,7 @@ Téléchargez le répertoire git
 git clone https://github.com/ecattez/da2i-boggle.git
 ```
 
-ou veuillez extraire l'archive .jar
+ou veuillez extraire l'archive .tar.gz
 
 ```
 tar -zxvf catteze-vastra-da2i-boggle.tar.gz
