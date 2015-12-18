@@ -38,7 +38,7 @@ git clone https://github.com/ecattez/da2i-boggle.git
 ou veuillez extraire l'archive .tar.gz
 
 ```
-tar -zxvf catteze-vastra-da2i-boggle.tar.gz
+tar -zxvf catteze-vastraa-da2i-boggle.tar.gz
 ```
 
 Assurez-vous que vous avez les droits d'exécution sur les scripts **compiler.sh** et **run.sh**

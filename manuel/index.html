@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Da2i-boggle by ecattez</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Da2i-boggle</h1>
+      <h2 class="project-tagline">Boggle - Projet de Génie Logiciel (Licence DA2I)</h2>
+      <a href="https://github.com/ecattez/da2i-boggle" class="btn">View on GitHub</a>
+      <a href="https://github.com/ecattez/da2i-boggle/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/ecattez/da2i-boggle/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="boggle---projet-de-génie-logiciel-licence-da2i" class="anchor" href="#boggle---projet-de-g%C3%A9nie-logiciel-licence-da2i" aria-hidden="true"><span class="octicon octicon-link"></span></a>Boggle - Projet de Génie Logiciel (Licence DA2I)</h1>
+
+<h2>
+<a id="auteurs" class="anchor" href="#auteurs" aria-hidden="true"><span class="octicon octicon-link"></span></a>Auteurs</h2>
+
+<ul>
+<li>Edouard CATTEZ</li>
+<li>Alexandre VASTRA</li>
+</ul>
+
+<h2>
+<a id="table-des-matières" class="anchor" href="#table-des-mati%C3%A8res" aria-hidden="true"><span class="octicon octicon-link"></span></a>Table des Matières</h2>
+
+<ul>
+<li>Fonctionnalités</li>
+<li>Installation</li>
+<li>Manuel utilisateur</li>
+</ul>
+
+<h2>
+<a id="fonctionnalités" class="anchor" href="#fonctionnalit%C3%A9s" aria-hidden="true"><span class="octicon octicon-link"></span></a>Fonctionnalités</h2>
+
+<ul>
+<li>Multijoueur avec joueurs Humain et IA</li>
+<li>Intelligence Artificielle</li>
+<li>Partie avec score maximal à atteindre</li>
+<li>Partie avec tour de jeu maximal</li>
+<li>Score et tour max avec possibilité de rendre illimité soit le score, soit le tour</li>
+<li>Sablier pour le tour d'un joueur</li>
+<li>Changement d'état des dés (utilisé ou non)</li>
+<li>Ecrire un mot et vérifier son existence dans la grille en temps réel</li>
+<li>Mémoriser les meilleurs scores par taille de grille</li>
+<li>Utiliser des fichier de dés</li>
+<li>Utiliser des fichiers de dictionnaire</li>
+<li>Utiliser un fichier de configuration pour choisir la taille de la grille, le dictionnaire, les dés, les points etc...</li>
+</ul>
+
+<h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>Téléchargez le répertoire git</p>
+
+<pre><code>git clone https://github.com/ecattez/da2i-boggle.git
+</code></pre>
+
+<p>ou veuillez extraire l'archive .tar.gz</p>
+
+<pre><code>tar -zxvf catteze-vastraa-da2i-boggle.tar.gz
+</code></pre>
+
+<p>Assurez-vous que vous avez les droits d'exécution sur les scripts <strong>compiler.sh</strong> et <strong>run.sh</strong></p>
+
+<pre><code>chmod +x compiler.sh run.sh
+</code></pre>
+
+<p>Pour compiler les sources, exécutez le script suivant :</p>
+
+<pre><code>./compiler.sh
+</code></pre>
+
+<p>Pour exécuter le programme à partir de sources, exécutez le script suivant :</p>
+
+<pre><code>./run.sh
+</code></pre>
+
+<p>Pour exécuter le programme depuis l'archive exécutable da2i-boggle.jar, exécutez la commande suivante :</p>
+
+<pre><code>java -jar da2i-boggle.jar
+</code></pre>
+
+<h2>
+<a id="manuel-utilisateur" class="anchor" href="#manuel-utilisateur" aria-hidden="true"><span class="octicon octicon-link"></span></a>Manuel utilisateur</h2>
+
+<p>Afin de décrire au mieux l'ensemble des possibilitées offertes par le programme, le manuel utilisateur sera développé au travers d'un exemple concret et lu par le biais d'un accent marseillais.</p>
+
+<p>Voici Tony, un joueur passionné de boggle depuis de nombreuses années à qui nous avons proposé de tester notre version du jeu, en avant première. Lors du premier lancement de l'application, le visage de Tony resta impassible, nullement impressionné par la première image du jeu. Toutefois, l'ergonomie de l'application fit que Tony dirigea sa souris naturellement et rapidement vers les boutons situés en bas de l'écran, à savoir "Jouer" et "Classements". Il cliqua sur "Jouer". Nous imaginons que n'ayant pas d'intérêt compétitif dans ce test, le classement n'intéressait pas (encore) ce grand champion boggelien qu'est Tony.</p>
+
+<p><img src="https://cloud.githubusercontent.com/assets/10498113/11850272/95c2e488-a42c-11e5-8eff-37fa29696dc0.png" alt="Menu Principal"></p>
+
+<p>L'arrivée sur le second écran, celui de la création de la partie, parvint a détendre le visage de Tony. En effet, nous pouvions voir les prémisses d'un sourire naitre à la commissure de ses lèvres. La définition du nombre de joueurs (humain ou non) par exemple ou encore les nombreuses possibilités de réglages selon lesquelles la partie se déroulerait, le nombre de tour de jeu, le temps accordé pour chaque joueur et bien plus encore; ont fait écho quelque part dans l'âme de ce compétiteur acharné, toujours à la recherche de challenges. Un bon point pour le jeu.</p>
+
+<p><img src="https://cloud.githubusercontent.com/assets/10498113/11850273/95c54818-a42c-11e5-8455-9b065496c889.png" alt="Création de Partie"></p>
+
+<p>Plusieurs minutes plus tard, notre testeur choisit ainsi de se frotter à notre intelligence artificielle, Samantha, et ce, sans échauffement préalable. Intelligence artificielle qui a été pensée en partie pour offrir une farouche opposition à n'importe quel joueur, allant du novice au champion.</p>
+
+<p>La première grille de mots ne fut pas à l'avantage du champion puisque la face visible de chaque dé n'offraient pas un assemblage de lettres des plus évidents.</p>
+
+<p><img src="https://cloud.githubusercontent.com/assets/10498113/11850274/95c9c0a0-a42c-11e5-9430-3dbd9f796c4d.png" alt="Partie de jeu"></p>
+
+<p>Cependant contre toute attente, Tony réussit à écrire manuellement un nombre impressionnant de mots, allant du simple 3 lettres jusqu'à certains mots inconnus des membres de notre équipe de développement. Il poussa même le vice a obtenir plus de points que Samantha lors de ce premier tour de jeu, qui ne dura pas plus de 40 secondes. Nous sommes restés sans voix devant tant de maîtrise de la langue. Le champ de saisie des mots au clavier avait offert à Tony une rapidité d'éxecution quasiment sans limite !</p>
+
+<p>Le deuxième tour commença et à la surprise de tous, Tony empoigna la souris afin d'offrir un aperçu de sa fameuse technique "la danse du curseur". Les différentes cases de la grille s'allumèrent au rythme infernal des cliques aussi bien sur les dés, que sur le bouton "Ajouter". De plus, le testeur se permit de terminer son tour de jeu avant la fin du temps imparti. Notre Samantha n'était-elle pas au niveau ? Tony voulait-il simplement s'handicaper intentionnellement pour tester sa vitesse d'éxecution sous la pression d'une possible défaite ? Ou la grille actuelle n'avait-elle simplement plus de mots possibles ? Autant de questions qui se bousculaient dans la tête de chacun, tandis que Samantha sous le regard autain du champion entamma son tour de jeu. </p>
+
+<p>Cette échange acharné durera de longues minutes, jusqu'à la dernière seconde et à l'ajout du mot "immarcescible" de Samantha. Ce dernier mot qui lui assura la victoire sur le fil. Le score de 1000 à 999 en faveur de Samantha aurait pu achever la détermination de n'importe quel autre personne. Mais un champion n'est pas n'importe quelle personne. C'est ainsi que Tony se leva de sa chaise et quitta la salle de TP avec le même sourire qu'un enfant ayant découvert un nouveau jeu, et en murmurant suffisament bas pour que nous soyons les seuls à l'entendre : " GG ".</p>
+
+<p><img src="https://cloud.githubusercontent.com/assets/10498113/11850275/95cb2972-a42c-11e5-9b33-cc4c8af2bddb.png" alt="Classements Généraux"></p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/ecattez/da2i-boggle">Da2i-boggle</a> is maintained by <a href="https://github.com/ecattez">ecattez</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
