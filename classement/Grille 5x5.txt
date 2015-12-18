@@ -1,5 +1,4 @@
-#Tue Dec 15 13:17:10 CET 2015
-Thomas=0
-Edouard=5
-Julien=0
-Nom\ du\ joueur=0
+#Fri Dec 18 07:55:55 CET 2015
+Toto=32
+Pipou=140
+Tony=999

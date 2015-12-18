@@ -1,2 +1,0 @@
-#Tue Dec 15 13:17:18 CET 2015
-Nom\ du\ joueur=0

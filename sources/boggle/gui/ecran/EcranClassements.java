@@ -38,12 +38,28 @@ public class EcranClassements extends AbstractEcran {
 	
 	private static final long serialVersionUID = 599000474435628090L;
 	
+	// Liste de tous les classements par taille de grille
 	private List<Classement> classements;
+	// Panel à onglets pour tous les classements
+	private JTabbedPane pane;
+	// Panel affiché quand il n'y a aucun classement dans le dossier Classement.CLASSEMENT_FOLDER
+	private JPanel aucunClassement;
 	
 	public EcranClassements() {
 		this.classements = new ArrayList<Classement>();
-		this.afficherClassements();
 		this.setBackground(new Color(31,71,126));
+		
+		pane = new JTabbedPane();
+		pane.setVisible(false);
+		this.add(pane);
+		
+		JLabel info = new JLabel("Il n'y a actuellement aucun classement sauvegardé");
+		info.setForeground(Color.WHITE);
+		aucunClassement = new JPanel();
+		aucunClassement.setBackground(null);
+		aucunClassement.add(info);
+		aucunClassement.setVisible(false);
+		this.add(aucunClassement);
 	}
 
 	public void recharger() {
@@ -56,28 +72,26 @@ public class EcranClassements extends AbstractEcran {
 	 * Affiche tous les classements disponibles dans le dossier Classement.CLASSEMENT_FOLDER
 	 */
 	public void afficherClassements() {
-		classements.clear();
 		classements.addAll(Classement.listerTous());
-		JTabbedPane pane = new JTabbedPane();
 		Iterator<Classement> it = classements.iterator();
 		Classement c;
 		while (it.hasNext()) {
 			c = it.next();
 			pane.add(c.getTitle(), new JClassement(c));
 		}
-		this.removeAll();
 		if (pane.getComponentCount() > 0) {
-			this.add(pane);
+			pane.setVisible(true);
 		}
 		else {
-			JPanel aucunClassement = new JPanel();
-			aucunClassement.add(new JLabel("Il n'y a actuellement aucun classement sauvegardé"));
-			this.add(aucunClassement);
+			aucunClassement.setVisible(true);
 		}
 	}
 
 	public void nettoyer() {
-		// Rien à faire
+		classements.clear();
+		pane.removeAll();
+		pane.setVisible(false);
+		aucunClassement.setVisible(false);
 	}
 	
 	public void recevoir(Object o) {

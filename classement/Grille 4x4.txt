@@ -1,4 +1,4 @@
-#Tue Dec 15 20:15:08 CET 2015
-Toto=20
-Pipou=4
-Nom\ du\ joueur=2
+#Fri Dec 18 07:55:55 CET 2015
+Toto=25
+Pipou=123
+Tony=999
